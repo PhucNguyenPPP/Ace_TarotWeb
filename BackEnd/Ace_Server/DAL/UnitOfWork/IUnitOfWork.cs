@@ -14,5 +14,6 @@ namespace DAL.UnitOfWork
         IUserRepository User { get; }
         IBookingRepository Booking { get; }
         IRoleRepository Role { get; }
+        ICardRepository Card { get; }
     }
 }
