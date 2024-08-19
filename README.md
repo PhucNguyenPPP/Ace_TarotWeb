@@ -4,3 +4,5 @@
   - **Software Requirement Specification**: [SRS Docs](https://docs.google.com/document/d/14AFYtPO0pziWx57pzoj9kyD4CGC2dC3w3WS_Oae_fHc/edit?usp=sharing)
   - **API Management**: [API Management](https://docs.google.com/spreadsheets/d/1kLb7MaOlF76QSz7_EsLKDIrVkbJV0Aa812MoZodHnBY/edit?usp=sharing)
   - **Script DB**: [Scprit DB](https://docs.google.com/document/d/1uJ6hkMVO1diIajFDblOfaqmHgIAmVkoCKcy0os7dJJc/edit?usp=sharing)
+  - **Figma**: [Figma](https://www.figma.com/design/QShfPqzs1RHDf3HIVxpLeT/ACE%5C?node-id=0-1&m=dev&t=a6QZSGKuwFkWyJ4C-1)
+    
