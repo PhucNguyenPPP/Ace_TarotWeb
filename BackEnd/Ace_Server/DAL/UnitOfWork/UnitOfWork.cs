@@ -18,11 +18,8 @@ namespace DAL.UnitOfWork
             User = new UserRepository(_context);
             Booking = new BookingRepository(_context);
             Role = new RoleRepository(_context);
+            Card = new CardRepository(_context);
         }
-
-        public IUserRepository User { get; private set; }
-        public IBookingRepository Booking { get; private set; }
-        public IRoleRepository Role { get; private set; }
 
         public void Dispose()
         {
@@ -33,5 +30,14 @@ namespace DAL.UnitOfWork
         {
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public IUserRepository User { get; private set; }
+
+        public IBookingRepository Booking { get; private set; }
+
+        public IRoleRepository Role { get; private set; }
+
+        public ICardRepository Card { get; private set; }
+
     }
 }
