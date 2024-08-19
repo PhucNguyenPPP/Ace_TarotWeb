@@ -8,10 +8,10 @@ namespace Api_Ace.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        public AuthController(IUserService userService)
         {
             _userService = userService;
         }
