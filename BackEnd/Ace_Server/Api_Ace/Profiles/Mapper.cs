@@ -10,7 +10,10 @@ namespace Api_Ace.Profiles
         {
             #region
             CreateMap<SignUpCustomerRequestDTO, User>().ReverseMap();
-            #endregion
-        }
-    }
+			#endregion
+			#region
+			CreateMap<TarotReaderDTO, User>().ReverseMap();
+			#endregion
+		}
+	}
 }
