@@ -19,5 +19,6 @@ namespace DAL.Repositories.Interface
         Task AddRangeAsync(List<T> entity);
         void UpdateRange(List<T> entity);
         void RemoveRange(List<T> entity);
-    }
+		Task<List<T>> Paging(Expression<Func<T, bool>>? expression,int pageNumber, int rowsPerpage);
+	}
 }
