@@ -72,7 +72,7 @@ namespace BLL.Services
             }
             var salt = GenerateSalt();
             var passwordHash = GenerateHashedPassword(model.Password, salt);
-            var avatarLink = await _imageService.StoreImageAndGetLink(model.AvatarLink);
+            var avatarLink = await _imageService.StoreImageAndGetLink(model.AvatarLink, "users_img");
 
             customer.UserId = Guid.NewGuid();
             customer.RoleId = role.RoleId;

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Common.DTO.Card;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BLL.Interface
 {
-    public interface IImageService
+    public interface ICardService
     {
-        Task<string> StoreImageAndGetLink(IFormFile image, string folderName);
+        public Task<bool> AddCard(CardRequestDTO model);
     }
 }
