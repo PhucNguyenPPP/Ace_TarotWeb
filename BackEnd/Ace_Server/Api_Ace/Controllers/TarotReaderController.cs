@@ -15,7 +15,7 @@ namespace Api_Ace.Controllers
 		{
 			_tarotReaderService = tarotReaderService;
 		}
-		[HttpPost("readers")]
+		[HttpGet("readers")]
 		public async Task<IActionResult> ViewTarotReader([FromQuery] String? readerName, int pageNumber,int rowsPerpage)
 		{
 			ResponseDTO responseDTO = await _tarotReaderService.GetTarotReader(readerName,pageNumber,rowsPerpage);
