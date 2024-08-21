@@ -16,5 +16,6 @@ namespace DAL.UnitOfWork
         IRoleRepository Role { get; }
         ICardRepository Card { get; }
         ITarotReaderRespository TarotReader { get; }
+        IFreeTarotRepository FreeTarot { get; }
     }
 }
