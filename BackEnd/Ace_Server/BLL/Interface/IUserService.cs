@@ -19,5 +19,6 @@ namespace BLL.Interface
         bool CheckUserNameExist(string userName);
         bool CheckEmailExist(string email);
         bool CheckPhoneExist(string phone);
-    }
+		Task<ResponseDTO> GetTarotReader(string? readerName, int pageNumber, int rowsPerpage);
+	}
 }

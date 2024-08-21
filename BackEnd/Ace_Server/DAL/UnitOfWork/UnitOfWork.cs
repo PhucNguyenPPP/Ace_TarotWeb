@@ -19,7 +19,6 @@ namespace DAL.UnitOfWork
             Booking = new BookingRepository(_context);
             Role = new RoleRepository(_context);
             Card = new CardRepository(_context);
-            TarotReader = new TarotReaderRespository(_context);
             FreeTarot = new FreeTarotRepository(_context);
         }
 
@@ -41,7 +40,6 @@ namespace DAL.UnitOfWork
         public IRoleRepository Role { get; private set; }
 
         public ICardRepository Card { get; private set; }
-		public ITarotReaderRespository TarotReader { get; private set; }
         public IFreeTarotRepository FreeTarot { get; private set; }
     }
 }
