@@ -35,7 +35,7 @@ namespace BLL.Services
             }
         }
 
-        public async Task<string> StoreImageAndGetLink(IFormFile image)
+        public async Task<string> StoreImageAndGetLink(IFormFile image, string folderName)
         {
             if (image == null || image.Length == 0)
             {
@@ -57,7 +57,7 @@ namespace BLL.Services
                     });
 
                 var storageUrl = await firebaseStorage
-                    .Child("images")
+                    .Child(folderName)
                     .Child(fileName)
                     .PutAsync(memoryStream);
 
