@@ -149,5 +149,39 @@ namespace BLL.Services
             }
             return false;
         }
-    }
+		public async Task<ResponseDTO> GetTarotReader(string? readerName, int pageNumber, int rowsPerpage)
+		{
+
+			try
+			{
+				var role = await GetReaderRole();
+				List<User> list;
+				if (readerName != null)
+				{
+					list = await _unitOfWork.User.GetAllTarotReader(c => c.NickName.Contains(readerName) && c.RoleId.Equals(role.RoleId), pageNumber, rowsPerpage);
+				}
+				else
+				{
+					list = await _unitOfWork.User.GetAllTarotReader(c => c.RoleId.Equals(role.RoleId), pageNumber, rowsPerpage);
+				}
+
+				if (list == null || list.Count == 0)
+				{
+					return new ResponseDTO("Không tìm được Tarot Reader trùng khớp thông tin", 400, false);
+				}
+				var listDTO = _mapper.Map<List<TarotReaderDTO>>(list);
+				return new ResponseDTO("Tìm kiếm thành công", 200, true, listDTO);
+			}
+			catch (Exception ex)
+			{
+				return new ResponseDTO("Tìm kiếm Tarot Reader thất bại", 500, false);
+			}
+
+		}
+		public async Task<Role?> GetReaderRole()
+		{
+			var result = await _unitOfWork.Role.GetByCondition(c => c.RoleName == RoleConstant.TarotReader);
+			return result;
+		}
+	}
 }
