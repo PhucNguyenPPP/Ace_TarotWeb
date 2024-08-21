@@ -65,5 +65,23 @@ namespace DAL.Repositories
         {
             _dbSet.RemoveRange(entity);
         }
-    }
+
+		public async Task<List<T>> Paging(Expression<Func<T, bool>>? expression,int pageNumber, int rowsPerpage)
+		{
+            if (expression != null)
+            {
+                return await GetAllByCondition(expression)
+                .Skip((pageNumber - 1) * rowsPerpage)
+                .Take(rowsPerpage)
+                .ToListAsync();
+            }
+            else
+            {
+				return await GetAll()
+				.Skip((pageNumber - 1) * rowsPerpage)
+				.Take(rowsPerpage)
+				.ToListAsync();
+			}
+		}
+	}
 }

@@ -2,6 +2,8 @@ using Api_Ace.MiddleWares;
 using AutoMapper;
 using BLL.Interface;
 using BLL.Services;
+using DAL.Repositories;
+using DAL.Repositories.Interface;
 using DAL.UnitOfWork;
 using System.Text.Json.Serialization;
 
@@ -12,6 +14,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, BLL.Services.UserService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<IFreeTarotService, FreeTarotService>();
+builder.Services.AddScoped<ICardTypeService, CardTypeService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
