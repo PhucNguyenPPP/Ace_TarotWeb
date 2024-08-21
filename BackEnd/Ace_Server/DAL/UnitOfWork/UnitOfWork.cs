@@ -20,6 +20,7 @@ namespace DAL.UnitOfWork
             Role = new RoleRepository(_context);
             Card = new CardRepository(_context);
             FreeTarot = new FreeTarotRepository(_context);
+            CardType = new CardTypeRepository(_context);
         }
 
        
@@ -41,5 +42,6 @@ namespace DAL.UnitOfWork
 
         public ICardRepository Card { get; private set; }
         public IFreeTarotRepository FreeTarot { get; private set; }
+        public ICardTypeRepository CardType { get; private set; }
     }
 }
