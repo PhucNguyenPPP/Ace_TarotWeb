@@ -15,6 +15,7 @@ builder.Services.AddScoped<IUserService, BLL.Services.UserService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<ITarotReaderService, BLL.Services.TarotReaderService>();
+builder.Services.AddScoped<IFreeTarotService, FreeTarotService>();
 
 
 builder.Services.AddControllers();
