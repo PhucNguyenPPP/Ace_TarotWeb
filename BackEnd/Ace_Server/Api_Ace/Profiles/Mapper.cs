@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.DTO.Auth;
 using Common.DTO.Card;
 using Common.DTO.CardType;
 using Common.DTO.User;
@@ -12,15 +13,10 @@ namespace Api_Ace.Profiles
         {
             #region
             CreateMap<SignUpCustomerRequestDTO, User>().ReverseMap();
-			#endregion
-			#region
 			CreateMap<TarotReaderDTO, User>().ReverseMap();
-            #endregion
-            #region
             CreateMap<FreeTarotCardDTO, Card>().ReverseMap();
-			#endregion
-			#region
 			CreateMap<CardTypeDTO, CardType>().ReverseMap();
+            CreateMap<User, LocalUserDTO>().ReverseMap();
 			#endregion
 		}
 	}
