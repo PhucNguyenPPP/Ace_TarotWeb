@@ -18,5 +18,6 @@ namespace DAL.UnitOfWork
         IFreeTarotRepository FreeTarot { get; }
         ICardTypeRepository CardType { get; }
         IRefreshTokenRepository RefreshToken { get; }
+        ICardPositionRepository CardPosition { get; }   
     }
 }
