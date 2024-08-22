@@ -15,7 +15,7 @@ namespace Api_Ace.Controllers
 			_cardTypeService = cardTypeService;
 		}
 		[HttpGet("card-types")]
-		public async Task<IActionResult> ViewCartTypeList()
+		public async Task<IActionResult> ViewCardTypeList()
 		{
 			ResponseDTO responseDTO = await _cardTypeService.ViewCardTypeList();
 			if (responseDTO.IsSuccess == false)
