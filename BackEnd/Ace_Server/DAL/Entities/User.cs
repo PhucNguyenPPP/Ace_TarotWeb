@@ -51,7 +51,7 @@ public partial class User
 
     public virtual ICollection<UserLanguage> UserLanguages { get; set; } = new List<UserLanguage>();
 
-    public virtual ICollection<UserService> UserServices { get; set; } = new List<UserService>();
+    public virtual ICollection<UserServiceType> UserServiceTypes { get; set; } = new List<UserServiceType>();
 
     public virtual ICollection<UserSlot> UserSlots { get; set; } = new List<UserSlot>();
 }

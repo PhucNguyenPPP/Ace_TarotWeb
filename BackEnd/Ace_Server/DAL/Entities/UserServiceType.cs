@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace DAL.Entities;
 
-public partial class UserService
+public partial class UserServiceType
 {
-    public Guid UserServiceId { get; set; }
+    public Guid UserServiceTypeId { get; set; }
 
     public bool Status { get; set; }
 
     public Guid UserId { get; set; }
 
-    public Guid ServiceId { get; set; }
+    public Guid ServiceTypeId { get; set; }
 
-    public virtual Service Service { get; set; } = null!;
+    public virtual ServiceType ServiceType { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }
