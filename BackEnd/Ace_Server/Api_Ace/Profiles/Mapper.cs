@@ -19,6 +19,7 @@ namespace Api_Ace.Profiles
 			CreateMap<CardTypeDTO, CardType>().ReverseMap();
             CreateMap<User, LocalUserDTO>().ReverseMap();
 			CreateMap<CardPosition, CardPositionDTO>().ReverseMap();
+			CreateMap<Card, CardAfterMeaningDTO>().ReverseMap();
 			#endregion
 		}
 	}

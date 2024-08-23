@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.DTO.Card;
 
 namespace Common.DTO.CardPosition
 {
@@ -17,5 +18,6 @@ namespace Common.DTO.CardPosition
 		public int PositionId { get; set; }
 
 		public int CardId { get; set; }
+		public CardAfterMeaningDTO? CardAfterMeaning { get; set; }
 	}
 }
