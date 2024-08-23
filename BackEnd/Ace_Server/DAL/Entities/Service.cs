@@ -20,6 +20,4 @@ public partial class Service
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual ServiceType ServiceType { get; set; } = null!;
-
-    public virtual ICollection<UserService> UserServices { get; set; } = new List<UserService>();
 }
