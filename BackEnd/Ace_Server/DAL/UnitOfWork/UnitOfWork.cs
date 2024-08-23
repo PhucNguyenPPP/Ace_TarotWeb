@@ -22,6 +22,7 @@ namespace DAL.UnitOfWork
             FreeTarot = new FreeTarotRepository(_context);
             CardType = new CardTypeRepository(_context);
             RefreshToken = new RefreshTokenRepository(_context);
+            CardPosition = new CardPositionRepository(_context);
         }
 
        
@@ -45,5 +46,7 @@ namespace DAL.UnitOfWork
         public IFreeTarotRepository FreeTarot { get; private set; }
         public ICardTypeRepository CardType { get; private set; }
         public IRefreshTokenRepository RefreshToken { get; private set; }
-    }
+
+		public ICardPositionRepository CardPosition { get; private set; }
+	}
 }
