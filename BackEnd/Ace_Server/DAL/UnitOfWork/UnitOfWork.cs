@@ -23,7 +23,15 @@ namespace DAL.UnitOfWork
             CardType = new CardTypeRepository(_context);
             RefreshToken = new RefreshTokenRepository(_context);
             CardPosition = new CardPositionRepository(_context);
-        }
+            UserLanguage = new UserLanguageRepository(_context);
+			UserServiceType = new UserServiceTypeRepository(_context);
+            UserFormMeeting = new UserFormMeetingRepository(_context);
+            UserSlot = new UserSlotRepository(_context);
+            Language = new LanguageRepository(_context);
+			ServiceType = new ServiceTypeRepository(_context);
+            FormMeeting = new FormMeetingRepository(_context);
+            Slot = new SlotRepository(_context);
+		}
 
        
         public void Dispose()
@@ -48,5 +56,16 @@ namespace DAL.UnitOfWork
         public IRefreshTokenRepository RefreshToken { get; private set; }
 
 		public ICardPositionRepository CardPosition { get; private set; }
+		public IUserLanguageRepository UserLanguage { get; private set; }
+
+		public IUserServiceTypeRepository UserServiceType { get; private set; }
+		public IUserFormMeetingRepository UserFormMeeting { get; private set; }
+		public IUserSlotRepository UserSlot { get; private set; }
+		public ILanguageRepository Language { get; private set; }
+        public IServiceTypeRepository ServiceType { get; private set; }
+
+		public IFormMeetingRepository FormMeeting { get; private set; }
+
+		public ISlotRepository Slot { get; private set; }
 	}
 }

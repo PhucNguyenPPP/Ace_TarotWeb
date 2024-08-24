@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.DTO.User
+namespace Common.DTO.ServiceType
 {
-	public class ServiceOfReaderDTO
+	public class ServiceTypeDTO
 	{
-		public Guid UserServiceId { get; set; }
+		public Guid UserServiceTypeId { get; set; }
 
 		public bool Status { get; set; }
 
 		public Guid UserId { get; set; }
 
-		public Guid ServiceId { get; set; }
+		public Guid ServiceTypeId { get; set; }
 	}
 }
