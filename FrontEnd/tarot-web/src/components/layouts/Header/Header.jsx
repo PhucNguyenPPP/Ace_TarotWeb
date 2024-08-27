@@ -14,7 +14,12 @@ import MenuItem from '@mui/material/MenuItem';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import useAuth from '../../../hooks/useAuth';
 
-const pages = ['Giới thiệu', 'Đặt lịch', 'Liên hệ', 'Cộng đồng'];
+const pages = [
+    { name: 'Giới thiệu', link: '/introduction' },
+    { name: 'Đặt lịch', link: '/' },
+    { name: 'Liên hệ', link: '/' },
+    { name: 'Cộng đồng', link: '/' },
+];
 const settings = ['Hồ sơ', 'Đăng xuất'];
 function Header() {
     const { user } = useAuth();
@@ -64,11 +69,12 @@ function Header() {
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
                             <Button
-                                key={page}
+                                key={page.name}
                                 onClick={handleCloseNavMenu}
+                                href={page.link}
                                 sx={{ my: 2, color: 'black', display: 'block', mr: 4 }}
                             >
-                                {page}
+                                {page.name}
                             </Button>
                         ))}
                     </Box>
