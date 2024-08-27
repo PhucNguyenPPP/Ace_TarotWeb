@@ -1,10 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import HomePage from "../pages/HomePage/HomePage";
-import LoginPage from "../pages/LoginPage/HomePage";
+import LoginPage from "../pages/LoginPage/LoginPage";
+import RoleBasedGuard from "../guards/RoleBasedGuard";
+import GuestGuard from "../guards/GuestGuard";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <HomePage/>,
     errorElement: <Error />,
   },
   {
