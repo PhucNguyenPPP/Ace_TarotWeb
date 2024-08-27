@@ -17,7 +17,7 @@ import useAuth from '../../../hooks/useAuth';
 const pages = [
     { name: 'Giới thiệu', link: '/introduction' },
     { name: 'Đặt lịch', link: '/' },
-    { name: 'Liên hệ', link: '/' },
+    { name: 'Liên hệ', link: '/contact' },
     { name: 'Cộng đồng', link: '/' },
 ];
 const settings = ['Hồ sơ', 'Đăng xuất'];
