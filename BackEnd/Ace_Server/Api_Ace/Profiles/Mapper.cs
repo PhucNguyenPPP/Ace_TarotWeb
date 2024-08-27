@@ -17,8 +17,10 @@ namespace Api_Ace.Profiles
 			CreateMap<TarotReaderDTO, User>().ReverseMap();
             CreateMap<FreeTarotCardDTO, Card>().ReverseMap();
 			CreateMap<CardTypeDTO, CardType>().ReverseMap();
-            CreateMap<User, LocalUserDTO>().ReverseMap();
-			CreateMap<CardPosition, CardPositionDTO>().ReverseMap();
+            CreateMap<User, LocalUserDTO>()
+            .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
+            .ReverseMap();
+            CreateMap<CardPosition, CardPositionDTO>().ReverseMap();
 			CreateMap<Card, CardAfterMeaningDTO>().ReverseMap();
 			#endregion
 		}

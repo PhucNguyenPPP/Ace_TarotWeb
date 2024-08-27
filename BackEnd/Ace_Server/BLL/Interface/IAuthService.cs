@@ -1,4 +1,5 @@
 ﻿using Common.DTO.Auth;
+using Common.DTO.General;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace BLL.Interface
     {
         Task<LoginResponseDTO?> CheckLogin(LoginRequestDTO loginRequestDTO);
         Task<TokenDTO> RefreshAccessToken(RequestTokenDTO model);
+        Task<ResponseDTO> GetUserByAccessToken(string token);
     }
 }
