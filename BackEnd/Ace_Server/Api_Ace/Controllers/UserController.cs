@@ -33,6 +33,24 @@ namespace Api_Ace.Controllers
 
 			return Ok(responseDTO);
 		}
+		[HttpGet("reader-detail")]
+		public async Task<IActionResult> ViewTarotReaderDetail([FromQuery] Guid userId)
+		{
+			ResponseDTO responseDTO = await _userService.GetTarotReaderDetailById(userId);
+			if (responseDTO.IsSuccess == false)
+			{
+				if (responseDTO.StatusCode == 400)
+				{
+					return NotFound(responseDTO);
+				}
+				if (responseDTO.StatusCode == 500)
+				{
+					return BadRequest(responseDTO);
+				}
+			}
+
+			return Ok(responseDTO);
+		}
 	}
 }
 
