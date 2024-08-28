@@ -158,7 +158,7 @@ function Home() {
                     )}
                 </div>
                 <div className="w-full md:w-1/2 p-4">
-                    <img src="/image/PersonHome.png" alt="Person Home" />
+                    <img src="/image/main-element-02.png" alt="main element" />
                 </div>
 
                 <div className='w-full'>

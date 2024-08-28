@@ -3,6 +3,7 @@ import HomePage from "../pages/HomePage/HomePage";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import IntroductionPage from "../pages/IntroductionPage/IntroductionPage";
 import ContactPage from "../pages/ContactPage/ContactPage";
+import TarotReaderListPage from "../pages/TarotReaderListPage/TarotReaderListPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -22,6 +23,11 @@ export const router = createBrowserRouter([
   {
     path: "/contact",
     element: <ContactPage />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/tarot-reader-list",
+    element: <TarotReaderListPage />,
     errorElement: <Error />,
   }
 ]);
