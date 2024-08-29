@@ -18,9 +18,9 @@ namespace Api_Ace.Controllers
 		}
 		[HttpGet("readers")]
 		public async Task<IActionResult> ViewTarotReader([FromQuery] String? readerName, [FromQuery] int pageNumber, [FromQuery] int rowsPerpage,
-			[FromQuery] List<Guid>? filterLanguages, [FromQuery] String? gender, [FromQuery] List<Guid>? filterServiceTypes)
+			[FromQuery] List<Guid>? filterLanguages, [FromQuery] String? gender, [FromQuery] List<Guid>? filterForming)
 		{
-			ResponseDTO responseDTO = await _userService.GetTarotReader(readerName, pageNumber, rowsPerpage, filterLanguages, gender, filterServiceTypes);
+			ResponseDTO responseDTO = await _userService.GetTarotReader(readerName, pageNumber, rowsPerpage, filterLanguages, gender, filterForming);
 			if (responseDTO.IsSuccess == false)
 			{
 				if (responseDTO.StatusCode == 400)

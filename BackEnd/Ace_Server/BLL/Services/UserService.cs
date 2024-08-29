@@ -157,7 +157,7 @@ namespace BLL.Services
 			}
 			return false;
 		}
-		public async Task<ResponseDTO> GetTarotReader(string? readerName, int pageNumber, int rowsPerpage, List<Guid>? filterLanguages, string? gender, List<Guid>? filterServiceTypes)
+		public async Task<ResponseDTO> GetTarotReader(string? readerName, int pageNumber, int rowsPerpage, List<Guid>? filterLanguages, string? gender, List<Guid>? filterForming)
 		{
 
 			try
@@ -171,17 +171,20 @@ namespace BLL.Services
 				}
 				if (filterLanguages != null)
 				{
-					List<Guid> guids = _unitOfWork.UserLanguage.GetAllByCondition(k => filterLanguages.Contains(k.LanguageId)).Select(u => u.UserId).ToList();
-					if (guids.Any())
+					var languages = _unitOfWork.Language.GetAllByCondition(c => filterLanguages.Contains(c.LanguageId));
+					if (languages.Any())
 					{
+						List<Guid> guids = _unitOfWork.UserLanguage.GetAllByCondition(k => filterLanguages.Contains(k.LanguageId)).Select(u => u.UserId).ToList();
 						list = list.Where(c => guids.Contains(c.UserId));
 					}
+
 				}
-				if (filterServiceTypes != null)
+				if (filterForming != null)
 				{
-					List<Guid> guids = _unitOfWork.UserServiceType.GetAllByCondition(k => filterServiceTypes.Contains(k.ServiceTypeId)).Select(u => u.UserId).ToList();
-					if (guids.Any())
+					var forms = _unitOfWork.FormMeeting.GetAllByCondition(c => filterForming.Contains(c.FormMeetingId));
+					if (forms.Any())
 					{
+						List<Guid> guids = _unitOfWork.UserFormMeeting.GetAllByCondition(k => filterForming.Contains(k.UserId)).Select(u => u.UserId).ToList();
 						list = list.Where(c => guids.Contains(c.UserId));
 					}
 				}
