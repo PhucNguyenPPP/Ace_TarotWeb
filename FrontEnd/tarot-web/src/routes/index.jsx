@@ -1,9 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import HomePage from "../pages/HomePage/HomePage";
-import LoginPage from "../pages/LoginPage/LoginPage";
+import LoginPage from "../pages/AuthenPage/LoginPage";
 import IntroductionPage from "../pages/IntroductionPage/IntroductionPage";
 import ContactPage from "../pages/ContactPage/ContactPage";
-import TarotReaderListPage from "../pages/TarotReaderListPage/TarotReaderListPage";
+import TarotReaderListPage from "../pages/TarotReaderPage/TarotReaderListPage";
+import TarotReaderDetailPage from "../pages/TarotReaderPage/TarotReaderDetailPage";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -28,6 +30,11 @@ export const router = createBrowserRouter([
   {
     path: "/tarot-reader-list",
     element: <TarotReaderListPage />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/tarot-reader-detail",
+    element: <TarotReaderDetailPage />,
     errorElement: <Error />,
   }
 ]);
