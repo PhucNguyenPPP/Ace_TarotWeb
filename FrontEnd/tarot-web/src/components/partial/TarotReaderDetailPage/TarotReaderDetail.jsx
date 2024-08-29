@@ -13,7 +13,7 @@ function TarotReaderDetail() {
     const navigate = useNavigate();
 
     const handleNavigate = (userId) => {
-        navigate('/tarot-reader-detail', { state: { userId } });
+        navigate('/booking-step', { state: { userId } });
     };
 
     useEffect(() => {

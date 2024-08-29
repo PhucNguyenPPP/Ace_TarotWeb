@@ -5,6 +5,7 @@ import IntroductionPage from "../pages/IntroductionPage/IntroductionPage";
 import ContactPage from "../pages/ContactPage/ContactPage";
 import TarotReaderListPage from "../pages/TarotReaderPage/TarotReaderListPage";
 import TarotReaderDetailPage from "../pages/TarotReaderPage/TarotReaderDetailPage";
+import BookingPage from "../pages/BookingPage/BookingPage";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,11 @@ export const router = createBrowserRouter([
   {
     path: "/tarot-reader-detail",
     element: <TarotReaderDetailPage />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/booking-step",
+    element: <BookingPage />,
     errorElement: <Error />,
   }
 ]);
