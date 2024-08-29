@@ -3,7 +3,7 @@ import CardSpreadLayout from './CardSpreadLayout';
 import Card from '../Card/Card';
 import { GetAllCardType, GetMeaningCard, GetRandomCardList } from '../../../api/CardApi';
 import { toast } from 'react-toastify';
-import { WidthFull } from '@mui/icons-material';
+// import { WidthFull } from '@mui/icons-material';
 
 function Home() {
     const [selectedCardsRow1, setSelectedCardsRow1] = useState([]);
@@ -61,17 +61,12 @@ function Home() {
 
     useEffect(() => {
         const fetchAllCardType = async () => {
-            try {
-                const response = await GetAllCardType();
-                if (response.ok) {
-                    const responseData = await response.json();
-                    setCardType(responseData.result);
-                } else {
-                    throw new Error('Failed to fetch card types');
-                }
-            } catch (error) {
-                console.error('Error fetching card types:', error);
-                toast.error('Failed to fetch card types');
+            const response = await GetAllCardType();
+            if (response.ok) {
+                const responseData = await response.json();
+                setCardType(responseData.result);
+            } else {
+                throw new Error('Failed to fetch card types');
             }
         };
 
@@ -79,18 +74,14 @@ function Home() {
 
         if (type !== '0') {
             const fetchRandomCardList = async () => {
-                try {
-                    const response = await GetRandomCardList(type);
-                    if (response.ok) {
-                        const responseData = await response.json();
-                        setRandomCardList(responseData.result);
-                    } else {
-                        throw new Error('Failed to fetch');
-                    }
-                } catch (error) {
-                    console.error('Error fetching random card list:', error);
-                    toast.error('Failed to fetch random card list');
+                const response = await GetRandomCardList(type);
+                if (response.ok) {
+                    const responseData = await response.json();
+                    setRandomCardList(responseData.result);
+                } else {
+                    throw new Error('Failed to fetch');
                 }
+
             };
 
             fetchRandomCardList();
@@ -98,7 +89,13 @@ function Home() {
     }, [type]);
 
     return (
-        <div className='p-10' style={{ height: 'max-width', backgroundColor: 'black' }}>
+        <div className='p-10'
+            style={{
+                height: 'max-width',
+                backgroundImage: "url('/image/BG-01.png')",
+                backgroundSize: 'cover',
+
+            }}>
             <div className="flex flex-wrap">
                 <div className="w-full md:w-1/2 p-4">
                     <form>
@@ -112,7 +109,8 @@ function Home() {
                                     borderRadius: '10px',
                                     backgroundColor: 'black',
                                     color: 'white',
-                                    fontWeight: 'bold'
+                                    fontWeight: 'bold',
+                                    textTransform: 'uppercase'
                                 }}
                             >
                                 <option value='0'>1. Chọn loại bài</option>
@@ -120,7 +118,7 @@ function Home() {
                                     cardType.map((cardType) => (
                                         <option value={cardType.cardTypeId}>{cardType.cardTypeName}</option>
                                     )
-                                ))}
+                                    ))}
                             </select>
                         </div>
                         <div className="text-center mb-10">
@@ -133,7 +131,8 @@ function Home() {
                                     borderRadius: '10px',
                                     backgroundColor: 'black',
                                     color: 'white',
-                                    fontWeight: 'bold'
+                                    fontWeight: 'bold',
+                                    textTransform: 'uppercase'
                                 }}
                             >
                                 <option value='0'>2. Chọn chủ đề</option>
@@ -159,7 +158,7 @@ function Home() {
                     )}
                 </div>
                 <div className="w-full md:w-1/2 p-4">
-                    <img src="/image/PersonHome.png" alt="Person Home" />
+                    <img src="/image/main-element-02.png" alt="main element" />
                 </div>
 
                 <div className='w-full'>
@@ -197,7 +196,7 @@ function Home() {
                                 <h5 className='font-bold'>{card.cardAfterMeaning.cardName}</h5>
                             </div>
                             <div className='mb-12' >
-                                <h1 className='font-bold pb-2'>Lá bài {card.cardAfterMeaning.cardName} ở vị trí thứ {index+1}:</h1>
+                                <h1 className='font-bold pb-2'>Lá bài {card.cardAfterMeaning.cardName} ở vị trí thứ {index + 1}:</h1>
                                 {card.meaning}
                             </div>
                         </div>

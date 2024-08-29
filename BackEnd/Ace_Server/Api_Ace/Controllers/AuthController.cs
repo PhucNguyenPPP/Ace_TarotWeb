@@ -73,6 +73,18 @@ namespace Api_Ace.Controllers
             return Ok(new ResponseDTO("Tạo refresh token thành công", 200, true, result));
         }
 
-
+        [HttpGet("/user/access-token/{accessToken}")]
+        public async Task<IActionResult> GetUserByToken(string accessToken)
+        {
+            var result = await _authService.GetUserByAccessToken(accessToken);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
     }
 }

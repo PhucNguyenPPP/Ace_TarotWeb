@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 const baseUrl = import.meta.env.VITE_API_HOST;
 
 export const GetRandomCardList = async (cardTypeId) => {

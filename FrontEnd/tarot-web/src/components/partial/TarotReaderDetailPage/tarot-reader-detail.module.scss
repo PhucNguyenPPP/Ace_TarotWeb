@@ -1,0 +1,74 @@
+.title {
+    font-size: 48px;
+    font-weight: bolder;
+    color: white;
+}
+
+.container_content {
+    background-color: white;
+    border-radius: 10px;
+    width: 80%;
+}
+
+.avatar_tarot_reader {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    object-fit: cover;  
+}
+
+.quote {
+    font-size: 16px;
+    margin-top: 10px;
+    font-weight: lighter;
+    opacity: 0.5;
+    text-align: center;
+    font-style: italic;
+}
+
+.tarot_reader_name {
+    font-size: 24px;
+    font-weight: lighter;
+    opacity: 0.7;
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.tarot_reader_fullname {
+    font-weight: 400;
+    font-size: 32px;
+}
+.tarot_reader_description{
+    font-size: 16px;
+}
+
+.tarot_reader_info {
+    font-size: 20px;
+    opacity: 0.7;
+    font-weight: 100;
+    font-size: 20px;
+    margin-bottom: 15px;
+    list-style: circle;
+    padding-left: 12%;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+.info_box {
+    padding: 10px 25px;
+    color: white;
+    width: max-content;
+    background-color: #5900E5;
+    font-size: 16px;
+    border-radius: 30px;
+    margin-right: 10px;
+}
+
+.btn_book {
+    background-color: #5900E5;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+}

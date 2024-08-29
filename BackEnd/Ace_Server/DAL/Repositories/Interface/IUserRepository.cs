@@ -10,6 +10,6 @@ namespace DAL.Repositories.Interface
 {
     public interface IUserRepository : IGenericRepository<User>
     {
-		Task<List<User>> GetAllTarotReader(Expression<Func<User, bool>> expression, int pageNumber, int rowsPerpage);
+		Task<List<User>> GetAllTarotReader(IQueryable<User> users , int pageNumber, int rowsPerpage);
 	}
 }
