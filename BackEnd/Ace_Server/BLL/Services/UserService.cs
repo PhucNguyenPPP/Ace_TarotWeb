@@ -9,11 +9,13 @@ using Common.DTO.Slot;
 using Common.DTO.User;
 using DAL.Entities;
 using DAL.UnitOfWork;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.OpenApi.Any;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -155,28 +157,73 @@ namespace BLL.Services
 			}
 			return false;
 		}
-		public async Task<ResponseDTO> GetTarotReader(string? readerName, int pageNumber, int rowsPerpage)
+		public async Task<ResponseDTO> GetTarotReader(string? readerName, int pageNumber, int rowsPerpage, List<Guid>? filterLanguages, string? gender, List<Guid>? filterServiceTypes)
 		{
 
 			try
 			{
 				var role = await GetReaderRole();
-				List<User> list;
+				var list = _unitOfWork.User.GetAllByCondition(c => c.RoleId.Equals(role.RoleId));
+
 				if (readerName != null)
 				{
-					list = await _unitOfWork.User.GetAllTarotReader(c => c.NickName.Contains(readerName) && c.RoleId.Equals(role.RoleId), pageNumber, rowsPerpage);
+					list = list.Where(c => c.NickName.Contains(readerName));
 				}
-				else
+				if (filterLanguages != null)
 				{
-					list = await _unitOfWork.User.GetAllTarotReader(c => c.RoleId.Equals(role.RoleId), pageNumber, rowsPerpage);
+					List<Guid> guids = _unitOfWork.UserLanguage.GetAllByCondition(k => filterLanguages.Contains(k.LanguageId)).Select(u => u.UserId).ToList();
+					if (guids.Any())
+					{
+						list = list.Where(c => guids.Contains(c.UserId));
+					}
 				}
-
-				if (list == null || list.Count == 0)
+				if (filterServiceTypes != null)
+				{
+					List<Guid> guids = _unitOfWork.UserServiceType.GetAllByCondition(k => filterServiceTypes.Contains(k.ServiceTypeId)).Select(u => u.UserId).ToList();
+					if (guids.Any())
+					{
+						list = list.Where(c => guids.Contains(c.UserId));
+					}
+				}
+				if (gender != null)
+				{
+					if (gender.Equals("Nam") || gender.Equals("Nữ") || gender.Equals("Khác"))
+					{
+						list = list.Where(c => c.Gender.Equals(gender));
+					}
+				}
+				var listReader = await _unitOfWork.User.GetAllTarotReader(list, pageNumber, rowsPerpage);
+				if (listReader == null || listReader.Count == 0)
 				{
 					return new ResponseDTO("Không tìm được Tarot Reader trùng khớp thông tin", 400, false);
 				}
-				var listDTO = _mapper.Map<List<TarotReaderDTO>>(list);
-				return new ResponseDTO("Tìm kiếm thành công", 200, true, listDTO);
+				var listDTO = _mapper.Map<List<TarotReaderDetailDTO>>(list);
+				foreach (var item in listDTO)
+				{
+					//language
+					var userLanguages = _unitOfWork.UserLanguage.GetAllByCondition(c => c.UserId == item.UserId);
+					if (userLanguages != null && userLanguages.Count() > 0)
+					{
+						var languages = _unitOfWork.Language.GetAllByCondition(language => userLanguages.Any(ul => ul.LanguageId.Equals(language.LanguageId)));
+						item.LanguageOfReader = _mapper.Map<List<LanguageOfReaderDTO>>(languages);
+					}
+
+
+					//FormMeeting
+					var userFormMeetings = _unitOfWork.UserFormMeeting.GetAllByCondition(c => c.UserId == item.UserId);
+					if (userFormMeetings != null && userFormMeetings.Any())
+					{
+						var formMeetings = _unitOfWork.FormMeeting.GetAllByCondition(formMeeting => userFormMeetings.Any(fm => fm.FormMeetingId.Equals(formMeeting.FormMeetingId)));
+						item.FormMeetingOfReaderDTOs = _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetings);
+					}
+				}
+				ListTarotReaderDTO listTarotReaderDTO = new ListTarotReaderDTO();
+				listTarotReaderDTO.TarotReaderDetailDTO = listDTO;
+				listTarotReaderDTO.CurrentPage = pageNumber;
+				listTarotReaderDTO.RowsPerPages = rowsPerpage;
+				listTarotReaderDTO.TotalCount = listDTO.Count();
+				listTarotReaderDTO.TotalPages = (int)Math.Ceiling((decimal)listTarotReaderDTO.TotalCount / (decimal)listTarotReaderDTO.RowsPerPages);
+				return new ResponseDTO("Tìm kiếm thành công", 200, true, listTarotReaderDTO);
 			}
 			catch (Exception ex)
 			{
