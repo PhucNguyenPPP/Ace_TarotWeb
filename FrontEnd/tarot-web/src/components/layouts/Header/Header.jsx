@@ -16,7 +16,7 @@ import useAuth from '../../../hooks/useAuth';
 
 const pages = [
     { name: 'Giới thiệu', link: '/introduction' },
-    { name: 'Đặt lịch', link: '/' },
+    { name: 'Đặt lịch', link: '/tarot-reader-list' },
     { name: 'Liên hệ', link: '/contact' },
     { name: 'Cộng đồng', link: '/' },
 ];

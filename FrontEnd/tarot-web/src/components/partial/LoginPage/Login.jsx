@@ -75,7 +75,7 @@ function Login() {
           >
              <img className='w-40' src='image/logo.png'></img>
             <Typography component="h1" variant="h5">
-              Đăng Nhập
+              ĐĂNG NHẬP
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
