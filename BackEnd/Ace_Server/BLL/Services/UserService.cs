@@ -220,13 +220,13 @@ namespace BLL.Services
 						item.FormMeetingOfReaderDTOs = _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetings);
 					}
 				}
-				PagedList<TarotReaderDetailDTO> finalList = new PagedList<TarotReaderDetailDTO>(listDTO, listDTO.Count, pageNumber, rowsPerpage);
+				var finalList = PagedList<TarotReaderDetailDTO>.ToPagedList(listDTO.AsQueryable(), pageNumber, rowsPerpage);
 				ListTarotReaderDTO listTarotReaderDTO = new ListTarotReaderDTO();
 				listTarotReaderDTO.TarotReaderDetailDTOs = finalList;
 				listTarotReaderDTO.CurrentPage = pageNumber;
 				listTarotReaderDTO.RowsPerPages = rowsPerpage;
-				listTarotReaderDTO.TotalCount = finalList.Count;
-				listTarotReaderDTO.TotalPages = (int)Math.Ceiling(finalList.Count / (double)rowsPerpage);
+				listTarotReaderDTO.TotalCount = listDTO.Count;
+				listTarotReaderDTO.TotalPages = (int)Math.Ceiling(listDTO.Count / (double)rowsPerpage);
 				return new ResponseDTO("Tìm kiếm thành công", 200, true, listTarotReaderDTO);
 			}
 			catch (Exception ex)
