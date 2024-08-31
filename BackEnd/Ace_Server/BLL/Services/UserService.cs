@@ -4,9 +4,11 @@ using Common.Constant;
 using Common.DTO.FormMeeting;
 using Common.DTO.General;
 using Common.DTO.Language;
+using Common.DTO.Paging;
 using Common.DTO.ServiceType;
 using Common.DTO.Slot;
 using Common.DTO.User;
+using Common.DTO.Paging;
 using DAL.Entities;
 using DAL.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
@@ -195,22 +197,20 @@ namespace BLL.Services
 						list = list.Where(c => c.Gender.Equals(gender));
 					}
 				}
-				var listReader = await _unitOfWork.User.GetAllTarotReader(list, pageNumber, rowsPerpage);
-				if (listReader == null || listReader.Count == 0)
+				if (list == null || list.Count() == 0)
 				{
 					return new ResponseDTO("Không tìm được Tarot Reader trùng khớp thông tin", 400, false);
-				}
+				}		
 				var listDTO = _mapper.Map<List<TarotReaderDetailDTO>>(list);
 				foreach (var item in listDTO)
 				{
 					//language
 					var userLanguages = _unitOfWork.UserLanguage.GetAllByCondition(c => c.UserId == item.UserId);
-					if (userLanguages != null && userLanguages.Count() > 0)
+					if (userLanguages != null && userLanguages.Any())
 					{
 						var languages = _unitOfWork.Language.GetAllByCondition(language => userLanguages.Any(ul => ul.LanguageId.Equals(language.LanguageId)));
 						item.LanguageOfReader = _mapper.Map<List<LanguageOfReaderDTO>>(languages);
 					}
-
 
 					//FormMeeting
 					var userFormMeetings = _unitOfWork.UserFormMeeting.GetAllByCondition(c => c.UserId == item.UserId);
@@ -220,12 +220,13 @@ namespace BLL.Services
 						item.FormMeetingOfReaderDTOs = _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetings);
 					}
 				}
+				var finalList = PagedList<TarotReaderDetailDTO>.ToPagedList(listDTO.AsQueryable(), pageNumber, rowsPerpage);
 				ListTarotReaderDTO listTarotReaderDTO = new ListTarotReaderDTO();
-				listTarotReaderDTO.TarotReaderDetailDTO = listDTO;
+				listTarotReaderDTO.TarotReaderDetailDTOs = finalList;
 				listTarotReaderDTO.CurrentPage = pageNumber;
 				listTarotReaderDTO.RowsPerPages = rowsPerpage;
-				listTarotReaderDTO.TotalCount = listDTO.Count();
-				listTarotReaderDTO.TotalPages = (int)Math.Ceiling((decimal)listTarotReaderDTO.TotalCount / (decimal)listTarotReaderDTO.RowsPerPages);
+				listTarotReaderDTO.TotalCount = listDTO.Count;
+				listTarotReaderDTO.TotalPages = (int)Math.Ceiling(listDTO.Count / (double)rowsPerpage);
 				return new ResponseDTO("Tìm kiếm thành công", 200, true, listTarotReaderDTO);
 			}
 			catch (Exception ex)
