@@ -116,7 +116,7 @@ function Header() {
                         ) : (
                             <Box className="text-black">
                                 <a href='/login' className='mr-8 underline'>Đăng nhập</a>
-                                <a className='underline'>Đăng kí</a>
+                                <a href='/role-signup' className='underline'>Đăng kí</a>
                             </Box>)}
 
 

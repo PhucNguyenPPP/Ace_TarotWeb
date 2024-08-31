@@ -2,7 +2,7 @@ import Footer from "../../components/layouts/Footer/Footer";
 import Header from "../../components/layouts/Header/Header";
 import Login from "../../components/partial/LoginPage/Login";
 
-const HomePage = () => {
+const LoginPage = () => {
     return (
         <>
             <Login/>
@@ -11,4 +11,4 @@ const HomePage = () => {
     );
 };
 
-export default HomePage;
+export default LoginPage;
