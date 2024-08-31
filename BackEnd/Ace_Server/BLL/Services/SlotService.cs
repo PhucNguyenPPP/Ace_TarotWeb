@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,25 +26,48 @@ namespace BLL.Services
 
 		public async Task<ResponseDTO> AddSlot(DateOnly start, DateOnly end)
 		{
+			if (start > end)
+			{
+				return new ResponseDTO("Ngày kết thúc phải xa hơn ngày bắt đầu", 400, false);
+			}
+			
 			TimeSpan slotDuration = TimeSpan.FromMinutes(30);
 			DateTime startDateTime = start.ToDateTime(TimeOnly.MinValue);
-			DateTime endDateTime = end.ToDateTime(TimeOnly.MinValue);
-			int totalSlots = (int)((startDateTime - endDateTime).TotalMinutes / slotDuration.TotalMinutes);
-			List<Slot> slots = new List<Slot>();
-			for (int i = 0; i < totalSlots; i++)
-			{
-				DateTime startTime = start.ToDateTime(TimeOnly.MinValue).AddMinutes(i * slotDuration.TotalMinutes);
-				DateTime endTime = startTime.Add(slotDuration);
-
-				slots.Add(new Slot
-				{
-					SlotId = Guid.NewGuid(), // Tạo ID duy nhất
-					StartTime = startTime,
-					EndTime = endTime,
-					Status = true // Hoặc gán giá trị mặc định khác
-				});
+			DateTime endDateTime = end.ToDateTime(TimeOnly.MaxValue);
+			var occupiedDates =  _unitOfWork.Slot.GetAllByCondition(s => s.StartTime >= startDateTime && s.EndTime <= endDateTime)
+			.Select(s => s.StartTime.Date)
+			.Distinct()
+			.OrderBy(d => d)
+			.ToList();
+			if (occupiedDates.Any()) {
+				return new ResponseDTO("Đã tồn tại slot tại các ngày trong khoảng",400,false,occupiedDates);//trả ra các ngày đã có slot, có thể làm thông báo gì đó 
 			}
-			await _unitOfWork.Slot.AddRangeAsync(slots);
+			if (startDateTime<DateTime.Now) 
+			{
+				return new ResponseDTO("Ngày kết thúc phải xa hơn hiện tại", 400, false);
+			}
+			int totalDays = (endDateTime - startDateTime).Days + 1;
+			List<Slot> dailySlots = new List<Slot>();
+			for (int day = 0; day < totalDays; day++)
+			{
+				DateTime dayStart = startDateTime.AddDays(day);
+				DateTime dayEnd = dayStart.AddDays(1).AddMinutes(-30); 
+				int daySlots = (int)((dayEnd - dayStart).TotalMinutes / slotDuration.TotalMinutes);
+				for (int i = 0; i < daySlots; i++)
+				{
+					DateTime startTime = dayStart.AddMinutes(i * slotDuration.TotalMinutes);
+					DateTime endTime = startTime.Add(slotDuration);
+
+					dailySlots.Add(new Slot
+					{
+						SlotId = Guid.NewGuid(),
+						StartTime = startTime,
+						EndTime = endTime,
+						Status = true
+					});
+				}
+			}
+			await _unitOfWork.Slot.AddRangeAsync(dailySlots);
 			bool addslots =await  _unitOfWork.SaveChangeAsync();
 			if (addslots) {
 				return new ResponseDTO("Thêm các slot thành công", 200, true);

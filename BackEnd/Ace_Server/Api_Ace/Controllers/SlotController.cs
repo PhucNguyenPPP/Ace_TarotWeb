@@ -21,17 +21,9 @@ namespace Api_Ace.Controllers
 		{
 			ResponseDTO responseDTO = await _slotService.AddSlot(start,end);
 			if (responseDTO.IsSuccess == false)
-			{
-				if (responseDTO.StatusCode == 400)
-				{
-					return NotFound(responseDTO);
-				}
-				if (responseDTO.StatusCode == 500)
-				{
-					return BadRequest(responseDTO);
-				}
+			{	
+				return BadRequest(responseDTO);
 			}
-
 			return Ok(responseDTO);
 		}
 	}
