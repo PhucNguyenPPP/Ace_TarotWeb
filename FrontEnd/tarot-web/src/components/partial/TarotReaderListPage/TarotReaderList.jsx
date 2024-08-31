@@ -61,6 +61,10 @@ function TarotReaderList() {
         setCurrentPage(1);
     };
 
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
     useEffect(() => {
         const fetchTarotReaderList = async () => {
             const response = await GetTarotReaderList(searchValue, currentPage,
@@ -165,8 +169,8 @@ function TarotReaderList() {
                     </div>
                 </div>
                 <div className='mb-10 w-full md:w-3/4 ml-32'>
-                    {(tarotReaderList.tarotReaderDetailDTO && tarotReaderList.tarotReaderDetailDTO.length > 0) ? (
-                        tarotReaderList.tarotReaderDetailDTO.map((i, index) => (
+                    {(tarotReaderList.tarotReaderDetailDTOs && tarotReaderList.tarotReaderDetailDTOs.length > 0) ? (
+                        tarotReaderList.tarotReaderDetailDTOs.map((i, index) => (
                             <div key={index} className='flex'
                                 style={{
                                     width: '65%',
@@ -222,7 +226,12 @@ function TarotReaderList() {
                 </div>
             </div>
             <div className='flex justify-center mt-10 mb-10'>
-                <Pagination count={tarotReaderList.totalPages} color="primary" />
+                <Pagination
+                    count={tarotReaderList.totalPages}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    color="primary"
+                />
             </div>
         </div>
     );

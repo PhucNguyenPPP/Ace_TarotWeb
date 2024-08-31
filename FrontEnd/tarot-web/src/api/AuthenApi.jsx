@@ -18,25 +18,6 @@ export const SignIn = async (value) => {
     }
 };
 
-export const RegisterCustomer = async (formData) => {
-    try {
-        const response = await fetch(`${baseUrl}/api/Auth/new-customer`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
-            },
-            body: formData,
-        });
-        if (!response.ok) {
-            console.error('There was a problem with API')
-        }
-        return response;
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-        throw error;
-    }
-};
-
 export const RefreshToken = (accessToken, refreshToken) => {
     const url = `${baseUrl}/api/Auth/refresh-token`;
     const request = {
@@ -80,6 +61,37 @@ export const GetUserByToken = (refreshToken) => {
                 throw new Error('Failed');
             }
             return response.json();
+        })
+        .catch(err => {
+            console.error(err);
+            throw err;
+        });
+};
+
+export const RegisterCustomer = (data) => {
+    const formData = new FormData();
+    formData.append('UserName', data.username);
+    formData.append('Password', data.password);
+    formData.append('FullName', data.fullName);
+    formData.append('Phone', data.phone);
+    formData.append('Address', data.address);
+    formData.append('Email', data.email);
+    formData.append('DateOfBirth', data.dateOfBirth);
+    formData.append('Gender', data.Gender);
+    formData.append('AvatarLink', data.avatar[0]);
+
+    const url = `${baseUrl}/api/Auth/new-customer`;
+    const request = {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'accept': '*/*',
+        },
+    };
+
+    return fetch(url, request)
+        .then(response => {
+            return response;
         })
         .catch(err => {
             console.error(err);
