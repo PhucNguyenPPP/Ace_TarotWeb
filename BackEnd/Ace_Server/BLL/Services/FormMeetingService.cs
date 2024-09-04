@@ -28,7 +28,7 @@ namespace BLL.Services
             var formMeetings = _unitOfWork.FormMeeting.GetAll();
             if (formMeetings.IsNullOrEmpty() || formMeetings.Count() == 0)
             {
-                return new ResponseDTO("Không có hình thức xem", 400, false);
+                return new ResponseDTO("Không có hình thức xem để hiển thị", 400, false);
             }
             var list = _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetings);
             return new ResponseDTO("Hiện hình thức xem thành công", 200, true, list);
