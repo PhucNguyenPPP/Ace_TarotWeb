@@ -30,7 +30,6 @@ namespace BLL.Services
 			{
 				return new ResponseDTO("Ngày kết thúc phải xa hơn ngày bắt đầu", 400, false);
 			}
-			
 			TimeSpan slotDuration = TimeSpan.FromMinutes(30);
 			DateTime startDateTime = start.ToDateTime(TimeOnly.MinValue);
 			DateTime endDateTime = end.ToDateTime(TimeOnly.MaxValue);
@@ -42,9 +41,9 @@ namespace BLL.Services
 			if (occupiedDates.Any()) {
 				return new ResponseDTO("Đã tồn tại slot tại các ngày trong khoảng",400,false,occupiedDates);//trả ra các ngày đã có slot, có thể làm thông báo gì đó 
 			}
-			if (startDateTime<DateTime.Now) 
+			if (startDateTime<DateTime.Now.AddDays(2)) 
 			{
-				return new ResponseDTO("Ngày kết thúc phải xa hơn hiện tại", 400, false);
+				return new ResponseDTO("Ngày kết thúc phải xa hơn hiện tại ít nhất 2 ngày", 400, false); //ngày kết thúc xa hơn ngày hiện tại ít nhất 2 ngày 
 			}
 			int totalDays = (endDateTime - startDateTime).Days + 1;
 			List<Slot> dailySlots = new List<Slot>();
@@ -76,6 +75,11 @@ namespace BLL.Services
 			{
 				return new ResponseDTO("Thêm các slot thất bại", 400, false);
 			}
+		}
+
+		public async Task<ResponseDTO> PickSlot(List<Guid> slotIDs, Guid userID)
+		{
+			return new ResponseDTO("Chọn các slot thành công", 200, true);
 		}
 	}
 }
