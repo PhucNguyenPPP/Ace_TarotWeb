@@ -28,7 +28,7 @@ namespace BLL.Services
             var languages = _unitOfWork.Language.GetAll();
             if (languages.IsNullOrEmpty() || languages.Count() == 0)
             {
-                return new ResponseDTO("Không có ngôn ngữ", 400, false);
+                return new ResponseDTO("Không có ngôn ngữ để hiển thị", 400, false);
             }
             var list = _mapper.Map<List<LanguageOfReaderDTO>>(languages);
             return new ResponseDTO("Hiện ngôn ngữ thành công", 200, true, list);
