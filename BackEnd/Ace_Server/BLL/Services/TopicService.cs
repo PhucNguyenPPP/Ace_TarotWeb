@@ -28,7 +28,7 @@ namespace BLL.Services
             var topics = _unitOfWork.Topic.GetAll();
             if(topics.IsNullOrEmpty() || topics.Count() == 0)
             {
-                return new ResponseDTO("Không có chủ đề", 400, false);
+                return new ResponseDTO("Không có chủ đề để hiển thị", 400, false);
             }
             var list = _mapper.Map<List<TopicDTO>>(topics);
             return new ResponseDTO("Hiện chủ đề thành công", 200, true, list);
