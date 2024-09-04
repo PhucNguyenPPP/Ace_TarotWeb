@@ -26,6 +26,7 @@ namespace DAL.UnitOfWork
         IServiceTypeRepository ServiceType { get; }
         IFormMeetingRepository FormMeeting { get; }
         ISlotRepository Slot { get; }
+        ITopicRepository Topic { get; }
 
     }
 }

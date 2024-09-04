@@ -13,7 +13,6 @@ namespace BLL.Interface
     {
         public Task<bool> AddCard(CardRequestDTO model);
 		public Task<Card?> FindCardById(int cardId);
-
         Task<ResponseDTO> GetRandomCard(int cardType);
     }
 }

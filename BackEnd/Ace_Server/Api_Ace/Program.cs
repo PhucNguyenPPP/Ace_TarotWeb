@@ -20,11 +20,14 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, BLL.Services.UserService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICardService, CardService>();
-builder.Services.AddScoped<IFreeTarotService, FreeTarotService>();
 builder.Services.AddScoped<ICardTypeService, CardTypeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICardPositionService, CardPositionService>();
 builder.Services.AddScoped<ISlotService, SlotService>();
+builder.Services.AddScoped<ITopicService, TopicService>();
+builder.Services.AddScoped<ILanguageService, LanguageService>();
+builder.Services.AddScoped<IFormMeetingService, FormMeetingService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
