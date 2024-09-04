@@ -39,7 +39,13 @@ namespace BLL.Services
             return await _unitOfWork.SaveChangeAsync();
         }
 
-        private int GenerateCardId()
+		public async Task<Card?> FindCardById(int cardId)
+		{
+			Card? card = await _unitOfWork.Card.GetByCondition(c =>c.CardId == cardId);
+            return card;
+		}
+
+		private int GenerateCardId()
         {
             var cardList = _unitOfWork.Card.GetAll();
             if(cardList.Count() == 0)

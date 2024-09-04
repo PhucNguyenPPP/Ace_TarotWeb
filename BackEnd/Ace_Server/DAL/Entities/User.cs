@@ -47,7 +47,11 @@ public partial class User
 
     public virtual Role Role { get; set; } = null!;
 
-    public virtual ICollection<UserService> UserServices { get; set; } = new List<UserService>();
+    public virtual ICollection<UserFormMeeting> UserFormMeetings { get; set; } = new List<UserFormMeeting>();
+
+    public virtual ICollection<UserLanguage> UserLanguages { get; set; } = new List<UserLanguage>();
+
+    public virtual ICollection<UserServiceType> UserServiceTypes { get; set; } = new List<UserServiceType>();
 
     public virtual ICollection<UserSlot> UserSlots { get; set; } = new List<UserSlot>();
 }

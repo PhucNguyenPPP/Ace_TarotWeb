@@ -12,4 +12,6 @@ public partial class ServiceType
     public bool? Status { get; set; }
 
     public virtual ICollection<Service> Services { get; set; } = new List<Service>();
+
+    public virtual ICollection<UserServiceType> UserServiceTypes { get; set; } = new List<UserServiceType>();
 }

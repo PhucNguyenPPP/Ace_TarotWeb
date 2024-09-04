@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.DTO.FormMeeting;
+using Common.DTO.Language;
+using Common.DTO.ServiceType;
+using Common.DTO.Slot;
 
 namespace Common.DTO.User
 {
@@ -41,5 +45,11 @@ namespace Common.DTO.User
 		public bool Status { get; set; }
 
 		public Guid RoleId { get; set; }
+		public List<LanguageOfReaderDTO>? LanguageOfReader { get; set; }
+		public List<FormMeetingOfReaderDTO>? FormMeetingOfReaderDTOs { get; set; }
+		public List<ServiceTypeDTO>? serviceTypeDTOs { get; set; }
+		public List<SlotDTO>? slotDTOs { get; set; }
+
+		
 	}
 }
