@@ -21,18 +21,21 @@ namespace Api_Ace.Controllers
 		{
 			ResponseDTO responseDTO = await _slotService.AddSlot(start,end);
 			if (responseDTO.IsSuccess == false)
-			{
-				if (responseDTO.StatusCode == 400)
-				{
-					return NotFound(responseDTO);
-				}
-				if (responseDTO.StatusCode == 500)
-				{
-					return BadRequest(responseDTO);
-				}
+			{	
+				return BadRequest(responseDTO);
 			}
-
 			return Ok(responseDTO);
 		}
+		[HttpPost("picked-slots")]
+		public async Task<IActionResult> PickSlot(List<Guid> slotIDs, Guid userID)//lam 24h
+		{
+			ResponseDTO responseDTO = await _slotService.PickSlot(slotIDs,userID);
+			if (responseDTO.IsSuccess == false)
+			{
+				return BadRequest(responseDTO);
+			}
+			return Ok(responseDTO);
+		}
+
 	}
 }
