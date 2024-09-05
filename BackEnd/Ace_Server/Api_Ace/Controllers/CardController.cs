@@ -28,5 +28,18 @@ namespace Api_Ace.Controllers
                 return BadRequest(new ResponseDTO("Tạo thẻ bài thất bại", 400, false));
             }
         }
+        [HttpPost("GetRandomCard")]
+        public async Task<IActionResult> GetRandomCard(int cardType)
+        {
+            ResponseDTO responseDTO = await _cardService.GetRandomCard(cardType);
+            if (responseDTO.IsSuccess == false)
+            {
+                return BadRequest(responseDTO);
+            }
+            else
+            {
+                return Ok(responseDTO);
+            }
+        }
     }
 }

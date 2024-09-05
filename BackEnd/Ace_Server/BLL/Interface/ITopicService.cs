@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Common.DTO.Card;
 using Common.DTO.General;
 
 namespace BLL.Interface
 {
-    public interface IFreeTarotService
+    public interface ITopicService
     {
-        Task<ResponseDTO> GetRandomCard(int cardType);
+        Task<ResponseDTO> GetAllTopic();
+
     }
 }

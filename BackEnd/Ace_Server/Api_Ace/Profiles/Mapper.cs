@@ -7,6 +7,7 @@ using Common.DTO.FormMeeting;
 using Common.DTO.Language;
 using Common.DTO.ServiceType;
 using Common.DTO.Slot;
+using Common.DTO.Topic;
 using Common.DTO.User;
 using DAL.Entities;
 
@@ -31,6 +32,7 @@ namespace Api_Ace.Profiles
 			CreateMap<ServiceType, ServiceTypeDTO>().ReverseMap();
 			CreateMap<FormMeeting, FormMeetingOfReaderDTO>().ReverseMap();
 			CreateMap<Slot, SlotDTO>().ReverseMap();
+            CreateMap<Topic, TopicDTO>().ReverseMap();
 			#endregion
 		}
 	}
