@@ -7,7 +7,8 @@ using Common.DTO.General;
 
 namespace BLL.Interface
 {
-	public interface ISlotService
+	public interface IUserSlotService
 	{
-		Task<ResponseDTO> AddSlot(DateOnly start, DateOnly end);	}
+		Task<ResponseDTO> PickSlot(List<Guid> slotIDs, Guid userID);
+	}
 }
