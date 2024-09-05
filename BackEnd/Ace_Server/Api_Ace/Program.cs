@@ -25,6 +25,7 @@ builder.Services.AddScoped<ICardTypeService, CardTypeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICardPositionService, CardPositionService>();
 builder.Services.AddScoped<ISlotService, SlotService>();
+builder.Services.AddScoped<IUserSlotService, UserSlotService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddAutoMapper(typeof(Program).Assembly);

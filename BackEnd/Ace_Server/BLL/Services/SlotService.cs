@@ -9,6 +9,7 @@ using BLL.Interface;
 using Common.DTO.General;
 using DAL.Entities;
 using DAL.UnitOfWork;
+using Microsoft.OpenApi.Any;
 
 namespace BLL.Services
 {
@@ -56,7 +57,6 @@ namespace BLL.Services
 				{
 					DateTime startTime = dayStart.AddMinutes(i * slotDuration.TotalMinutes);
 					DateTime endTime = startTime.Add(slotDuration);
-
 					dailySlots.Add(new Slot
 					{
 						SlotId = Guid.NewGuid(),
@@ -77,9 +77,6 @@ namespace BLL.Services
 			}
 		}
 
-		public async Task<ResponseDTO> PickSlot(List<Guid> slotIDs, Guid userID)
-		{
-			return new ResponseDTO("Chọn các slot thành công", 200, true);
-		}
+		
 	}
 }

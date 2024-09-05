@@ -26,16 +26,7 @@ namespace Api_Ace.Controllers
 			}
 			return Ok(responseDTO);
 		}
-		[HttpPost("picked-slots")]
-		public async Task<IActionResult> PickSlot(List<Guid> slotIDs, Guid userID)//lam 24h
-		{
-			ResponseDTO responseDTO = await _slotService.PickSlot(slotIDs,userID);
-			if (responseDTO.IsSuccess == false)
-			{
-				return BadRequest(responseDTO);
-			}
-			return Ok(responseDTO);
-		}
+		
 
 	}
 }
