@@ -15,7 +15,6 @@ namespace DAL.UnitOfWork
         IBookingRepository Booking { get; }
         IRoleRepository Role { get; }
         ICardRepository Card { get; }
-        IFreeTarotRepository FreeTarot { get; }
         ICardTypeRepository CardType { get; }
         IRefreshTokenRepository RefreshToken { get; }
         ICardPositionRepository CardPosition { get; }  
@@ -27,5 +26,7 @@ namespace DAL.UnitOfWork
         IServiceTypeRepository ServiceType { get; }
         IFormMeetingRepository FormMeeting { get; }
         ISlotRepository Slot { get; }
-	}
+        ITopicRepository Topic { get; }
+
+    }
 }
