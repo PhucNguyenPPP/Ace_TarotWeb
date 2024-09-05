@@ -74,10 +74,10 @@ export default function BookingStep() {
   return (
     <div
       style={{
-        height: '100%',
-        backgroundImage: "url('/image/BG-01.png')",
-        backgroundSize: 'cover',
+        height: '100%'
       }}>
+      <div className='bg-black h-14'>
+      </div>
       <div
         style={{
           height: 'max-content',
@@ -136,7 +136,7 @@ export default function BookingStep() {
                     sx={{
                       mr: 1,
                       color: 'white !important',
-                      backgroundColor: 'black',
+                      backgroundColor: '#9747FF',
                       borderRadius: '30px',
                       padding: '0 30px',
                       '&:hover': {
@@ -148,25 +148,29 @@ export default function BookingStep() {
                     Trở về
                   </Button>
                   <Box sx={{ flex: '1 1 auto' }} />
-                  <Button onClick={handleNext}
-                    sx={{
-                      mr: 1,
-                      color: 'white !important',
-                      backgroundColor: 'black',
-                      borderRadius: '30px',
-                      padding: '0 30px',
-                      '&:hover': {
-                        backgroundColor: 'gray',
-                        color: 'black !important',
-                      }
-                    }}>
-                    {activeStep === steps.length - 1 ? 'Thanh toán' : 'Tiếp theo'}
-                  </Button>
+                  {activeStep === steps.length - 3 ? (
+                    <Button onClick={handleNext}
+                      sx={{
+                        mr: 1,
+                        color: 'white !important',
+                        backgroundColor: '#9747FF',
+                        borderRadius: '30px',
+                        padding: '8px 20px',
+                        '&:hover': {
+                          backgroundColor: 'gray',
+                          color: 'black !important',
+                        }
+                      }}>
+                      TIẾP THEO
+                    </Button>)
+                    : null}
                 </Box>
               </React.Fragment>
             )}
           </Box>
         </div>
+      </div>
+      <div className='bg-black h-14'>
       </div>
     </div>
   );

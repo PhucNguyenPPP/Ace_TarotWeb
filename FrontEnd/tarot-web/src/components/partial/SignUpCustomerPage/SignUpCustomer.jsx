@@ -76,6 +76,25 @@ const SignUpCustomer = () => {
                         * {errorMessage}
                     </Typography>)}
                 <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel shrink>
+                            Ảnh đại diện
+                        </InputLabel>
+                        <Controller
+                            name="avatar"
+                            control={control}
+                            defaultValue=""
+                            render={({ field }) => (
+                                <Input
+                                    {...register("avatar", {
+                                        required: "Vui lòng chọn ảnh đại diện",
+                                    })}
+                                    type="file"
+                                    id="avatar"
+                                />
+                            )}
+                        />
+                    </FormControl>
                     <Controller
                         name="username"
                         control={control}
@@ -154,25 +173,6 @@ const SignUpCustomer = () => {
                             />
                         )}
                     />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel shrink>
-                            Ảnh đại diện
-                        </InputLabel>
-                        <Controller
-                            name="avatar"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <Input
-                                    {...register("avatar", {
-                                        required: "Vui lòng chọn ảnh đại diện",
-                                    })}
-                                    type="file"
-                                    id="avatar"
-                                />
-                            )}
-                        />
-                    </FormControl>
                     <Controller
                         name="phone"
                         control={control}

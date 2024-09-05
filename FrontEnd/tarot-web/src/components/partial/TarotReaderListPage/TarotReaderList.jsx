@@ -20,6 +20,7 @@ import StarIcon from '@mui/icons-material/Star';
 import { GetTarotReaderList } from '../../../api/TarotReaderApi';
 import { useNavigate } from 'react-router-dom';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import InboxOutlinedIcon from '@mui/icons-material/InboxOutlined';
 
 function TarotReaderList() {
     const [searchValue, setSearchValue] = useState('')
@@ -222,7 +223,12 @@ function TarotReaderList() {
                                 </div>
                             </div>
                         ))
-                    ) : (<p>Không tìm thấy tarot reader phù hợp!</p>)}
+                    ) : (
+                        <div className='flex flex-col justify-center items-center'>
+                            <div style={{marginLeft: '-20%'}} >
+                                <p className='font-bold text-red-500'>Không tìm thấy tarot reader phù hợp!</p>
+                            </div>
+                        </div>)}
                 </div>
             </div>
             <div className='flex justify-center mt-10 mb-10'>

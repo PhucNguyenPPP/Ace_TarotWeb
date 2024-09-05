@@ -186,7 +186,7 @@ function ServiceForm({ tarotReaderData }) {
                                                         fontSize: 20,
                                                         ml: 2
                                                     }}
-                                                >30.000/1 câu/ 8p
+                                                >30.000/1 câu/8p
                                                 </Typography>
                                             </div>
                                         </RadioGroup>
