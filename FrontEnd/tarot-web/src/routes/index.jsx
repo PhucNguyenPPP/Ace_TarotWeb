@@ -8,6 +8,7 @@ import TarotReaderDetailPage from "../pages/TarotReaderPage/TarotReaderDetailPag
 import BookingPage from "../pages/BookingPage/BookingPage";
 import RoleSignUpPage from "../pages/AuthenPage/RoleSignUpPage";
 import SignUpCustomerPage from "../pages/AuthenPage/SignUpCustomerPage";
+import BookingListPage from "../pages/BookingListPage/BookingListPage";
 
 export const router = createBrowserRouter([
   {
@@ -53,6 +54,11 @@ export const router = createBrowserRouter([
   {
     path: "/signup-customer",
     element: <SignUpCustomerPage />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/booking-list",
+    element: <BookingListPage />,
     errorElement: <Error />,
   }
 ]);
