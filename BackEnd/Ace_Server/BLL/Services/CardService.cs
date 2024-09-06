@@ -1,5 +1,7 @@
-﻿using BLL.Interface;
+﻿using AutoMapper;
+using BLL.Interface;
 using Common.DTO.Card;
+using Common.DTO.General;
 using DAL.Entities;
 using DAL.UnitOfWork;
 using System;
@@ -14,10 +16,12 @@ namespace BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IImageService _imageService;
-        public CardService(IUnitOfWork unitOfWork, IImageService imageService)
+        private readonly IMapper _mapper;
+        public CardService(IUnitOfWork unitOfWork, IImageService imageService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _imageService = imageService;
+            _mapper = mapper;
         }
 
         public async Task<bool> AddCard(CardRequestDTO model)
@@ -35,7 +39,13 @@ namespace BLL.Services
             return await _unitOfWork.SaveChangeAsync();
         }
 
-        private int GenerateCardId()
+		public async Task<Card?> FindCardById(int cardId)
+		{
+			Card? card = await _unitOfWork.Card.GetByCondition(c =>c.CardId == cardId);
+            return card;
+		}
+
+		private int GenerateCardId()
         {
             var cardList = _unitOfWork.Card.GetAll();
             if(cardList.Count() == 0)
@@ -45,5 +55,34 @@ namespace BLL.Services
             var maxId = cardList.Max(c => c.CardId);
             return ++maxId;
         }
+
+        public async Task<ResponseDTO> GetRandomCard(int cardType)
+        {
+            Random random = new Random();
+            List<Card> list = _unitOfWork.Card.GetAllByCondition(c => c.CardTypeId == cardType).ToList();
+            if (list == null)
+            {
+                return new ResponseDTO("Danh sách trống", 400, false);
+            }
+            else
+            {
+                List<Card> selected = new List<Card>();
+                while (selected.Count < 3)
+                {
+                    int index = random.Next(list.Count);
+                    var card = list[index];
+
+                    //check dup
+                    if (!selected.Contains(card))
+                    {
+                        selected.Add(card);
+                    }
+                }
+                var listCard = _mapper.Map<List<FreeTarotCardDTO>>(selected);
+                return new ResponseDTO("Chọn bài thành công", 200, true, listCard);
+            }
+
+        }
+
     }
 }

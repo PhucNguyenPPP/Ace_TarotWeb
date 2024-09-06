@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Common.DTO.General;
 using BLL.Interface;
+using Common.DTO.Auth;
 
 namespace Api_Ace.Controllers
 {
@@ -11,9 +12,11 @@ namespace Api_Ace.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
-        public AuthController(IUserService userService)
+        private readonly IAuthService _authService;
+        public AuthController(IUserService userService, IAuthService authService)
         {
             _userService = userService;
+            _authService = authService;
         }
         [HttpPost("new-customer")]
         public async Task<IActionResult> SignUpCustomer([FromForm] SignUpCustomerRequestDTO model)
@@ -38,6 +41,74 @@ namespace Api_Ace.Controllers
                 return BadRequest(new ResponseDTO("Đăng kí không thành công", 400, true, null));
             }
         }
+        [HttpPost("new-reader")]
+        public async Task<IActionResult> SignUpReader([FromForm] SignUpReaderRequestDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseDTO(ModelState.ToString() ?? "Unknow error", 400, false, null));
+            }
 
+            var checkValid = await _userService.CheckValidationSignUpReader(model);
+            if (!checkValid.IsSuccess)
+            {
+                return BadRequest(checkValid);
+            }
+
+            var signUpResult = await _userService.SignUpReader(model);
+            if (signUpResult)
+            {
+                return Ok(new ResponseDTO("Đăng kí thành công", 200, true, null));
+            }
+            else
+            {
+                return BadRequest(new ResponseDTO("Đăng kí không thành công", 400, true, null));
+            }
+        }
+
+        [HttpPost("sign-in")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseDTO(ModelState.ToString() ?? "Unknown error", 400, false, ModelState));
+            }
+            var result = await _authService.CheckLogin(loginRequestDTO);
+            if (result != null)
+            {
+                return Ok(new ResponseDTO("Đăng nhập thành công", 200, true, result));
+            }
+            return BadRequest(new ResponseDTO("Đăng nhập thất bại", 400, false));
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> GetNewTokenFromRefreshToken([FromBody] RequestTokenDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseDTO(ModelState.ToString() ?? "Unknown error", 400, false));
+            }
+
+            var result = await _authService.RefreshAccessToken(model);
+            if (result == null || string.IsNullOrEmpty(result.AccessToken))
+            {
+                return BadRequest(new ResponseDTO("Tạo refresh token thất bại", 400, false, result));
+            }
+            return Ok(new ResponseDTO("Tạo refresh token thành công", 200, true, result));
+        }
+
+        [HttpGet("/user/access-token/{accessToken}")]
+        public async Task<IActionResult> GetUserByToken(string accessToken)
+        {
+            var result = await _authService.GetUserByAccessToken(accessToken);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
     }
 }
