@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CardSpreadLayout from './CardSpreadLayout';
 import Card from '../Card/Card';
-import { GetAllCardType, GetMeaningCard, GetRandomCardList } from '../../../api/CardApi';
+import { GetAllCardType, GetAllTopic, GetMeaningCard, GetRandomCardList } from '../../../api/CardApi';
 import { toast } from 'react-toastify';
 // import { WidthFull } from '@mui/icons-material';
 
@@ -15,6 +15,7 @@ function Home() {
     const [selectedRandomCard, setSelectedRandomCard] = useState([]);
     const [meaningCard, setMeaningCard] = useState([]);
     const [cardType, setCardType] = useState([]);
+    const [topicData, setTopicData] = useState([]);
 
     const cardCountRow1 = 16;
     const cardCountRow2 = 16;
@@ -72,6 +73,18 @@ function Home() {
 
         fetchAllCardType();
 
+        const fetchAllTopic  = async () => {
+            const response = await GetAllTopic();
+            if (response.ok) {
+                const responseData = await response.json();
+                setTopicData(responseData.result);
+            } else {
+                throw new Error('Failed to fetch topic');
+            }
+        };
+
+        fetchAllTopic();
+
         if (type !== '0') {
             const fetchRandomCardList = async () => {
                 const response = await GetRandomCardList(type);
@@ -116,7 +129,7 @@ function Home() {
                                 <option value='0'>1. Chọn loại bài</option>
                                 {cardType && cardType.length > 0 && (
                                     cardType.map((cardType) => (
-                                        <option value={cardType.cardTypeId}>{cardType.cardTypeName}</option>
+                                        <option key={cardType.cardTypeId} value={cardType.cardTypeId}>{cardType.cardTypeName}</option>
                                     )
                                     ))}
                             </select>
@@ -136,10 +149,11 @@ function Home() {
                                 }}
                             >
                                 <option value='0'>2. Chọn chủ đề</option>
-                                <option value='1'>Tình yêu</option>
-                                <option value='2'>Công việc</option>
-                                <option value='3'>Sức khỏe</option>
-                                <option value='4'>Tài chính</option>
+                                {topicData  && topicData.length > 0 && (
+                                    topicData.map((topic) => (
+                                        <option key={topic.topicId} value={topic.topicId}>{topic.topicName}</option>
+                                    ))
+                                )}
                             </select>
                         </div>
                     </form>

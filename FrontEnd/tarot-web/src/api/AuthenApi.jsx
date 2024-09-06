@@ -98,3 +98,39 @@ export const RegisterCustomer = (data) => {
             throw err;
         });
 };
+
+export const RegisterTarotReader = (data) => {
+    const formData = new FormData();
+    formData.append('UserName', data.username);
+    formData.append('Password', data.password);
+    formData.append('FullName', data.fullName);
+    formData.append('Phone', data.phone);
+    formData.append('Address', data.address);
+    formData.append('Email', data.email);
+    formData.append('DateOfBirth', data.dateOfBirth);
+    formData.append('Gender', data.Gender);
+    formData.append('AvatarLink', data.avatar[0]);
+    formData.append('Experience', data.experience);
+    formData.append('Description', data.description);
+    formData.append('NickName', data.nickname);
+    formData.append('Quote', data.quote);
+    formData.append('MeetLink', data.meetLink);
+
+    const url = `${baseUrl}/api/Auth/new-reader`;
+    const request = {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'accept': '*/*',
+        },
+    };
+
+    return fetch(url, request)
+        .then(response => {
+            return response;
+        })
+        .catch(err => {
+            console.error(err);
+            throw err;
+        });
+};

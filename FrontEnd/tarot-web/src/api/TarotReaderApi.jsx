@@ -13,7 +13,7 @@ export const GetTarotReaderList = async (searchValue, pageNumber, rowsPerpage, g
                 url += `&gender=${encodeURIComponent(genderFilter)}`;
             }
             if (formFilter.length > 0) {
-                const formFilterParams = formFilter.map(form => `filterServiceTypes=${encodeURIComponent(form)}`).join('&');
+                const formFilterParams = formFilter.map(form => `filterForming=${encodeURIComponent(form)}`).join('&');
                 url += `&${formFilterParams}`;
             }
         } else {
@@ -26,7 +26,7 @@ export const GetTarotReaderList = async (searchValue, pageNumber, rowsPerpage, g
                 url += `&gender=${encodeURIComponent(genderFilter)}`;
             }
             if (formFilter.length > 0) {
-                const formFilterParams = formFilter.map(form => `filterServiceTypes=${encodeURIComponent(form)}`).join('&');
+                const formFilterParams = formFilter.map(form => `filterForming=${encodeURIComponent(form)}`).join('&');
                 url += `&${formFilterParams}`;
             }
         }
