@@ -33,6 +33,7 @@ namespace Api_Ace.Profiles
 			CreateMap<FormMeeting, FormMeetingOfReaderDTO>().ReverseMap();
 			CreateMap<Slot, SlotDTO>().ReverseMap();
             CreateMap<Topic, TopicDTO>().ReverseMap();
+            CreateMap<SignUpReaderRequestDTO, User>().ReverseMap();
 			#endregion
 		}
 	}
