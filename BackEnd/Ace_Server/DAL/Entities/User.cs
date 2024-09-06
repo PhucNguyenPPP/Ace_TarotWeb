@@ -35,6 +35,8 @@ public partial class User
 
     public string? Quote { get; set; }
 
+    public string? MeetLink { get; set; }
+
     public bool Status { get; set; }
 
     public Guid RoleId { get; set; }

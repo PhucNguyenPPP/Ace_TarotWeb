@@ -29,13 +29,13 @@ function Footer() {
                         <Typography variant="h6" gutterBottom >
                             5dingFortune
                         </Typography>
-                        <Typography variant="body2" sx={{color: 'black'}}>
+                        <Typography variant="body2">
                             Địa chỉ: 123 Lê Lợi, phường 1, quận 1
                         </Typography>
-                        <Typography variant="body2" sx={{color: 'black'}}>
+                        <Typography variant="body2">
                             Điện thoại: 0912 645 555
                         </Typography>
-                        <Typography variant="body2" sx={{color: 'black'}}>
+                        <Typography variant="body2">
                             Email: ace@gmail.com
                         </Typography>
                     </Box>
