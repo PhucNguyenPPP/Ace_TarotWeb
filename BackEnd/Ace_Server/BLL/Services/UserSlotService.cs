@@ -34,7 +34,7 @@ namespace BLL.Services
 			{
 				return new ResponseDTO("Không được đăng ký lại các slot đã đăng ký trước đó", 400, false, pickedSlot);
 			}
-			var deletedSlot = _unitOfWork.Slot.GetAllByCondition(slot => slotIDs.Contains(slot.SlotId) && slot.Status.Equals(true));
+			var deletedSlot = _unitOfWork.Slot.GetAllByCondition(slot => slotIDs.Contains(slot.SlotId) && slot.Status.Equals(false));
 			if (deletedSlot.Any()) 
 			{
 				return new ResponseDTO("Không được đăng ký các slot đã bị xoá bởi admin", 400, false, deletedSlot);
