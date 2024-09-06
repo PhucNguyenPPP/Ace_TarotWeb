@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BLL.Services
 {
@@ -285,5 +286,63 @@ namespace BLL.Services
 
 			return new ResponseDTO("Lấy thông tin chi tiết của Tarot Reader thành công", 200, true, tarotReaderDetailDTO);
 		}
-	}
+
+        public async Task<bool> SignUpReader(SignUpReaderRequestDTO signUpReaderRequestDTO)
+        {
+            var reader = _mapper.Map<User>(signUpReaderRequestDTO);
+			var role = await GetReaderRole();
+            if (role == null)
+            {
+                return false;
+            }
+            var salt = GenerateSalt();
+            var passwordHash = GenerateHashedPassword(signUpReaderRequestDTO.Password, salt);
+            var avatarLink = await _imageService.StoreImageAndGetLink(signUpReaderRequestDTO.AvatarLink, "users_img");
+
+            reader.UserId = Guid.NewGuid();
+            reader.RoleId = role.RoleId;
+            reader.Salt = salt;
+            reader.PasswordHash = passwordHash;
+            reader.AvatarLink = avatarLink;
+
+            reader.Status = true;
+
+            await _unitOfWork.User.AddAsync(reader);
+            return await _unitOfWork.SaveChangeAsync();
+        }
+
+        public async Task<ResponseDTO> CheckValidationSignUpReader(SignUpReaderRequestDTO model)
+        {
+            if (model.DateOfBirth >= DateTime.Now)
+            {
+                return new ResponseDTO("Ngày sinh không hợp lệ", 400, false);
+            }
+
+            if (model.Gender != GenderConstant.Male && model.Gender != GenderConstant.Female
+                && model.Gender != GenderConstant.Other)
+            {
+                return new ResponseDTO("Giới tính không hợp lệ", 400, false);
+            }
+
+            var checkUserNameExist = CheckUserNameExist(model.UserName);
+            if (checkUserNameExist)
+            {
+                return new ResponseDTO("Tên đăng nhập đã tồn tại", 400, false);
+            }
+
+            var checkEmailExist = CheckEmailExist(model.Email);
+            if (checkEmailExist)
+            {
+                return new ResponseDTO("Email đã tồn tại", 400, false);
+            }
+
+            var checkPhoneExist = CheckPhoneExist(model.Phone);
+            if (checkPhoneExist)
+            {
+                return new ResponseDTO("Số điện thoại đã tồn tại", 400, false);
+            }
+
+            return new ResponseDTO("Check thành công", 200, true);
+        }
+    }
 }
