@@ -20,7 +20,7 @@ function RoleSignUp() {
                     width: '150%',
                     marginTop: '10px'
                 }}>
-                    <Link to="/signup-customer" style={{ width: '100%' }}>
+                    <Link to="/signup-tarot-reader" style={{ width: '100%' }}>
                         <button
                             style={{
                                 backgroundColor: 'black',
