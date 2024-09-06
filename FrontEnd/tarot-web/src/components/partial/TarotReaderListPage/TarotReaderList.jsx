@@ -21,6 +21,8 @@ import { GetTarotReaderList } from '../../../api/TarotReaderApi';
 import { useNavigate } from 'react-router-dom';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import InboxOutlinedIcon from '@mui/icons-material/InboxOutlined';
+import { GetAllLanguage } from '../../../api/LanguageApi';
+import { GetAllFormMeeting } from '../../../api/FormMeetingApi';
 
 function TarotReaderList() {
     const [searchValue, setSearchValue] = useState('')
@@ -30,6 +32,8 @@ function TarotReaderList() {
     const [languageFilter, setLanguageFilter] = useState([]);
     const [genderFilter, setGenderFilter] = useState('');
     const [formFilter, setFormFilter] = useState([]);
+    const [languageData, setLanguageData] = useState([]);
+    const [formMeetingData, setFormMeetingData] = useState([]);
     const navigate = useNavigate();
 
     const handleInputSearch = debounce((e) => {
@@ -67,6 +71,30 @@ function TarotReaderList() {
     };
 
     useEffect(() => {
+        const fetchAllLanguage = async () => {
+            const response = await GetAllLanguage();
+            if (response.ok) {
+                const responseData = await response.json();
+                setLanguageData(responseData.result);
+            } else {
+                throw new Error('Failed to fetch all language');
+            }
+        }
+
+        fetchAllLanguage();
+
+        const fetchAllFormMeeting = async () => {
+            const response = await GetAllFormMeeting();
+            if (response.ok) {
+                const responseData = await response.json();
+                setFormMeetingData(responseData.result);
+            } else {
+                throw new Error('Failed to fetch all form meeting');
+            }
+        }
+
+        fetchAllFormMeeting();
+
         const fetchTarotReaderList = async () => {
             const response = await GetTarotReaderList(searchValue, currentPage,
                 rowsPerPage, genderFilter, languageFilter, formFilter);
@@ -125,45 +153,29 @@ function TarotReaderList() {
                             </FormControl>
                             <h1 className='font-bold'>Ngôn ngữ</h1>
                             <FormGroup>
-                                <FormControlLabel
-                                    control={<Checkbox value="A2A6D00E-BD3E-4F37-BB69-BDAEF3C15EC0"
-                                        checked={languageFilter.includes("A2A6D00E-BD3E-4F37-BB69-BDAEF3C15EC0")}
-                                        onChange={handleLanguageFilterChange} />}
-                                    label="Tiếng Anh"
-                                />
-                                <FormControlLabel
-                                    control={<Checkbox value="2B6D0628-9FD2-4CBA-BE91-2E8FA3FC6767"
-                                        checked={languageFilter.includes("2B6D0628-9FD2-4CBA-BE91-2E8FA3FC6767")}
-                                        onChange={handleLanguageFilterChange} />}
-                                    label="Tiếng Việt"
-                                />
-                                <FormControlLabel
-                                    control={<Checkbox value="DCC214A2-2D9D-44F9-90A6-A901458D5C08"
-                                        checked={languageFilter.includes("DCC214A2-2D9D-44F9-90A6-A901458D5C08")}
-                                        onChange={handleLanguageFilterChange} />}
-                                    label="Tiếng Trung"
-                                />
-                                <FormControlLabel
-                                    control={<Checkbox value="493A29AA-3AA0-4D4D-A4F8-7BA4F0D78A28"
-                                        checked={languageFilter.includes("493A29AA-3AA0-4D4D-A4F8-7BA4F0D78A28")}
-                                        onChange={handleLanguageFilterChange} />}
-                                    label="Tiếng Hàn"
-                                />
+                                {languageData && languageData.length > 0 && (
+                                    languageData.map((language) => (
+                                        <FormControlLabel
+                                            control={<Checkbox value={language.languageId}
+                                                checked={languageFilter.includes(language.languageId)}
+                                                onChange={handleLanguageFilterChange} />}
+                                            label={language.languageName}
+                                        />
+                                    ))
+                                )}
                             </FormGroup>
                             <h1 className='font-bold'>Hình thức</h1>
                             <FormGroup>
-                                <FormControlLabel
-                                    control={<Checkbox value="9b16fe56-f136-4225-b8c6-81a4d39538df"
-                                        checked={formFilter.includes("9b16fe56-f136-4225-b8c6-81a4d39538df")}
-                                        onChange={handleFormFilterChange} />}
-                                    label="Gọi video"
-                                />
-                                <FormControlLabel
-                                    control={<Checkbox value="353e48b4-14fe-4140-b525-d46690e5c7b2"
-                                        checked={formFilter.includes("353e48b4-14fe-4140-b525-d46690e5c7b2")}
-                                        onChange={handleFormFilterChange} />}
-                                    label="Tin nhắn"
-                                />
+                                {formMeetingData && formMeetingData.length > 0 && (
+                                    formMeetingData.map((formMeeting) => (
+                                        <FormControlLabel
+                                            control={<Checkbox value={formMeeting.formMeetingId}
+                                                checked={formFilter.includes(formMeeting.formMeetingId)}
+                                                onChange={handleFormFilterChange} />}
+                                            label={formMeeting.formMeetingName}
+                                        />
+                                    ))
+                                )}
                             </FormGroup>
                         </div>
 
@@ -225,7 +237,7 @@ function TarotReaderList() {
                         ))
                     ) : (
                         <div className='flex flex-col justify-center items-center'>
-                            <div style={{marginLeft: '-20%'}} >
+                            <div style={{ marginLeft: '-20%' }} >
                                 <p className='font-bold text-red-500'>Không tìm thấy tarot reader phù hợp!</p>
                             </div>
                         </div>)}

@@ -4,7 +4,7 @@ const baseUrl = import.meta.env.VITE_API_HOST;
 
 export const GetRandomCardList = async (cardTypeId) => {
     try {
-        const url = `${baseUrl}/api/FreeTarot/GetRandomCard?cardType=${cardTypeId}`;
+        const url = `${baseUrl}/api/Card/GetRandomCard?cardType=${cardTypeId}`;
         const request = {
             method: "POST",
             headers: {
@@ -38,6 +38,22 @@ export const GetMeaningCard = async (topicId, requestBody) => {
 export const GetAllCardType = async () => {
     try {
         const url = `${baseUrl}/api/CardType/card-types`;
+        const request = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        const response = await fetch(url, request);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const GetAllTopic = async () => {
+    try {
+        const url = `${baseUrl}/api/Topic/topics`;
         const request = {
             method: "GET",
             headers: {

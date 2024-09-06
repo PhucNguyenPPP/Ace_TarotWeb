@@ -9,6 +9,7 @@ import BookingPage from "../pages/BookingPage/BookingPage";
 import RoleSignUpPage from "../pages/AuthenPage/RoleSignUpPage";
 import SignUpCustomerPage from "../pages/AuthenPage/SignUpCustomerPage";
 import BookingListPage from "../pages/BookingListPage/BookingListPage";
+import BookingDetailPage from "../pages/BookingListPage/BookingDetailPage";
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +60,11 @@ export const router = createBrowserRouter([
   {
     path: "/booking-list",
     element: <BookingListPage />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/booking-detail",
+    element: <BookingDetailPage />,
     errorElement: <Error />,
   }
 ]);
