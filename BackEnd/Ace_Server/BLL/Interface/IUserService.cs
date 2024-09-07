@@ -26,5 +26,6 @@ namespace BLL.Interface
         Task<ResponseDTO> CheckValidationSignUpReader(SignUpReaderRequestDTO signUpReaderRequestDTO);
         Task<User?> GetUserByEmail (string email);
         Task<bool> SetOtp(string email, OtpCodeDTO model);
+        Task<bool> VerifyingOtp(string email, string otp);
     }
 }

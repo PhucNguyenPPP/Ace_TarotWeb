@@ -362,5 +362,18 @@ namespace BLL.Services
             }
 			return false;
         }
+
+        public async Task<bool> VerifyingOtp(string email, string otp)
+        {
+            var user = await GetUserByEmail(email);
+            if (user != null)
+            {
+				if (user.OtpCode == Int32.Parse(otp) && user.OtpExpiredTime > DateTime.Now)
+				{
+					return true;
+				}
+            }
+            return false;
+        }
     }
 }

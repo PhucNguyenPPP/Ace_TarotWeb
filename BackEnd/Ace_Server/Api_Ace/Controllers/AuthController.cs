@@ -21,11 +21,11 @@ namespace Api_Ace.Controllers
         [HttpPost("new-customer")]
         public async Task<IActionResult> SignUpCustomer([FromForm] SignUpCustomerRequestDTO model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(new ResponseDTO(ModelState.ToString() ?? "Unknow error", 400, false, null));
             }
-            
+
             var checkValid = await _userService.CheckValidationSignUpCustomer(model);
             if (!checkValid.IsSuccess)
             {
@@ -36,7 +36,8 @@ namespace Api_Ace.Controllers
             if (signUpResult)
             {
                 return Ok(new ResponseDTO("Đăng kí thành công", 200, true, null));
-            } else
+            }
+            else
             {
                 return BadRequest(new ResponseDTO("Đăng kí không thành công", 400, true, null));
             }
@@ -109,6 +110,17 @@ namespace Api_Ace.Controllers
             {
                 return BadRequest(result);
             }
+        }
+
+        [HttpGet("/otp-verifying")]
+        public async Task<IActionResult> VerifyingOtp(string email, string otp)
+        {
+            var result = await _userService.VerifyingOtp(email, otp);
+            if(result)
+            {
+                return Ok(new ResponseDTO("OTP hợp lệ", 200, true));
+            }
+            return BadRequest(new ResponseDTO("OTP không hợp lệ", 400, false));
         }
     }
 }
