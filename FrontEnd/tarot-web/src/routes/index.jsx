@@ -11,6 +11,7 @@ import SignUpCustomerPage from "../pages/AuthenPage/SignUpCustomerPage";
 import BookingListPage from "../pages/BookingListPage/BookingListPage";
 import BookingDetailPage from "../pages/BookingListPage/BookingDetailPage";
 import SignUpTarotReaderPage from "../pages/AuthenPage/SignUpTarotReaderPage";
+import ProfilePage from "../pages/ProfilePage/ProfilePage";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +72,11 @@ export const router = createBrowserRouter([
   {
     path: "/booking-detail",
     element: <BookingDetailPage />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/profile",
+    element: <ProfilePage />,
     errorElement: <Error />,
   }
 ]);
