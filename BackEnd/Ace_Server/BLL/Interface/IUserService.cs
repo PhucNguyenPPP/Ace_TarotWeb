@@ -1,4 +1,5 @@
-﻿using Common.DTO.General;
+﻿using Common.DTO.Email;
+using Common.DTO.General;
 using Common.DTO.User;
 using DAL.Entities;
 using System;
@@ -23,5 +24,7 @@ namespace BLL.Interface
 		Task<ResponseDTO> GetTarotReader(string? readerName, int pageNumber, int rowsPerpage, List<Guid>? filterLanguages, String? gender, List<Guid>? filterForming);
         Task<bool> SignUpReader(SignUpReaderRequestDTO signUpReaderRequestDTO);
         Task<ResponseDTO> CheckValidationSignUpReader(SignUpReaderRequestDTO signUpReaderRequestDTO);
+        Task<User?> GetUserByEmail (string email);
+        Task<bool> SetOtp(string email, OtpCodeDTO model);
     }
 }

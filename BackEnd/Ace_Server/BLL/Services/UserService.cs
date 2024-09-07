@@ -22,6 +22,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Common.DTO.Email;
 
 namespace BLL.Services
 {
@@ -343,6 +344,23 @@ namespace BLL.Services
             }
 
             return new ResponseDTO("Check thành công", 200, true);
+        }
+
+        public Task<User?> GetUserByEmail(string email)
+        {
+            return _unitOfWork.User.GetByCondition(c => c.Email == email);
+        }
+
+        public async Task<bool> SetOtp(string email, OtpCodeDTO model)
+        {
+			var user =  await GetUserByEmail(email);
+            if (user != null)
+            {
+				user.OtpCode = Int32.Parse(model.OTPCode);
+				user.OtpExpiredTime = model.ExpiredTime;
+				return await _unitOfWork.SaveChangeAsync();
+            }
+			return false;
         }
     }
 }
