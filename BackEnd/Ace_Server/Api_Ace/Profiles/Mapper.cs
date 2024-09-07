@@ -27,7 +27,7 @@ namespace Api_Ace.Profiles
             .ReverseMap();
             CreateMap<CardPosition, CardPositionDTO>().ReverseMap();
 			CreateMap<Card, CardAfterMeaningDTO>().ReverseMap();
-			CreateMap<User, TarotReaderDetailDTO>().ReverseMap();
+			CreateMap<User, UserDetailDTO>().ReverseMap();
 			CreateMap <Language, LanguageOfReaderDTO>().ReverseMap();
 			CreateMap<ServiceType, ServiceTypeDTO>().ReverseMap();
 			CreateMap<FormMeeting, FormMeetingOfReaderDTO>().ReverseMap();
