@@ -188,7 +188,7 @@ namespace BLL.Services
 					var forms = _unitOfWork.FormMeeting.GetAllByCondition(c => filterForming.Contains(c.FormMeetingId));
 					if (forms.Any())
 					{
-						List<Guid> guids = _unitOfWork.UserFormMeeting.GetAllByCondition(k => filterForming.Contains(k.UserId)).Select(u => u.UserId).ToList();
+						List<Guid> guids = _unitOfWork.UserFormMeeting.GetAllByCondition(k => filterForming.Contains(k.FormMeetingId)).Select(u => u.UserId).ToList();
 						list = list.Where(c => guids.Contains(c.UserId));
 					}
 				}

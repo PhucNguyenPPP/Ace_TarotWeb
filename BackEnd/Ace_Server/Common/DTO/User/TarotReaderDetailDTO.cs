@@ -28,7 +28,7 @@ namespace Common.DTO.User
 		public string Phone { get; set; } = null!;
 
 		public string Address { get; set; } = null!;
-
+		public string? MeetLink { get; set; }
 		public string Email { get; set; } = null!;
 
 		public DateTime DateOfBirth { get; set; }
