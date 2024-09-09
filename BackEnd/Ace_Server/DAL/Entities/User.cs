@@ -37,6 +37,10 @@ public partial class User
 
     public string? MeetLink { get; set; }
 
+    public int? OtpCode { get; set; }
+
+    public DateTime? OtpExpiredTime { get; set; }
+
     public bool Status { get; set; }
 
     public Guid RoleId { get; set; }
