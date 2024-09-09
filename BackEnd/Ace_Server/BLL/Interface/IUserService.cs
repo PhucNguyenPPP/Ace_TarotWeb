@@ -27,5 +27,6 @@ namespace BLL.Interface
         Task<User?> GetUserByEmail (string email);
         Task<bool> SetOtp(string email, OtpCodeDTO model);
         Task<bool> VerifyingOtp(string email, string otp);
+        Task<bool> ChangePassword(ForgotPasswordDTO model);
     }
 }

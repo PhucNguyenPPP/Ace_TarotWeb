@@ -375,5 +375,20 @@ namespace BLL.Services
             }
             return false;
         }
+
+        public async Task<bool> ChangePassword(ForgotPasswordDTO model)
+        {
+            var user = await GetUserByEmail(model.Email);
+			if(user == null)
+			{
+				return false;
+			}
+
+            var salt = GenerateSalt();
+            var passwordHash = GenerateHashedPassword(model.Password, salt);
+			user.Salt = salt;
+			user.PasswordHash = passwordHash;
+			return await _unitOfWork.SaveChangeAsync();
+        }
     }
 }

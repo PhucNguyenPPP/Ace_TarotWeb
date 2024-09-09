@@ -122,5 +122,21 @@ namespace Api_Ace.Controllers
             }
             return BadRequest(new ResponseDTO("OTP không hợp lệ", 400, false));
         }
+
+        [HttpPost("password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseDTO(ModelState.ToString() ?? "Unknown error", 400, false));
+            }
+
+            var result = await _userService.ChangePassword(model);
+            if(result)
+            {
+                return Ok(new ResponseDTO("Thay đổi mật khẩu thành công", 200, true));
+            }
+            return BadRequest(new ResponseDTO("Thay đổi mật khẩu không thành công", 400, false));
+        } 
     }
 }
