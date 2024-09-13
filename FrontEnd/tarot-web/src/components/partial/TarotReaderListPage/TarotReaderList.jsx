@@ -204,7 +204,7 @@ function TarotReaderList() {
                                         <h1 className={styles.tarot_reader_name}>{i.nickName}</h1>
                                         <StarIcon style={{ height: '45px', marginLeft: '20px', color: '#5900E5' }} />
                                     </div>
-                                    <div className=' mt-1 mb-5'>
+                                    <div className='mb-2'>
                                         <p className={styles.tarot_reader_info}>{i.quote}</p>
                                     </div>
 
