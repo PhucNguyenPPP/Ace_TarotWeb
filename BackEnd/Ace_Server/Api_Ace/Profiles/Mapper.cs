@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common.DTO.Auth;
+using Common.DTO.Booking;
 using Common.DTO.Card;
 using Common.DTO.CardPosition;
 using Common.DTO.CardType;
@@ -39,6 +40,7 @@ namespace Api_Ace.Profiles
             CreateMap<UserServiceType, ServiceTypeOfUserDTO>()
             .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.ServiceType != null ? src.ServiceType.ServiceTypeName : "Unknown"))  // Handle nulls in AutoMapper
             .ReverseMap();
+            CreateMap<Booking,BookingDTO>().ReverseMap();
 
             #endregion
         }
