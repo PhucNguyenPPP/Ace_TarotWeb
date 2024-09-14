@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BLL.Interface;
 using Common.DTO.General;
+using Common.DTO.UserSlot;
 using DAL.Entities;
 using DAL.UnitOfWork;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace BLL.Services
 {
@@ -22,6 +24,15 @@ namespace BLL.Services
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 		}
+
+		public async Task<ResponseDTO> GetSlotOfDate(DateOnly date, Guid guid)
+		{
+			var slotList = _unitOfWork.Slot.GetAllByCondition(s => s.StartTime.Date == date.ToDateTime(TimeOnly.MinValue).Date).Select(s=>s.SlotId).ToList();
+			var userSlotList = _unitOfWork.UserSlot.GetAllByCondition(uslot => slotList.Contains(uslot.SlotId));
+			var listDTO = _mapper.Map<List<UserSlotOfDateDTO>>(userSlotList);
+			return new ResponseDTO("Hiện slot theo ngày của Tarot Reader thành công", 200, true, listDTO);
+		}
+
 		public async Task<ResponseDTO> PickSlot(List<Guid> slotIDs, Guid userID)
 		{
 			var expiredSlot = _unitOfWork.Slot.GetAllByCondition(slot => slotIDs.Contains(slot.SlotId) && slot.StartTime.Date <= DateTime.Now.Date);

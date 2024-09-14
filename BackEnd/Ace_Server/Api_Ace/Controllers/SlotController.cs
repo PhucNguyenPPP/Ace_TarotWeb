@@ -26,7 +26,6 @@ namespace Api_Ace.Controllers
 			}
 			return Ok(responseDTO);
 		}
-		
 
 	}
 }

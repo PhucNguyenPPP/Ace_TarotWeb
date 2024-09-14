@@ -9,6 +9,7 @@ using Common.DTO.ServiceType;
 using Common.DTO.Slot;
 using Common.DTO.Topic;
 using Common.DTO.User;
+using Common.DTO.UserSlot;
 using DAL.Entities;
 
 namespace Api_Ace.Profiles
@@ -27,13 +28,14 @@ namespace Api_Ace.Profiles
             .ReverseMap();
             CreateMap<CardPosition, CardPositionDTO>().ReverseMap();
 			CreateMap<Card, CardAfterMeaningDTO>().ReverseMap();
-			CreateMap<User, TarotReaderDetailDTO>().ReverseMap();
+			CreateMap<User, UserDetailDTO>().ReverseMap();
 			CreateMap <Language, LanguageOfReaderDTO>().ReverseMap();
 			CreateMap<ServiceType, ServiceTypeDTO>().ReverseMap();
 			CreateMap<FormMeeting, FormMeetingOfReaderDTO>().ReverseMap();
 			CreateMap<Slot, SlotDTO>().ReverseMap();
             CreateMap<Topic, TopicDTO>().ReverseMap();
             CreateMap<SignUpReaderRequestDTO, User>().ReverseMap();
+			CreateMap<UserSlotOfDateDTO, UserSlot>().ReverseMap();
 			#endregion
 		}
 	}

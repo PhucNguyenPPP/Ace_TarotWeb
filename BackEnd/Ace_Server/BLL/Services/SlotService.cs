@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BLL.Interface;
 using Common.DTO.General;
+using Common.DTO.Slot;
 using DAL.Entities;
 using DAL.UnitOfWork;
 using Microsoft.OpenApi.Any;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace BLL.Services
 {
@@ -77,6 +79,5 @@ namespace BLL.Services
 			}
 		}
 
-		
 	}
 }
