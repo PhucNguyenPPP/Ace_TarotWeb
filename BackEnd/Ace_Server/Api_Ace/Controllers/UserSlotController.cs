@@ -34,5 +34,15 @@ namespace Api_Ace.Controllers
 			}
 			return Ok(responseDTO);
 		}
+		[HttpGet("dates-of-month")]
+		public async Task<IActionResult> GetSlotsOfDate(int year,int month, Guid userID)//lam 24h
+		{
+			ResponseDTO responseDTO = await _userSlotService.GetAvailableDateOfMonth(year,month, userID);
+			if (responseDTO.IsSuccess == false)
+			{
+				return BadRequest(responseDTO);
+			}
+			return Ok(responseDTO);
+		}
 	}
 }

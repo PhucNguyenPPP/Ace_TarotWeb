@@ -11,5 +11,6 @@ namespace BLL.Interface
 	{
 		Task<ResponseDTO> PickSlot(List<Guid> slotIDs, Guid userID);
 		Task<ResponseDTO> GetSlotOfDate(DateOnly date, Guid guid);
+		Task<ResponseDTO> GetAvailableDateOfMonth(int year, int month, Guid userID);
 	}
 }
