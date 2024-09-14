@@ -30,6 +30,7 @@ builder.Services.AddScoped<IFormMeetingService, FormMeetingService>();
 builder.Services.AddScoped<IUserSlotService, UserSlotService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IUserServiceTypeService, UserServiceTypeService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

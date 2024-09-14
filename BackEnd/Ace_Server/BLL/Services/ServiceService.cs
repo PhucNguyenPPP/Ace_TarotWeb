@@ -25,7 +25,7 @@ namespace BLL.Services
         public async Task<ResponseDTO> GetAllService(Guid serviceTypeId)
         {
             var service = _unitOfWork.Service.GetAllByCondition(c => c.ServiceTypeId == serviceTypeId);
-            if (service.IsNullOrEmpty())
+            if (service.IsNullOrEmpty() || service.Count() == 0)
             {
                 return new ResponseDTO("Không có dịch vụ!", 400, false);
             }

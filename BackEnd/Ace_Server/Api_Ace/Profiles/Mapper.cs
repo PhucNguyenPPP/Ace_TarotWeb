@@ -36,7 +36,11 @@ namespace Api_Ace.Profiles
             CreateMap<Topic, TopicDTO>().ReverseMap();
             CreateMap<SignUpReaderRequestDTO, User>().ReverseMap();
             CreateMap<Service, ServiceDTO>().ReverseMap();
-			#endregion
-		}
-	}
+            CreateMap<UserServiceType, ServiceTypeOfUserDTO>()
+            .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.ServiceType != null ? src.ServiceType.ServiceTypeName : "Unknown"))  // Handle nulls in AutoMapper
+            .ReverseMap();
+
+            #endregion
+        }
+    }
 }
