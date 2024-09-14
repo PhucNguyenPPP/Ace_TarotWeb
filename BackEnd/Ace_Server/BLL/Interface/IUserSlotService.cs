@@ -10,5 +10,6 @@ namespace BLL.Interface
 	public interface IUserSlotService
 	{
 		Task<ResponseDTO> PickSlot(List<Guid> slotIDs, Guid userID);
+		Task<ResponseDTO> GetSlotOfDate(DateOnly date, Guid guid);
 	}
 }

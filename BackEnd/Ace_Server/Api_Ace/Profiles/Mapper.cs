@@ -9,6 +9,7 @@ using Common.DTO.ServiceType;
 using Common.DTO.Slot;
 using Common.DTO.Topic;
 using Common.DTO.User;
+using Common.DTO.UserSlot;
 using DAL.Entities;
 
 namespace Api_Ace.Profiles
@@ -34,6 +35,7 @@ namespace Api_Ace.Profiles
 			CreateMap<Slot, SlotDTO>().ReverseMap();
             CreateMap<Topic, TopicDTO>().ReverseMap();
             CreateMap<SignUpReaderRequestDTO, User>().ReverseMap();
+			CreateMap<UserSlotOfDateDTO, UserSlot>().ReverseMap();
 			#endregion
 		}
 	}

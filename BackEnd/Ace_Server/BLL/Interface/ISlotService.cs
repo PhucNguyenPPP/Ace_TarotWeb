@@ -9,5 +9,7 @@ namespace BLL.Interface
 {
 	public interface ISlotService
 	{
-		Task<ResponseDTO> AddSlot(DateOnly start, DateOnly end);	}
+		Task<ResponseDTO> AddSlot(DateOnly start, DateOnly end);
+		
+	}
 }
