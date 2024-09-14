@@ -5,6 +5,7 @@ using Common.DTO.CardPosition;
 using Common.DTO.CardType;
 using Common.DTO.FormMeeting;
 using Common.DTO.Language;
+using Common.DTO.Service;
 using Common.DTO.ServiceType;
 using Common.DTO.Slot;
 using Common.DTO.Topic;
@@ -34,6 +35,7 @@ namespace Api_Ace.Profiles
 			CreateMap<Slot, SlotDTO>().ReverseMap();
             CreateMap<Topic, TopicDTO>().ReverseMap();
             CreateMap<SignUpReaderRequestDTO, User>().ReverseMap();
+            CreateMap<Service, ServiceDTO>().ReverseMap();
 			#endregion
 		}
 	}
