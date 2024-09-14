@@ -13,6 +13,7 @@ import BookingDetailPage from "../pages/BookingListPage/BookingDetailPage";
 import SignUpTarotReaderPage from "../pages/AuthenPage/SignUpTarotReaderPage";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import ForgotPasswordPage from "../pages/AuthenPage/ForgotPasswordPage";
+import HomeTarotReaderPage from "../pages/HomePage/HomeTarotReaderPage";
 
 export const router = createBrowserRouter([
   {
@@ -83,6 +84,11 @@ export const router = createBrowserRouter([
   {
     path: "/forgot-password",
     element: <ForgotPasswordPage />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/home-tarot-reader",
+    element: <HomeTarotReaderPage />,
     errorElement: <Error />,
   }
 ]);
