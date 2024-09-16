@@ -7,6 +7,8 @@ public partial class Booking
 {
     public Guid BookingId { get; set; }
 
+    public string BookingNumber { get; set; } = null!;
+
     public decimal Price { get; set; }
 
     public int? BehaviorRating { get; set; }
@@ -16,6 +18,10 @@ public partial class Booking
     public int? QualityRating { get; set; }
 
     public string? QualityFeedback { get; set; }
+
+    public DateTime StartTime { get; set; }
+
+    public DateTime EndTime { get; set; }
 
     public string Status { get; set; } = null!;
 

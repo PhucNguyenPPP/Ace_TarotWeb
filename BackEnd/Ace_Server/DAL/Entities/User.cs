@@ -49,6 +49,10 @@ public partial class User
 
     public virtual ICollection<Booking> BookingTarotReaders { get; set; } = new List<Booking>();
 
+    public virtual ICollection<Message> MessageReceiveUsers { get; set; } = new List<Message>();
+
+    public virtual ICollection<Message> MessageSendUsers { get; set; } = new List<Message>();
+
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
     public virtual Role Role { get; set; } = null!;
