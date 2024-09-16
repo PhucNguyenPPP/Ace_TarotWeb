@@ -10,6 +10,7 @@ using Common.DTO.General;
 using Common.DTO.UserSlot;
 using DAL.Entities;
 using DAL.UnitOfWork;
+using Microsoft.IdentityModel.Tokens;
 using static System.Reflection.Metadata.BlobBuilder;
 
 namespace BLL.Services
@@ -41,7 +42,7 @@ namespace BLL.Services
 			{
 				return new ResponseDTO("Lấy các ngày trống lịch của Tarot Reader thành công", 200, true, dateOfMonth);
 			}
-			return new ResponseDTO("Không tìm được ngày trống lịch trong tháng của Tarot Reader", 400, false);
+			return new ResponseDTO("Không tìm được ngày trống lịch trong tháng của Tarot Reader", 404, false);
 		}
 
 		public async Task<ResponseDTO> GetSlotOfDate(DateOnly date, Guid guid)
@@ -49,7 +50,37 @@ namespace BLL.Services
 			var slotList = _unitOfWork.Slot.GetAllByCondition(s => s.StartTime.Date == date.ToDateTime(TimeOnly.MinValue).Date).Select(s => s.SlotId).ToList();
 			var userSlotList = _unitOfWork.UserSlot.GetAllByCondition(uslot => slotList.Contains(uslot.SlotId));
 			var listDTO = _mapper.Map<List<UserSlotOfDateDTO>>(userSlotList);
-			return new ResponseDTO("Hiện slot theo ngày của Tarot Reader thành công", 200, true, listDTO);
+			if (listDTO.Count() > 0)
+			{
+				foreach (var item in listDTO)
+				{
+					Slot? slot = await _unitOfWork.Slot.GetByCondition(s => s.SlotId.Equals(item.SlotId));
+					if (slot != null)
+					{
+						int startHour = slot.StartTime.Hour;
+						int startMin = slot.StartTime.Minute;
+						string startString = $"{startHour}:{startMin}";
+						int endHour = slot.EndTime.Hour;
+						int endMin = slot.EndTime.Minute;
+						string endString = $"{endHour}:{endMin}";
+						if (!startString.IsNullOrEmpty() & !endString.IsNullOrEmpty())
+						{
+							item.StartTime = startString;
+							item.EndTime = endString;
+						}
+						else
+						{
+							return new ResponseDTO("Không thể lấy được giờ của slot", 500, false);
+						}
+					}
+				}
+
+				return new ResponseDTO("Hiện slot theo ngày của Tarot Reader thành công", 200, true, listDTO);
+			}
+			else
+			{
+				return new ResponseDTO("Không tìm thấy slot trống theo ngày đã chọn", 404, false);
+			}
 		}
 
 		public async Task<ResponseDTO> PickSlot(List<Guid> slotIDs, Guid userID)
