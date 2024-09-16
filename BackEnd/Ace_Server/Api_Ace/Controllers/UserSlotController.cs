@@ -42,6 +42,10 @@ namespace Api_Ace.Controllers
 		public async Task<IActionResult> GetSlotsOfDate(int year,int month, Guid userID)//lam 24h
 		{
 			ResponseDTO responseDTO = await _userSlotService.GetAvailableDateOfMonth(year,month, userID);
+			if (responseDTO.StatusCode == 404)
+			{
+				return NotFound(responseDTO);
+			}
 			if (responseDTO.IsSuccess == false)
 			{
 				return BadRequest(responseDTO);

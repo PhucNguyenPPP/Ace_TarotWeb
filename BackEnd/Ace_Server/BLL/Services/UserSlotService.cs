@@ -42,7 +42,7 @@ namespace BLL.Services
 			{
 				return new ResponseDTO("Lấy các ngày trống lịch của Tarot Reader thành công", 200, true, dateOfMonth);
 			}
-			return new ResponseDTO("Không tìm được ngày trống lịch trong tháng của Tarot Reader", 400, false);
+			return new ResponseDTO("Không tìm được ngày trống lịch trong tháng của Tarot Reader", 404, false);
 		}
 
 		public async Task<ResponseDTO> GetSlotOfDate(DateOnly date, Guid guid)
