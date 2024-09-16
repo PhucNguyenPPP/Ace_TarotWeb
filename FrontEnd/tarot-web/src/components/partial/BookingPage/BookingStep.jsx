@@ -42,7 +42,7 @@ export default function BookingStep() {
           return <CircularProgress />
         }
       case 1:
-        return <TimeForm />;
+        return <TimeForm tarotReaderData={tarotReaderData} />;
       case 2:
         return <PaymentForm />;
       default:
