@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using BLL.Interface;
 using Common.DTO.General;
+using Common.DTO.UserSlot;
 using DAL.Entities;
 using DAL.UnitOfWork;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace BLL.Services
 {
@@ -22,6 +25,33 @@ namespace BLL.Services
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 		}
+
+		public async Task<ResponseDTO> GetAvailableDateOfMonth(int year, int month, Guid userID)
+		{
+			var firstDayOfMonth = new DateTime(year, month, 1);
+			var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+			var slots = _unitOfWork.Slot
+				.GetAllByCondition(s => s.StartTime.Date >= firstDayOfMonth.Date && s.StartTime.Date <= lastDayOfMonth.Date && s.StartTime.Date > DateTime.Now)
+				.Select(s=>s.SlotId);
+			var slotOfUser = _unitOfWork.UserSlot.GetAllByCondition(uslot => slots.Contains(uslot.SlotId) && uslot.UserId.Equals(userID) && uslot.Status.Equals(true)).Select(s => s.SlotId);
+			var dateOfMonth = _unitOfWork.Slot.GetAllByCondition(s => slotOfUser.Contains(s.SlotId)).GroupBy(s => s.StartTime.Date)
+			.Where(g => g.Any(s => s.Status))
+			.Select(g => g.Key);
+			if (dateOfMonth.Count() > 0)
+			{
+				return new ResponseDTO("Lấy các ngày trống lịch của Tarot Reader thành công", 200, true, dateOfMonth);
+			}
+			return new ResponseDTO("Không tìm được ngày trống lịch trong tháng của Tarot Reader", 400, false);
+		}
+
+		public async Task<ResponseDTO> GetSlotOfDate(DateOnly date, Guid guid)
+		{
+			var slotList = _unitOfWork.Slot.GetAllByCondition(s => s.StartTime.Date == date.ToDateTime(TimeOnly.MinValue).Date).Select(s => s.SlotId).ToList();
+			var userSlotList = _unitOfWork.UserSlot.GetAllByCondition(uslot => slotList.Contains(uslot.SlotId));
+			var listDTO = _mapper.Map<List<UserSlotOfDateDTO>>(userSlotList);
+			return new ResponseDTO("Hiện slot theo ngày của Tarot Reader thành công", 200, true, listDTO);
+		}
+
 		public async Task<ResponseDTO> PickSlot(List<Guid> slotIDs, Guid userID)
 		{
 			var expiredSlot = _unitOfWork.Slot.GetAllByCondition(slot => slotIDs.Contains(slot.SlotId) && slot.StartTime.Date <= DateTime.Now.Date);
@@ -35,12 +65,12 @@ namespace BLL.Services
 				return new ResponseDTO("Không được đăng ký lại các slot đã đăng ký trước đó", 400, false, pickedSlot);
 			}
 			var deletedSlot = _unitOfWork.Slot.GetAllByCondition(slot => slotIDs.Contains(slot.SlotId) && slot.Status.Equals(false));
-			if (deletedSlot.Any()) 
+			if (deletedSlot.Any())
 			{
 				return new ResponseDTO("Không được đăng ký các slot đã bị xoá bởi admin", 400, false, deletedSlot);
 			}
 			List<UserSlot> userSlots = new List<UserSlot>();
-			foreach (var slot in slotIDs) 
+			foreach (var slot in slotIDs)
 			{
 				UserSlot userSlot = new UserSlot();
 				userSlot.UserSlotId = Guid.NewGuid();
