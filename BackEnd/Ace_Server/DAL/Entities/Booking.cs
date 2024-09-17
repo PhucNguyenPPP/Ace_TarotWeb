@@ -23,6 +23,8 @@ public partial class Booking
 
     public DateTime EndTime { get; set; }
 
+    public int? QuestionAmount { get; set; }
+
     public string Status { get; set; } = null!;
 
     public Guid CustomerId { get; set; }
