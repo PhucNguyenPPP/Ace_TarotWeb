@@ -31,8 +31,6 @@ public partial class Booking
 
     public Guid ServiceId { get; set; }
 
-    public virtual ICollection<BookingSlot> BookingSlots { get; set; } = new List<BookingSlot>();
-
     public virtual User Customer { get; set; } = null!;
 
     public virtual Service Service { get; set; } = null!;
@@ -40,4 +38,6 @@ public partial class Booking
     public virtual User TarotReader { get; set; } = null!;
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
+    public virtual ICollection<UserSlot> UserSlots { get; set; } = new List<UserSlot>();
 }

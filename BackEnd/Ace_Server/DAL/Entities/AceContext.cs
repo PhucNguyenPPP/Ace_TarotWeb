@@ -17,8 +17,6 @@ public partial class AceContext : DbContext
 
     public virtual DbSet<Booking> Bookings { get; set; }
 
-    public virtual DbSet<BookingSlot> BookingSlots { get; set; }
-
     public virtual DbSet<Card> Cards { get; set; }
 
     public virtual DbSet<CardPosition> CardPositions { get; set; }
@@ -65,11 +63,11 @@ public partial class AceContext : DbContext
     {
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.HasKey(e => e.BookingId).HasName("PK__Booking__73951AED382EA117");
+            entity.HasKey(e => e.BookingId).HasName("PK__Booking__73951AED9767A7B2");
 
             entity.ToTable("Booking");
 
-            entity.HasIndex(e => e.BookingNumber, "UQ__Booking__AAC320BFBD93D51A").IsUnique();
+            entity.HasIndex(e => e.BookingNumber, "UQ__Booking__AAC320BFC9835231").IsUnique();
 
             entity.Property(e => e.BookingId).ValueGeneratedNever();
             entity.Property(e => e.BookingNumber).HasMaxLength(100);
@@ -81,41 +79,22 @@ public partial class AceContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.BookingCustomers)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Booking__Custome__46E78A0C");
+                .HasConstraintName("FK__Booking__Custome__4316F928");
 
             entity.HasOne(d => d.Service).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Booking__Service__48CFD27E");
+                .HasConstraintName("FK__Booking__Service__44FF419A");
 
             entity.HasOne(d => d.TarotReader).WithMany(p => p.BookingTarotReaders)
                 .HasForeignKey(d => d.TarotReaderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Booking__TarotRe__47DBAE45");
-        });
-
-        modelBuilder.Entity<BookingSlot>(entity =>
-        {
-            entity.HasKey(e => e.BookingSlotId).HasName("PK__BookingS__A78A348F03336AC8");
-
-            entity.ToTable("BookingSlot");
-
-            entity.Property(e => e.BookingSlotId).ValueGeneratedNever();
-
-            entity.HasOne(d => d.Booking).WithMany(p => p.BookingSlots)
-                .HasForeignKey(d => d.BookingId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BookingSl__Booki__4BAC3F29");
-
-            entity.HasOne(d => d.Slot).WithMany(p => p.BookingSlots)
-                .HasForeignKey(d => d.SlotId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BookingSl__SlotI__4CA06362");
+                .HasConstraintName("FK__Booking__TarotRe__440B1D61");
         });
 
         modelBuilder.Entity<Card>(entity =>
         {
-            entity.HasKey(e => e.CardId).HasName("PK__Card__55FECDAE7E75D073");
+            entity.HasKey(e => e.CardId).HasName("PK__Card__55FECDAEAE55866D");
 
             entity.ToTable("Card");
 
@@ -125,12 +104,12 @@ public partial class AceContext : DbContext
             entity.HasOne(d => d.CardType).WithMany(p => p.Cards)
                 .HasForeignKey(d => d.CardTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Card__CardTypeId__5441852A");
+                .HasConstraintName("FK__Card__CardTypeId__5165187F");
         });
 
         modelBuilder.Entity<CardPosition>(entity =>
         {
-            entity.HasKey(e => e.CardPositionId).HasName("PK__CardPosi__7F33216139132475");
+            entity.HasKey(e => e.CardPositionId).HasName("PK__CardPosi__7F3321610D7DF579");
 
             entity.ToTable("CardPosition");
 
@@ -139,22 +118,22 @@ public partial class AceContext : DbContext
             entity.HasOne(d => d.Card).WithMany(p => p.CardPositions)
                 .HasForeignKey(d => d.CardId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CardPosit__CardI__5CD6CB2B");
+                .HasConstraintName("FK__CardPosit__CardI__59FA5E80");
 
             entity.HasOne(d => d.Position).WithMany(p => p.CardPositions)
                 .HasForeignKey(d => d.PositionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CardPosit__Posit__5BE2A6F2");
+                .HasConstraintName("FK__CardPosit__Posit__59063A47");
 
             entity.HasOne(d => d.Topic).WithMany(p => p.CardPositions)
                 .HasForeignKey(d => d.TopicId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CardPosit__Topic__5AEE82B9");
+                .HasConstraintName("FK__CardPosit__Topic__5812160E");
         });
 
         modelBuilder.Entity<CardType>(entity =>
         {
-            entity.HasKey(e => e.CardTypeId).HasName("PK__CardType__AB0A3D1190C8A352");
+            entity.HasKey(e => e.CardTypeId).HasName("PK__CardType__AB0A3D11BFFF59AE");
 
             entity.ToTable("CardType");
 
@@ -164,7 +143,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<FormMeeting>(entity =>
         {
-            entity.HasKey(e => e.FormMeetingId).HasName("PK__FormMeet__CFA8C8B0088EC99B");
+            entity.HasKey(e => e.FormMeetingId).HasName("PK__FormMeet__CFA8C8B08C6A876C");
 
             entity.ToTable("FormMeeting");
 
@@ -174,7 +153,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Language>(entity =>
         {
-            entity.HasKey(e => e.LanguageId).HasName("PK__Language__B93855AB9AD811A0");
+            entity.HasKey(e => e.LanguageId).HasName("PK__Language__B93855ABC693FEC9");
 
             entity.ToTable("Language");
 
@@ -184,7 +163,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Message>(entity =>
         {
-            entity.HasKey(e => e.MessageId).HasName("PK__Message__C87C0C9CC721A346");
+            entity.HasKey(e => e.MessageId).HasName("PK__Message__C87C0C9C49F520AF");
 
             entity.ToTable("Message");
 
@@ -194,17 +173,17 @@ public partial class AceContext : DbContext
             entity.HasOne(d => d.ReceiveUser).WithMany(p => p.MessageReceiveUsers)
                 .HasForeignKey(d => d.ReceiveUserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Message__Receive__60A75C0F");
+                .HasConstraintName("FK__Message__Receive__5DCAEF64");
 
             entity.HasOne(d => d.SendUser).WithMany(p => p.MessageSendUsers)
                 .HasForeignKey(d => d.SendUserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Message__SendUse__5FB337D6");
+                .HasConstraintName("FK__Message__SendUse__5CD6CB2B");
         });
 
         modelBuilder.Entity<Position>(entity =>
         {
-            entity.HasKey(e => e.PositionId).HasName("PK__Position__60BB9A7962E9B5DB");
+            entity.HasKey(e => e.PositionId).HasName("PK__Position__60BB9A798FE36510");
 
             entity.ToTable("Position");
 
@@ -214,7 +193,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.HasKey(e => e.RefreshTokenId).HasName("PK__RefreshT__F5845E3945CBAB2C");
+            entity.HasKey(e => e.RefreshTokenId).HasName("PK__RefreshT__F5845E397C595D89");
 
             entity.ToTable("RefreshToken");
 
@@ -230,7 +209,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE1A1A19A56A");
+            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE1AE1D7C333");
 
             entity.ToTable("Role");
 
@@ -240,7 +219,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Service>(entity =>
         {
-            entity.HasKey(e => e.ServiceId).HasName("PK__Service__C51BB00A0C18384F");
+            entity.HasKey(e => e.ServiceId).HasName("PK__Service__C51BB00A273EE025");
 
             entity.ToTable("Service");
 
@@ -256,7 +235,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<ServiceType>(entity =>
         {
-            entity.HasKey(e => e.ServiceTypeId).HasName("PK__ServiceT__8ADFAA6CB5ADB4BF");
+            entity.HasKey(e => e.ServiceTypeId).HasName("PK__ServiceT__8ADFAA6C484E3216");
 
             entity.ToTable("ServiceType");
 
@@ -266,7 +245,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Slot>(entity =>
         {
-            entity.HasKey(e => e.SlotId).HasName("PK__Slot__0A124AAFE311F446");
+            entity.HasKey(e => e.SlotId).HasName("PK__Slot__0A124AAFFEB9D6F9");
 
             entity.ToTable("Slot");
 
@@ -277,7 +256,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Topic>(entity =>
         {
-            entity.HasKey(e => e.TopicId).HasName("PK__Topic__022E0F5D95944E0E");
+            entity.HasKey(e => e.TopicId).HasName("PK__Topic__022E0F5DDD771D11");
 
             entity.ToTable("Topic");
 
@@ -287,7 +266,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A6B54FD6024");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A6B14073456");
 
             entity.ToTable("Transaction");
 
@@ -299,12 +278,12 @@ public partial class AceContext : DbContext
             entity.HasOne(d => d.Booking).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.BookingId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__Booki__4F7CD00D");
+                .HasConstraintName("FK__Transacti__Booki__4CA06362");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4C41D14142");
+            entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4CA21E2D84");
 
             entity.ToTable("User");
 
@@ -328,7 +307,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<UserFormMeeting>(entity =>
         {
-            entity.HasKey(e => e.UserFormMeetingId).HasName("PK__UserForm__3785D33C39F55F90");
+            entity.HasKey(e => e.UserFormMeetingId).HasName("PK__UserForm__3785D33C66D591F4");
 
             entity.ToTable("UserFormMeeting");
 
@@ -347,7 +326,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<UserLanguage>(entity =>
         {
-            entity.HasKey(e => e.UserLanguageId).HasName("PK__UserLang__8086CE398899D94F");
+            entity.HasKey(e => e.UserLanguageId).HasName("PK__UserLang__8086CE39191EA00E");
 
             entity.ToTable("UserLanguage");
 
@@ -366,7 +345,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<UserServiceType>(entity =>
         {
-            entity.HasKey(e => e.UserServiceTypeId).HasName("PK__UserServ__090AC7008524B69D");
+            entity.HasKey(e => e.UserServiceTypeId).HasName("PK__UserServ__090AC700E123FC3F");
 
             entity.ToTable("UserServiceType");
 
@@ -385,21 +364,25 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<UserSlot>(entity =>
         {
-            entity.HasKey(e => e.UserSlotId).HasName("PK__UserSlot__2DFB111E967B26B6");
+            entity.HasKey(e => e.UserSlotId).HasName("PK__UserSlot__2DFB111E388560DE");
 
             entity.ToTable("UserSlot");
 
             entity.Property(e => e.UserSlotId).ValueGeneratedNever();
 
+            entity.HasOne(d => d.Booking).WithMany(p => p.UserSlots)
+                .HasForeignKey(d => d.BookingId)
+                .HasConstraintName("FK__UserSlot__Bookin__49C3F6B7");
+
             entity.HasOne(d => d.Slot).WithMany(p => p.UserSlots)
                 .HasForeignKey(d => d.SlotId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__UserSlot__SlotId__4316F928");
+                .HasConstraintName("FK__UserSlot__SlotId__48CFD27E");
 
             entity.HasOne(d => d.User).WithMany(p => p.UserSlots)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__UserSlot__UserId__4222D4EF");
+                .HasConstraintName("FK__UserSlot__UserId__47DBAE45");
         });
 
         OnModelCreatingPartial(modelBuilder);
