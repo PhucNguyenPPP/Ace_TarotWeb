@@ -13,6 +13,10 @@ public partial class UserSlot
 
     public Guid SlotId { get; set; }
 
+    public Guid? BookingId { get; set; }
+
+    public virtual Booking? Booking { get; set; }
+
     public virtual Slot Slot { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
