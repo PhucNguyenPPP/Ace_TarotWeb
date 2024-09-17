@@ -27,9 +27,17 @@ namespace BLL.Services
 
         public async Task<bool> CreateBooking(BookingDTO bookingDTO)
         {
+            Random rand = new Random();
             var booking = _mapper.Map<Booking>(bookingDTO);
             booking.BookingId = Guid.NewGuid();
+            booking.BookingNumber = "B" + rand.Next();
+            var price = _unitOfWork.Service.GetAllByCondition(c => c.ServiceId == bookingDTO.ServiceId).Select(c => c.Price).FirstOrDefault();
+            booking.Price = price;
             booking.Status = true.ToString();
+
+            
+
+
             await _unitOfWork.Booking.AddAsync(booking);
             return await _unitOfWork.SaveChangeAsync();
         }

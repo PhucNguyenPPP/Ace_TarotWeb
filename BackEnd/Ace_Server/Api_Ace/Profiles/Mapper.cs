@@ -38,7 +38,6 @@ namespace Api_Ace.Profiles
             CreateMap<Topic, TopicDTO>().ReverseMap();
             CreateMap<SignUpReaderRequestDTO, User>().ReverseMap();
 			CreateMap<UserSlotOfDateDTO, UserSlot>().ReverseMap();
-			#endregion
 		
 	
             CreateMap<Service, ServiceDTO>().ReverseMap();

@@ -18,9 +18,8 @@ namespace Common.DTO.Booking
         [Required(ErrorMessage = "Vui lòng nhập ID dịch vụ")]
         public Guid ServiceId { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng nhập giá dịch vụ")]
-        [Range(1,int.MaxValue,ErrorMessage ="Giá dịch vụ phải lớn hơn 1")]
-        public decimal Price { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập ID slot")]
+        public Guid UserSlotId { get; set; }
 
         public int? BehaviorRating { get; set; }
 
@@ -29,6 +28,7 @@ namespace Common.DTO.Booking
         public int? QualityRating { get; set; }
 
         public string? QualityFeedback { get; set; }
+        
 
     }
 }
