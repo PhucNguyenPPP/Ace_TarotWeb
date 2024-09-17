@@ -54,7 +54,7 @@ namespace BLL.Services
                 return new ResponseDTO("Không tìm thấy dịch vụ", 400, false);
             }
             
-
+            var serviceDuration = _unitOfWork.Service.GetAllByCondition(c => c.ServiceId == bookingDTO.ServiceId).Select(c=> c.Duration);
             return new ResponseDTO("Check thành công", 200, true);
         }
     }
