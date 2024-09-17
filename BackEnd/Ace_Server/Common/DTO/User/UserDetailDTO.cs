@@ -11,7 +11,7 @@ using Common.DTO.Slot;
 
 namespace Common.DTO.User
 {
-    public class TarotReaderDetailDTO
+    public class UserDetailDTO
 	{
 		public Guid UserId { get; set; }
 
