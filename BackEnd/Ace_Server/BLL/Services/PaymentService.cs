@@ -88,6 +88,9 @@ namespace BLL.Services
                 }
 
                 _unitOfWork.Transaction.Update(unpaidTrans);
+
+                booking.Status = BookingStatus.Paid;
+                _unitOfWork.Booking.Update(booking);
                 await _unitOfWork.SaveChangeAsync();
                 return true;
             }
