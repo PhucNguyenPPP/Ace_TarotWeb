@@ -19,7 +19,7 @@ namespace Api_Ace.Controllers
         }
 
         [HttpPost("new-booking")]
-        public async Task<IActionResult> CreateBooking([FromForm] BookingDTO model)
+        public async Task<IActionResult> CreateBooking([FromBody]BookingDTO model)
         {
             if (!ModelState.IsValid)
             {
