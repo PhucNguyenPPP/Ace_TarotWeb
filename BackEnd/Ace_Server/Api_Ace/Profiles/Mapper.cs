@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Common.DTO.Auth;
+using Common.DTO.Booking;
 using Common.DTO.Card;
 using Common.DTO.CardPosition;
 using Common.DTO.CardType;
 using Common.DTO.FormMeeting;
 using Common.DTO.Language;
+using Common.DTO.Service;
 using Common.DTO.ServiceType;
 using Common.DTO.Slot;
 using Common.DTO.Topic;
@@ -36,7 +38,15 @@ namespace Api_Ace.Profiles
             CreateMap<Topic, TopicDTO>().ReverseMap();
             CreateMap<SignUpReaderRequestDTO, User>().ReverseMap();
 			CreateMap<UserSlotOfDateDTO, UserSlot>().ReverseMap();
-			#endregion
-		}
-	}
+		
+	
+            CreateMap<Service, ServiceDTO>().ReverseMap();
+            CreateMap<UserServiceType, ServiceTypeOfUserDTO>()
+            .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.ServiceType != null ? src.ServiceType.ServiceTypeName : "Unknown"))  // Handle nulls in AutoMapper
+            .ReverseMap();
+            CreateMap<Booking,BookingDTO>().ReverseMap();
+
+            #endregion
+        }
+    }
 }

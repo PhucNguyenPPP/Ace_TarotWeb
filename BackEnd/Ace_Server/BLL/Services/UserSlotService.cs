@@ -15,7 +15,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 namespace BLL.Services
 {
-	public class UserSlotService : IUserSlotService
+    public class UserSlotService : IUserSlotService
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;

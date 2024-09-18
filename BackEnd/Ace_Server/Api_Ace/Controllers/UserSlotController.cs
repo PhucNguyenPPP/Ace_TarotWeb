@@ -1,11 +1,11 @@
-﻿using BLL.Interface;
+﻿using BLL.Services;
 using Common.DTO.General;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api_Ace.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class UserSlotController : ControllerBase
 	{
