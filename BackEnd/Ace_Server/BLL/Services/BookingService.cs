@@ -13,6 +13,7 @@ using Common.DTO.General;
 using Common.DTO.User;
 using DAL.Entities;
 using DAL.UnitOfWork;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BLL.Services
@@ -21,10 +22,13 @@ namespace BLL.Services
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        public BookingService(IMapper mapper, IUnitOfWork unitOfWork)
+        private readonly IVnPayService _vnPayService;
+        public BookingService(IMapper mapper, IUnitOfWork unitOfWork,
+            IVnPayService vnPayService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _vnPayService = vnPayService;
         }
 
         public async Task<bool> CreateBooking(BookingDTO bookingDTO)
@@ -32,6 +36,7 @@ namespace BLL.Services
             Random rand = new Random();
             var booking = _mapper.Map<Booking>(bookingDTO);
             booking.BookingId = Guid.NewGuid();
+            booking.CreatedDate = DateTime.Now;
             string num = "";
             var bookNum = _unitOfWork.Booking.GetAll();
             do
@@ -40,7 +45,7 @@ namespace BLL.Services
                 booking.BookingNumber = num;
             } while (bookNum.Any(c => c.BookingNumber == num));
             
-            booking.Status = true.ToString();
+            booking.Status = BookingStatus.NotPaid;
             var service = _unitOfWork.Service.GetAllByCondition(c => c.ServiceId == bookingDTO.ServiceId).Select(c => c.ServiceName).FirstOrDefault();
             var price = _unitOfWork.Service.GetAllByCondition(c => c.ServiceId == bookingDTO.ServiceId).Select(c => c.Price).FirstOrDefault();
             if (service == "Theo câu hỏi lẻ")
@@ -101,7 +106,6 @@ namespace BLL.Services
                 booking.EndTime = lastest;
             }
             
-
             await _unitOfWork.Booking.AddAsync(booking);
             return await _unitOfWork.SaveChangeAsync();
         }
@@ -161,6 +165,16 @@ namespace BLL.Services
                 }
             }
                     return new ResponseDTO("Check thành công", 200, true);
+        }
+
+        public async Task<bool> CheckBookingExist(Guid bookingId)
+        {
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == bookingId);
+            if (booking == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

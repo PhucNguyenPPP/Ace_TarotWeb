@@ -9,5 +9,7 @@ public partial class FormMeeting
 
     public string FormMeetingName { get; set; } = null!;
 
+    public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+
     public virtual ICollection<UserFormMeeting> UserFormMeetings { get; set; } = new List<UserFormMeeting>();
 }
