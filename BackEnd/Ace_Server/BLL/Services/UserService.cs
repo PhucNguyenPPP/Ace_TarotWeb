@@ -392,5 +392,15 @@ namespace BLL.Services
 			user.PasswordHash = passwordHash;
 			return await _unitOfWork.SaveChangeAsync();
         }
+
+        public async Task<bool> CheckUserExistById(Guid userId)
+        {
+           var user = await _unitOfWork.User.GetByCondition(c => c.UserId == userId);
+			if( user == null)
+			{
+				return false;
+			}
+			return true;
+        }
     }
 }

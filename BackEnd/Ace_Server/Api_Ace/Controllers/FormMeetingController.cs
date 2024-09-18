@@ -11,9 +11,11 @@ namespace Api_Ace.Controllers
     public class FormMeetingController : ControllerBase
     {
         private readonly IFormMeetingService _formMeetingService;
-        public FormMeetingController(IFormMeetingService formMeetingService)
+        private readonly IUserService _userService;
+        public FormMeetingController(IFormMeetingService formMeetingService, IUserService userService)
         {
             _formMeetingService = formMeetingService;
+            _userService = userService;
         }
         [HttpGet("form_meetings")]
         public async Task<IActionResult> GetAllFormMeeting()
@@ -32,6 +34,23 @@ namespace Api_Ace.Controllers
             }
 
             return Ok(responseDTO);
+        }
+
+        [HttpGet("form-meetings-tarot-reader")]
+        public async Task<IActionResult> GetAllFormMeetingTarotReader(Guid userId)
+        {
+            var checkExist = await _userService.CheckUserExistById(userId);
+            if (!checkExist)
+            {
+                return NotFound(new ResponseDTO("Tarot reader không tồn tại", 404, false));
+            }
+            var result = _formMeetingService.GetAllFormMeetingOfTarotReader(userId);
+            if(result.Count == 0)
+            {
+                return NotFound(new ResponseDTO("Tarot reader chưa đăng ký bất kỳ hình thức nào", 404, false));
+            }
+
+            return Ok(new ResponseDTO("Lấy các hình thức của tarot reader thành công", 200, true, result));
         }
     }
 }
