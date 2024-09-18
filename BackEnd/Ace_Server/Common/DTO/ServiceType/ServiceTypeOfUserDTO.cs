@@ -9,8 +9,7 @@ namespace Common.DTO.ServiceType
     public class ServiceTypeOfUserDTO
     {
         public Guid UserServiceTypeId { get; set; }
-
-
+        public Guid ServiceTypeId { get; set; }
         public string ServiceTypeName { get; set; }
     }
 }

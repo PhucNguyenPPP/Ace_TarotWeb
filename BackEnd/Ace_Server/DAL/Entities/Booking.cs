@@ -29,6 +29,8 @@ public partial class Booking
 
     public string Status { get; set; } = null!;
 
+    public Guid FormMeetingId { get; set; }
+
     public Guid CustomerId { get; set; }
 
     public Guid TarotReaderId { get; set; }
@@ -36,6 +38,8 @@ public partial class Booking
     public Guid ServiceId { get; set; }
 
     public virtual User Customer { get; set; } = null!;
+
+    public virtual FormMeeting FormMeeting { get; set; } = null!;
 
     public virtual Service Service { get; set; } = null!;
 

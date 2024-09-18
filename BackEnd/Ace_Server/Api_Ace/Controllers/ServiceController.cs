@@ -15,7 +15,7 @@ namespace Api_Ace.Controllers
 
             _service = service;
         }
-        [HttpPost("Service")]
+        [HttpGet("Service")]
         public async Task<IActionResult> GetAllService(Guid serviceTypeId)
         {
             ResponseDTO responseDTO = await _service.GetAllService(serviceTypeId);

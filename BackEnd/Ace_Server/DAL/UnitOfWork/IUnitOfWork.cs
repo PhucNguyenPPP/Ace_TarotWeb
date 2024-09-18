@@ -28,6 +28,7 @@ namespace DAL.UnitOfWork
         ISlotRepository Slot { get; }
         ITopicRepository Topic { get; }
         IServiceRepository Service { get; }
+        ITransactionRepository Transaction { get; }
 
     }
 }

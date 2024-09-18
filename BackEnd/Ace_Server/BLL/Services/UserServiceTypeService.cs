@@ -21,7 +21,7 @@ namespace BLL.Services
         public ResponseDTO GetAllServiceType(Guid userId)
         {
                 var serviceType = _unitOfWork.UserServiceType
-                .GetAllByCondition(x => x.UserId == userId)
+                .GetAllByCondition(x => x.UserId == userId && x.Status == true)
                 .Include(c=> c.ServiceType).ToList();
             if (serviceType.IsNullOrEmpty() || serviceType.Count() == 0)
             {

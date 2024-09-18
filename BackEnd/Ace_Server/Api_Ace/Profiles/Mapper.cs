@@ -44,7 +44,10 @@ namespace Api_Ace.Profiles
             CreateMap<UserServiceType, ServiceTypeOfUserDTO>()
             .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.ServiceType != null ? src.ServiceType.ServiceTypeName : "Unknown"))  // Handle nulls in AutoMapper
             .ReverseMap();
-            CreateMap<Booking,BookingDTO>().ReverseMap();
+            CreateMap<Booking, BookingDTO>().ReverseMap();
+            CreateMap<UserFormMeeting, FormMeetingOfReaderDTO>()
+                .ForMember(dest => dest.FormMeetingName, opt => opt.MapFrom(src => src.FormMeeting.FormMeetingName))
+                .ReverseMap();
 
             #endregion
         }

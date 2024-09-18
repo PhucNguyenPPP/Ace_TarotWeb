@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Common.DTO.Booking;
 using Common.DTO.General;
 using Common.DTO.User;
+using Microsoft.AspNetCore.Http;
 
 namespace BLL.Interface
 {
@@ -13,5 +14,6 @@ namespace BLL.Interface
     {
         Task<bool> CreateBooking(BookingDTO bookingDTO);
         Task<ResponseDTO> CheckValidationCreateBooking(BookingDTO bookingDTO);
+        Task<bool> CheckBookingExist(Guid bookingId);
     }
 }

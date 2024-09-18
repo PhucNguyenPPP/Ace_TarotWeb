@@ -9,9 +9,11 @@ public partial class Transaction
 
     public string? TransactionInfo { get; set; }
 
-    public decimal? TransactionNumber { get; set; }
+    public string? TransactionNumber { get; set; }
 
     public string PaymentMethod { get; set; } = null!;
+
+    public DateTime CreatedDate { get; set; }
 
     public string Status { get; set; } = null!;
 

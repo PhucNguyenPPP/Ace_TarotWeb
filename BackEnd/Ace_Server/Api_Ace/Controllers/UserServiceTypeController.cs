@@ -14,7 +14,7 @@ namespace Api_Ace.Controllers
         {
             _userServiceTypeService = userServiceTypeService;
         }
-        [HttpPost("user_service_type")]
+        [HttpGet("user_service_type")]
         public async Task<IActionResult> GetAllServiceType(Guid userId)
         {
             ResponseDTO responseDTO = _userServiceTypeService.GetAllServiceType(userId);
