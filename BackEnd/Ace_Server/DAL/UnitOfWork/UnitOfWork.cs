@@ -32,6 +32,7 @@ namespace DAL.UnitOfWork
             Slot = new SlotRepository(_context);
 		    Topic = new TopicRepository(_context);
             Service = new ServiceRepository(_context);
+            Transaction = new TransactionRepository(_context);
         }
 
        
@@ -71,5 +72,7 @@ namespace DAL.UnitOfWork
         public ITopicRepository Topic { get; private set; }
 
         public IServiceRepository Service { get; private set; }
+
+        public ITransactionRepository Transaction { get; private set; } 
     }
 }
