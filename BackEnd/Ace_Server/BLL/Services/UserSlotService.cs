@@ -59,10 +59,26 @@ namespace BLL.Services
 					{
 						int startHour = slot.StartTime.Hour;
 						int startMin = slot.StartTime.Minute;
-						string startString = $"{startHour}:{startMin}";
+						string startString;
+						if (startMin == 0)
+						{
+							startString = $"{startHour}:{startMin}0";
+						}
+						else
+						{
+							startString = $"{startHour}:{startMin}";
+						}
 						int endHour = slot.EndTime.Hour;
 						int endMin = slot.EndTime.Minute;
-						string endString = $"{endHour}:{endMin}";
+						string endString;
+						if(endMin == 0)
+						{
+							endString = $"{endHour}:{endMin}0";
+						}
+						else
+						{
+							endString = $"{endHour}:{endMin}";
+						}
 						if (!startString.IsNullOrEmpty() & !endString.IsNullOrEmpty())
 						{
 							item.StartTime = startString;
