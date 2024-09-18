@@ -48,7 +48,7 @@ namespace BLL.Services
 		public async Task<ResponseDTO> GetSlotOfDate(DateOnly date, Guid guid)
 		{
 			var slotList = _unitOfWork.Slot.GetAllByCondition(s => s.StartTime.Date == date.ToDateTime(TimeOnly.MinValue).Date).Select(s => s.SlotId).ToList();
-			var userSlotList = _unitOfWork.UserSlot.GetAllByCondition(uslot => slotList.Contains(uslot.SlotId));
+			var userSlotList = _unitOfWork.UserSlot.GetAllByCondition(uslot => slotList.Contains(uslot.SlotId)).OrderBy(c => c.Slot.StartTime);
 			var listDTO = _mapper.Map<List<UserSlotOfDateDTO>>(userSlotList);
 			if (listDTO.Count() > 0)
 			{

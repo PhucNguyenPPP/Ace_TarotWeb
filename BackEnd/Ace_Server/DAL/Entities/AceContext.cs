@@ -63,14 +63,15 @@ public partial class AceContext : DbContext
     {
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.HasKey(e => e.BookingId).HasName("PK__Booking__73951AED3E7EBAB9");
+            entity.HasKey(e => e.BookingId).HasName("PK__Booking__73951AED8EA508F7");
 
             entity.ToTable("Booking");
 
-            entity.HasIndex(e => e.BookingNumber, "UQ__Booking__AAC320BF28478FCD").IsUnique();
+            entity.HasIndex(e => e.BookingNumber, "UQ__Booking__AAC320BF53A11486").IsUnique();
 
             entity.Property(e => e.BookingId).ValueGeneratedNever();
             entity.Property(e => e.BookingNumber).HasMaxLength(100);
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.EndTime).HasColumnType("datetime");
             entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.StartTime).HasColumnType("datetime");
@@ -94,7 +95,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Card>(entity =>
         {
-            entity.HasKey(e => e.CardId).HasName("PK__Card__55FECDAE719AD91E");
+            entity.HasKey(e => e.CardId).HasName("PK__Card__55FECDAED9C94673");
 
             entity.ToTable("Card");
 
@@ -109,7 +110,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<CardPosition>(entity =>
         {
-            entity.HasKey(e => e.CardPositionId).HasName("PK__CardPosi__7F332161FBE7012C");
+            entity.HasKey(e => e.CardPositionId).HasName("PK__CardPosi__7F33216196F9C3A5");
 
             entity.ToTable("CardPosition");
 
@@ -133,7 +134,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<CardType>(entity =>
         {
-            entity.HasKey(e => e.CardTypeId).HasName("PK__CardType__AB0A3D11CF9EE7ED");
+            entity.HasKey(e => e.CardTypeId).HasName("PK__CardType__AB0A3D11E5A7BA5B");
 
             entity.ToTable("CardType");
 
@@ -143,7 +144,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<FormMeeting>(entity =>
         {
-            entity.HasKey(e => e.FormMeetingId).HasName("PK__FormMeet__CFA8C8B0EA0C64DF");
+            entity.HasKey(e => e.FormMeetingId).HasName("PK__FormMeet__CFA8C8B0CB4298E1");
 
             entity.ToTable("FormMeeting");
 
@@ -153,7 +154,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Language>(entity =>
         {
-            entity.HasKey(e => e.LanguageId).HasName("PK__Language__B93855AB50D91976");
+            entity.HasKey(e => e.LanguageId).HasName("PK__Language__B93855AB67597B31");
 
             entity.ToTable("Language");
 
@@ -163,7 +164,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Message>(entity =>
         {
-            entity.HasKey(e => e.MessageId).HasName("PK__Message__C87C0C9C21DDF290");
+            entity.HasKey(e => e.MessageId).HasName("PK__Message__C87C0C9C8655CA24");
 
             entity.ToTable("Message");
 
@@ -183,7 +184,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Position>(entity =>
         {
-            entity.HasKey(e => e.PositionId).HasName("PK__Position__60BB9A79A8F8F6D9");
+            entity.HasKey(e => e.PositionId).HasName("PK__Position__60BB9A796DC8ACC2");
 
             entity.ToTable("Position");
 
@@ -193,7 +194,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.HasKey(e => e.RefreshTokenId).HasName("PK__RefreshT__F5845E3916417693");
+            entity.HasKey(e => e.RefreshTokenId).HasName("PK__RefreshT__F5845E398074FD2A");
 
             entity.ToTable("RefreshToken");
 
@@ -209,7 +210,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE1AD47E3C70");
+            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE1A96583B95");
 
             entity.ToTable("Role");
 
@@ -219,7 +220,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Service>(entity =>
         {
-            entity.HasKey(e => e.ServiceId).HasName("PK__Service__C51BB00A55DE53FB");
+            entity.HasKey(e => e.ServiceId).HasName("PK__Service__C51BB00A855DB866");
 
             entity.ToTable("Service");
 
@@ -235,7 +236,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<ServiceType>(entity =>
         {
-            entity.HasKey(e => e.ServiceTypeId).HasName("PK__ServiceT__8ADFAA6CADB96395");
+            entity.HasKey(e => e.ServiceTypeId).HasName("PK__ServiceT__8ADFAA6C9A9005DE");
 
             entity.ToTable("ServiceType");
 
@@ -245,7 +246,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Slot>(entity =>
         {
-            entity.HasKey(e => e.SlotId).HasName("PK__Slot__0A124AAF1A85584E");
+            entity.HasKey(e => e.SlotId).HasName("PK__Slot__0A124AAFAB9C154E");
 
             entity.ToTable("Slot");
 
@@ -256,7 +257,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Topic>(entity =>
         {
-            entity.HasKey(e => e.TopicId).HasName("PK__Topic__022E0F5DE16B95C5");
+            entity.HasKey(e => e.TopicId).HasName("PK__Topic__022E0F5DF6D3B06A");
 
             entity.ToTable("Topic");
 
@@ -266,7 +267,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A6BA59D17A0");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A6B13355E02");
 
             entity.ToTable("Transaction");
 
@@ -283,7 +284,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4C9963DDB3");
+            entity.HasKey(e => e.UserId).HasName("PK__User__1788CC4C0F7C70E7");
 
             entity.ToTable("User");
 
@@ -307,7 +308,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<UserFormMeeting>(entity =>
         {
-            entity.HasKey(e => e.UserFormMeetingId).HasName("PK__UserForm__3785D33C28B29E9E");
+            entity.HasKey(e => e.UserFormMeetingId).HasName("PK__UserForm__3785D33C51659FF1");
 
             entity.ToTable("UserFormMeeting");
 
@@ -326,7 +327,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<UserLanguage>(entity =>
         {
-            entity.HasKey(e => e.UserLanguageId).HasName("PK__UserLang__8086CE3904DABC43");
+            entity.HasKey(e => e.UserLanguageId).HasName("PK__UserLang__8086CE3951611B8B");
 
             entity.ToTable("UserLanguage");
 
@@ -345,7 +346,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<UserServiceType>(entity =>
         {
-            entity.HasKey(e => e.UserServiceTypeId).HasName("PK__UserServ__090AC700973D3E87");
+            entity.HasKey(e => e.UserServiceTypeId).HasName("PK__UserServ__090AC700FC7C91C2");
 
             entity.ToTable("UserServiceType");
 
@@ -364,7 +365,7 @@ public partial class AceContext : DbContext
 
         modelBuilder.Entity<UserSlot>(entity =>
         {
-            entity.HasKey(e => e.UserSlotId).HasName("PK__UserSlot__2DFB111E6C72912F");
+            entity.HasKey(e => e.UserSlotId).HasName("PK__UserSlot__2DFB111EB9118D36");
 
             entity.ToTable("UserSlot");
 

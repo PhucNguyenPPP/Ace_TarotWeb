@@ -9,6 +9,8 @@ public partial class Booking
 
     public string BookingNumber { get; set; } = null!;
 
+    public DateTime CreatedDate { get; set; }
+
     public decimal Price { get; set; }
 
     public int? BehaviorRating { get; set; }
