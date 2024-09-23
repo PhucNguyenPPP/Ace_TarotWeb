@@ -31,7 +31,7 @@ namespace BLL.Services
             _vnPayService = vnPayService;
         }
 
-        public async Task<bool> CreateBooking(BookingDTO bookingDTO)
+        public async Task<ResponseDTO> CreateBooking(BookingDTO bookingDTO)
         {
             Random rand = new Random();
             var booking = _mapper.Map<Booking>(bookingDTO);
@@ -107,7 +107,14 @@ namespace BLL.Services
             }
             
             await _unitOfWork.Booking.AddAsync(booking);
-            return await _unitOfWork.SaveChangeAsync();
+            var result = await _unitOfWork.SaveChangeAsync();
+            if (result)
+            {
+                return new ResponseDTO("Tạo lịch thành công", 200, true, booking.BookingId);
+            } else
+            {
+                return new ResponseDTO("Tạo lịch không thành công", 400, false, null);
+            }
         }
 
         public async Task<ResponseDTO> CheckValidationCreateBooking(BookingDTO bookingDTO)

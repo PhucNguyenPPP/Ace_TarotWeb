@@ -1,13 +1,13 @@
 const baseUrl = import.meta.env.VITE_API_HOST;
 
-export const GetAllFormMeeting = async () => {
+export const CreatePaymentUrl = async (bookingId) => {
     try {
-        const url = `${baseUrl}/api/FormMeeting/form_meetings`;
+        const url = `${baseUrl}/api/Payment/vnpay-payment?bookingId=${bookingId}`;
         const request = {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
-            },
+            }
         };
         const response = await fetch(url, request);
         return response;
@@ -16,14 +16,15 @@ export const GetAllFormMeeting = async () => {
     }
 };
 
-export const GetAllFormMeetingOfTarotReader = async (userId) => {
+export const HandlePaymentResponse = async (data) => {
     try {
-        const url = `${baseUrl}/api/FormMeeting/form-meetings-tarot-reader?userId=${userId}`;
+        const url = `${baseUrl}/api/Payment/response-payment`;
         const request = {
-            method: "GET",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
+            body: JSON.stringify(data)
         };
         const response = await fetch(url, request);
         return response;

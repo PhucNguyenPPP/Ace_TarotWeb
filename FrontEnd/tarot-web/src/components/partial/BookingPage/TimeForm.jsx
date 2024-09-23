@@ -21,6 +21,11 @@ import { Checkbox, CircularProgress } from '@mui/material';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { useEffect } from 'react';
 import { GetDateHasSlotOfMonth, GetSlotOfDate } from '../../../api/SlotApi';
+import { toast } from 'react-toastify';
+import useAuth from '../../../hooks/useAuth';
+import { CreateBooking } from '../../../api/BookingApi';
+import { CreatePaymentUrl } from '../../../api/PaymentApi';
+import { useNavigate } from 'react-router-dom';
 
 dayjs.locale('vi'); // Set the global locale to Vietnamese
 
@@ -34,7 +39,7 @@ const CustomMonthViewCell = styled(MonthView.TimeTableCell)(({ theme, startDate,
     };
 });
 
-function TimeForm({ tarotReaderData }) {
+function TimeForm({ tarotReaderData, serviceData }) {
     const initialDate = dayjs();
     const [currentDate, setCurrentDate] = useState(initialDate);
     const [openPopover, setOpenPopover] = useState(false);
@@ -42,19 +47,19 @@ function TimeForm({ tarotReaderData }) {
     const [dateHasSlot, setDateHasSlot] = useState([]);
     const [slotOfDate, setSlotOfDate] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const timeslots = Array.from({ length: 48 }, (_, i) => `Timeslot ${i + 1}`);
+    const [generateSlots, setGenerateSlots] = useState([]);
+    const [selectedSlot, setSelectedSlot]= useState([]);
+    const { user } = useAuth();
 
     const handleClose = () => {
         setOpenPopover(false);
     };
 
-    // Custom TimeTableCell component
     const TimeTableCell = ({ startDate, ...restProps }) => {
         const handleClick = () => {
-
+            setSelectedSlot([]);
             if (dateHasSlot.includes(dayjs(startDate).format('YYYY-MM-DD'))) {
                 if (startDate) {
-
                     const fetchSlotOfDate = async () => {
                         const response = await GetSlotOfDate(dayjs(startDate).format('YYYY-MM-DD'), tarotReaderData.userId);
                         setSelectedDate(dayjs(startDate).format('DD-MM-YYYY'))
@@ -67,6 +72,8 @@ function TimeForm({ tarotReaderData }) {
                     };
 
                     fetchSlotOfDate();
+                    setGenerateSlots([]);
+                    generateTimeSlots();
                     setOpenPopover(true);
                 } else {
                     console.log('No date available');
@@ -79,12 +86,11 @@ function TimeForm({ tarotReaderData }) {
                 {...restProps}
                 startDate={startDate}
                 onClick={handleClick}
-                dateHasSlot={dateHasSlot} // Pass dates with slots to the cell
+                dateHasSlot={dateHasSlot}
             />
         );
     };
 
-    // Fetch dates that have slots when the current date changes
     useEffect(() => {
         const fetchDateHasSlotOfMonth = async () => {
             setIsLoading(true);
@@ -100,16 +106,144 @@ function TimeForm({ tarotReaderData }) {
             }
             setIsLoading(false);
         };
-
+        setSelectedSlot([]);
         fetchDateHasSlotOfMonth();
     }, [currentDate]);
+
+    const generateTimeSlots = () => {
+        let slots = [];
+        let time = dayjs().startOf('day');
+        for (let i = 0; i < 48; i++) {
+            slots.push({
+                timeRange: `${time.format('H:mm')} - ${time.add(30, 'minute').format('H:mm')}`,
+                time: time.format('H:mm')
+            });
+            time = time.add(30, 'minute');
+        }
+        setGenerateSlots(slots);
+    };
+
+    const isSlotAvailable = (startTime) => {
+        return slotOfDate.some(slot => slot.startTime === startTime && slot.status === true);
+    };
+
+    const getUserSlotId = (startTime) => {
+        var slot =  slotOfDate.find(c => c.startTime === startTime && c.status === true);
+        return slot.userSlotId
+    }
+
+    const handleChooseSlot = (event) => {
+        if (event.target.checked) {
+          setSelectedSlot((prevSlots) => [...prevSlots, event.target.value]);
+        } else {
+            setSelectedSlot((prevSlots) => prevSlots.filter((slot) => slot !== event.target.value));
+        }
+      };
+
+    const handleClickPayment = () => {
+        var slotAmount = Math.ceil(serviceData.serviceDuration / 30)
+        if(selectedSlot.length !== slotAmount){
+            toast.error("Vui lòng chọn " + slotAmount + " slot" );
+            return;
+        }
+
+        if (selectedSlot.length > 1) {
+            const selectedSlotsDetails = selectedSlot
+                .map((userSlotId) => slotOfDate.find((slot) => slot.userSlotId === userSlotId))
+                .sort((a, b) => dayjs(a.startTime, 'H:mm').diff(dayjs(b.startTime, 'H:mm')));
+    
+            let areSlotsSequential = true;
+            for (let i = 1; i < selectedSlotsDetails.length; i++) {
+                const prevSlotEndTime = dayjs(selectedSlotsDetails[i - 1].endTime, 'H:mm');
+                const currentSlotStartTime = dayjs(selectedSlotsDetails[i].startTime, 'H:mm');
+    
+                if (!currentSlotStartTime.isSame(prevSlotEndTime)) {
+                    areSlotsSequential = false;
+                    break;
+                }
+            }
+    
+            if (!areSlotsSequential) {
+                toast.error("Vui lòng chọn các slot liền kề nhau.");
+                return;
+            }
+        }
+
+        if(user?.userId){
+            const fetchCreateBooking = async () => {
+                setIsLoading(true);
+                var data = {};
+                if(serviceData.serviceName === "Theo câu hỏi lẻ"){
+                    data = {
+                        customerId: user.userId,
+                        tarotReaderId: tarotReaderData.userId,
+                        serviceId: serviceData.serviceId,
+                        formMeetingId: serviceData.formMeetingId,
+                        questionAmount: serviceData.questionAmount,
+                        userSlotId: selectedSlot
+                    }
+                } else {
+                    data = {
+                        customerId: user.userId,
+                        tarotReaderId: tarotReaderData.userId,
+                        serviceId: serviceData.serviceId,
+                        formMeetingId: serviceData.formMeetingId,
+                        userSlotId: selectedSlot
+                    }
+                } 
+                const response = await CreateBooking(data);
+                setOpenPopover(false);
+                if (response.ok) {
+                    const responseData = await response.json();
+                    toast.success("Tạo lịch hẹn thành công")
+                    setTimeout(() => {
+                    }, 1000);
+                    
+                    const fetchCreatePaymentUrl = async () => {
+                        const response = await CreatePaymentUrl(responseData.result);
+                        const responseDataCreateUrl = await response.json();
+                        if (response.ok) {
+                            setIsLoading(false);
+                            window.location.href = responseDataCreateUrl.result;
+                        } else {
+                            throw new Error('Failed to fetch create payment url');
+                        }
+                    };
+            
+                    fetchCreatePaymentUrl();
+
+                } else {
+                    throw new Error('Failed to fetch create booking');
+                }
+            };
+    
+            fetchCreateBooking();
+        } else {
+            toast.error("Vui lòng đăng nhập để có thể đặt lịch");
+        }
+
+
+    }
+
 
     return (
         <div>
             {isLoading ?
-                <div className='flex justify-center'>
+                <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100%',
+                    backgroundColor: 'rgba(128, 128, 128, 0.5)',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100vw',
+                    zIndex: 1000,
+                }}>
                     <CircularProgress />
-                </div> 
+                </div>
                 :
                 <>
                     <div>
@@ -192,17 +326,18 @@ function TimeForm({ tarotReaderData }) {
                                     padding: '5px 30px',
                                     borderRadius: '30px',
                                 }}
+                                onClick={handleClickPayment}
                             >
                                 THANH TOÁN <KeyboardArrowRightIcon />
                             </button>
                         </div>
                         <div className='flex flex-wrap justify-center'>
-                            {timeslots.map((slot, index) => (
+                            {generateSlots.map((slot, index) => (
                                 <div
                                     key={index}
                                     className="w-full md:w-1/4"
                                     style={{
-                                        backgroundColor: '#5900E5',
+                                        backgroundColor: isSlotAvailable(slot.time) ? '#5900E5' : 'gray',
                                         color: 'white',
                                         textAlign: 'center',
                                         borderRadius: '20px',
@@ -211,8 +346,13 @@ function TimeForm({ tarotReaderData }) {
                                         marginTop: '15px',
                                     }}
                                 >
-                                    <p className="font-extrabold">10:00 - 10:30</p>
-                                    <Checkbox color='info' />
+                                    <p className="font-extrabold">{slot.timeRange}</p>
+                                    <Checkbox
+                                        color='info'
+                                        disabled={!isSlotAvailable(slot.time)}
+                                        value={isSlotAvailable(slot.time) ? getUserSlotId(slot.time) : ''}
+                                        onChange={(event) => handleChooseSlot(event)}
+                                    />
                                 </div>
                             ))}
                         </div>

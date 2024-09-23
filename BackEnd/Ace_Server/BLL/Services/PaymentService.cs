@@ -23,7 +23,7 @@ namespace BLL.Services
         }
         public async Task<string> CreatePaymentVNPayRequest(Guid bookingId, HttpContext context)
         {
-            var booking = _unitOfWork.Booking.GetByCondition(c => c.BookingId == bookingId);
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == bookingId);
             if (booking == null)
             {
                 return string.Empty;
@@ -58,14 +58,14 @@ namespace BLL.Services
 
         public async Task<bool> HandlePaymentResponse(VnPayResponseDTO responseDTO)
         {
-            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == responseDTO.BoookingId);
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingNumber == responseDTO.BookingNumber);
             if (booking == null)
             {
                 return false;
             }
 
             var unpaidTransList = _unitOfWork.Transaction
-                .GetAllByCondition(c => c.BookingId == responseDTO.BoookingId
+                .GetAllByCondition(c => c.BookingId == booking.BookingId
                 && c.Status == PaymentConstant.PendingStatus);
 
             var unpaidTrans = (unpaidTransList != null && unpaidTransList.Any()) ? unpaidTransList.First() : null;
