@@ -33,6 +33,7 @@ namespace DAL.UnitOfWork
 		    Topic = new TopicRepository(_context);
             Service = new ServiceRepository(_context);
             Transaction = new TransactionRepository(_context);
+            Message = new MessageRepository(_context);
         }
 
        
@@ -74,5 +75,6 @@ namespace DAL.UnitOfWork
         public IServiceRepository Service { get; private set; }
 
         public ITransactionRepository Transaction { get; private set; } 
+        public IMessageRepository Message { get; private set; }
     }
 }

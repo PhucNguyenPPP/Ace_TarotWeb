@@ -29,6 +29,7 @@ namespace DAL.UnitOfWork
         ITopicRepository Topic { get; }
         IServiceRepository Service { get; }
         ITransactionRepository Transaction { get; }
+        IMessageRepository Message { get; }
 
     }
 }
