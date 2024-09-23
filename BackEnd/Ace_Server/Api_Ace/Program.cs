@@ -27,8 +27,14 @@ builder.Services.AddScoped<ISlotService, SlotService>();
 builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<IFormMeetingService, FormMeetingService>();
-
 builder.Services.AddScoped<IUserSlotService, UserSlotService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IUserServiceTypeService, UserServiceTypeService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddAutoMapper(typeof(Program).Assembly);

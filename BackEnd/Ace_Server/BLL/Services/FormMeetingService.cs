@@ -8,7 +8,9 @@ using BLL.Interface;
 using Common.DTO.FormMeeting;
 using Common.DTO.General;
 using Common.DTO.Topic;
+using DAL.Entities;
 using DAL.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BLL.Services
@@ -32,6 +34,16 @@ namespace BLL.Services
             }
             var list = _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetings);
             return new ResponseDTO("Hiện hình thức xem thành công", 200, true, list);
+        }
+
+        public List<FormMeetingOfReaderDTO> GetAllFormMeetingOfTarotReader(Guid userId)
+        {
+            var formMeetingTarotReader = _unitOfWork.UserFormMeeting
+                .GetAllByCondition(c => c.UserId == userId)
+                .Include(c => c.FormMeeting)
+                .ToList();
+
+            return _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetingTarotReader);
         }
     }
 }

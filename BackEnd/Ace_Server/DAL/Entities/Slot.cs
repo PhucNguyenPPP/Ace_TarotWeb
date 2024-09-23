@@ -13,7 +13,5 @@ public partial class Slot
 
     public bool Status { get; set; }
 
-    public virtual ICollection<BookingSlot> BookingSlots { get; set; } = new List<BookingSlot>();
-
     public virtual ICollection<UserSlot> UserSlots { get; set; } = new List<UserSlot>();
 }

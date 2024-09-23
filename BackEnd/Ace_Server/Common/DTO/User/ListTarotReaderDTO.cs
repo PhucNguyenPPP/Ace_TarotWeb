@@ -13,6 +13,6 @@ namespace Common.DTO.User
 		public int? RowsPerPages { get; set; }
 		public int? TotalCount { get; set; }
 		public int? TotalPages { get; set; }
-		public PagedList<TarotReaderDetailDTO>? TarotReaderDetailDTOs { get; set; }	
+		public PagedList<UserDetailDTO>? TarotReaderDetailDTOs { get; set; }	
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Common.DTO.General;
+﻿using Common.DTO.Email;
+using Common.DTO.General;
 using Common.DTO.User;
 using DAL.Entities;
 using System;
@@ -19,9 +20,14 @@ namespace BLL.Interface
         bool CheckUserNameExist(string userName);
         bool CheckEmailExist(string email);
         bool CheckPhoneExist(string phone);
-        Task<ResponseDTO> GetTarotReaderDetailById(Guid userId);
+        Task<ResponseDTO> GetUserDetailById(Guid userId);
 		Task<ResponseDTO> GetTarotReader(string? readerName, int pageNumber, int rowsPerpage, List<Guid>? filterLanguages, String? gender, List<Guid>? filterForming);
         Task<bool> SignUpReader(SignUpReaderRequestDTO signUpReaderRequestDTO);
         Task<ResponseDTO> CheckValidationSignUpReader(SignUpReaderRequestDTO signUpReaderRequestDTO);
+        Task<User?> GetUserByEmail (string email);
+        Task<bool> SetOtp(string email, OtpCodeDTO model);
+        Task<bool> VerifyingOtp(string email, string otp);
+        Task<bool> ChangePassword(ForgotPasswordDTO model);
+        Task<bool> CheckUserExistById(Guid userId);
     }
 }

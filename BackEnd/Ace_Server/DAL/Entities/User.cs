@@ -37,6 +37,10 @@ public partial class User
 
     public string? MeetLink { get; set; }
 
+    public int? OtpCode { get; set; }
+
+    public DateTime? OtpExpiredTime { get; set; }
+
     public bool Status { get; set; }
 
     public Guid RoleId { get; set; }
@@ -44,6 +48,10 @@ public partial class User
     public virtual ICollection<Booking> BookingCustomers { get; set; } = new List<Booking>();
 
     public virtual ICollection<Booking> BookingTarotReaders { get; set; } = new List<Booking>();
+
+    public virtual ICollection<Message> MessageReceiveUsers { get; set; } = new List<Message>();
+
+    public virtual ICollection<Message> MessageSendUsers { get; set; } = new List<Message>();
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 

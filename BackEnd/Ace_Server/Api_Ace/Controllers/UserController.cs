@@ -38,7 +38,7 @@ namespace Api_Ace.Controllers
 		[HttpGet("reader-detail")]
 		public async Task<IActionResult> ViewTarotReaderDetail([FromQuery] Guid userId)
 		{
-			ResponseDTO responseDTO = await _userService.GetTarotReaderDetailById(userId);
+			ResponseDTO responseDTO = await _userService.GetUserDetailById(userId);
 			if (responseDTO.IsSuccess == false)
 			{
 				if (responseDTO.StatusCode == 400)

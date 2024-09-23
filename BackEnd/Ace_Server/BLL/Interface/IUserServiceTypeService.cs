@@ -7,8 +7,8 @@ using Common.DTO.General;
 
 namespace BLL.Interface
 {
-	public interface IUserSlotService
-	{
-		Task<ResponseDTO> PickSlot(List<Guid> slotIDs, Guid userID);
-	}
+    public interface IUserServiceTypeService
+    {
+        ResponseDTO GetAllServiceType(Guid userId);
+    }
 }

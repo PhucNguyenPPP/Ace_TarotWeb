@@ -22,6 +22,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Common.DTO.Email;
 
 namespace BLL.Services
 {
@@ -187,7 +188,7 @@ namespace BLL.Services
 					var forms = _unitOfWork.FormMeeting.GetAllByCondition(c => filterForming.Contains(c.FormMeetingId));
 					if (forms.Any())
 					{
-						List<Guid> guids = _unitOfWork.UserFormMeeting.GetAllByCondition(k => filterForming.Contains(k.UserId)).Select(u => u.UserId).ToList();
+						List<Guid> guids = _unitOfWork.UserFormMeeting.GetAllByCondition(k => filterForming.Contains(k.FormMeetingId)).Select(u => u.UserId).ToList();
 						list = list.Where(c => guids.Contains(c.UserId));
 					}
 				}
@@ -202,7 +203,7 @@ namespace BLL.Services
 				{
 					return new ResponseDTO("Không tìm được Tarot Reader trùng khớp thông tin", 400, false);
 				}		
-				var listDTO = _mapper.Map<List<TarotReaderDetailDTO>>(list);
+				var listDTO = _mapper.Map<List<UserDetailDTO>>(list);
 				foreach (var item in listDTO)
 				{
 					//language
@@ -221,7 +222,7 @@ namespace BLL.Services
 						item.FormMeetingOfReaderDTOs = _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetings);
 					}
 				}
-				var finalList = PagedList<TarotReaderDetailDTO>.ToPagedList(listDTO.AsQueryable(), pageNumber, rowsPerpage);
+				var finalList = PagedList<UserDetailDTO>.ToPagedList(listDTO.AsQueryable(), pageNumber, rowsPerpage);
 				ListTarotReaderDTO listTarotReaderDTO = new ListTarotReaderDTO();
 				listTarotReaderDTO.TarotReaderDetailDTOs = finalList;
 				listTarotReaderDTO.CurrentPage = pageNumber;
@@ -242,49 +243,51 @@ namespace BLL.Services
 			return result;
 		}
 
-		public async Task<ResponseDTO> GetTarotReaderDetailById(Guid userId)
+		public async Task<ResponseDTO> GetUserDetailById(Guid userId)
 		{
 			var role = await GetReaderRole();
-			var tarotReader = await _unitOfWork.User.GetByCondition(c => c.UserId == userId && c.RoleId.Equals(role.RoleId));
-			if (tarotReader == null)
+			var user = await _unitOfWork.User.GetByCondition(c => c.UserId == userId);
+			if (user == null)
 			{
-				return new ResponseDTO("Không tìm thấy Tarot Reader", 404, false);
+				return new ResponseDTO("Không tìm thấy người dùng", 400, false);
 			}
-			TarotReaderDetailDTO tarotReaderDetailDTO = new TarotReaderDetailDTO();
-			tarotReaderDetailDTO = _mapper.Map<TarotReaderDetailDTO>(tarotReader);
+			UserDetailDTO userDetailDTO = new UserDetailDTO();
+			userDetailDTO = _mapper.Map<UserDetailDTO>(user);
 			//language
-			var userLanguages = _unitOfWork.UserLanguage.GetAllByCondition(c => c.UserId == userId);
-			if (userLanguages != null && userLanguages.Count() > 0)
+			if (userDetailDTO.RoleId == role.RoleId)
 			{
-				var languages = _unitOfWork.Language.GetAllByCondition(language => userLanguages.Any(ul => ul.LanguageId.Equals(language.LanguageId)));
-				tarotReaderDetailDTO.LanguageOfReader = _mapper.Map<List<LanguageOfReaderDTO>>(languages);
-			}
+				var userLanguages = _unitOfWork.UserLanguage.GetAllByCondition(c => c.UserId == userId);
+				if (userLanguages != null && userLanguages.Count() > 0)
+				{
+					var languages = _unitOfWork.Language.GetAllByCondition(language => userLanguages.Any(ul => ul.LanguageId.Equals(language.LanguageId)));
+					userDetailDTO.LanguageOfReader = _mapper.Map<List<LanguageOfReaderDTO>>(languages);
+				}
 
-			//serviceType
-			var userServiceTypes = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == userId);
-			if (userServiceTypes != null && userServiceTypes.Any())
-			{
-				var serviceTypes = _unitOfWork.ServiceType.GetAllByCondition(serviceType => userServiceTypes.Any(st => st.ServiceTypeId.Equals(serviceType.ServiceTypeId)));
-				tarotReaderDetailDTO.serviceTypeDTOs = _mapper.Map<List<ServiceTypeDTO>>(serviceTypes);
-			}
+				//serviceType
+				var userServiceTypes = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == userId);
+				if (userServiceTypes != null && userServiceTypes.Any())
+				{
+					var serviceTypes = _unitOfWork.ServiceType.GetAllByCondition(serviceType => userServiceTypes.Any(st => st.ServiceTypeId.Equals(serviceType.ServiceTypeId)));
+					userDetailDTO.serviceTypeDTOs = _mapper.Map<List<ServiceTypeDTO>>(serviceTypes);
+				}
 
-			//FormMeeting
-			var userFormMeetings = _unitOfWork.UserFormMeeting.GetAllByCondition(c => c.UserId == userId);
-			if (userFormMeetings != null && userFormMeetings.Any())
-			{
-				var formMeetings = _unitOfWork.FormMeeting.GetAllByCondition(formMeeting => userFormMeetings.Any(fm => fm.FormMeetingId.Equals(formMeeting.FormMeetingId)));
-				tarotReaderDetailDTO.FormMeetingOfReaderDTOs = _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetings);
-			}
+				//FormMeeting
+				var userFormMeetings = _unitOfWork.UserFormMeeting.GetAllByCondition(c => c.UserId == userId);
+				if (userFormMeetings != null && userFormMeetings.Any())
+				{
+					var formMeetings = _unitOfWork.FormMeeting.GetAllByCondition(formMeeting => userFormMeetings.Any(fm => fm.FormMeetingId.Equals(formMeeting.FormMeetingId)));
+					userDetailDTO.FormMeetingOfReaderDTOs = _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetings);
+				}
 
-			//Slot
-			var userSlots = _unitOfWork.UserSlot.GetAllByCondition(c => c.UserId == userId);
-			if (userSlots != null && userSlots.Any())
-			{
-				var slots = _unitOfWork.Slot.GetAllByCondition(slot => userSlots.Any(s => s.SlotId.Equals(slot.SlotId)));
-				tarotReaderDetailDTO.slotDTOs = _mapper.Map<List<SlotDTO>>(slots);
+				//Slot
+				var userSlots = _unitOfWork.UserSlot.GetAllByCondition(c => c.UserId == userId);
+				if (userSlots != null && userSlots.Any())
+				{
+					var slots = _unitOfWork.Slot.GetAllByCondition(slot => userSlots.Any(s => s.SlotId.Equals(slot.SlotId)));
+					userDetailDTO.slotDTOs = _mapper.Map<List<SlotDTO>>(slots);
+				}
 			}
-
-			return new ResponseDTO("Lấy thông tin chi tiết của Tarot Reader thành công", 200, true, tarotReaderDetailDTO);
+			return new ResponseDTO("Lấy thông tin chi tiết của Tarot Reader thành công", 200, true, userDetailDTO);
 		}
 
         public async Task<bool> SignUpReader(SignUpReaderRequestDTO signUpReaderRequestDTO)
@@ -343,6 +346,61 @@ namespace BLL.Services
             }
 
             return new ResponseDTO("Check thành công", 200, true);
+        }
+
+        public Task<User?> GetUserByEmail(string email)
+        {
+            return _unitOfWork.User.GetByCondition(c => c.Email == email);
+        }
+
+        public async Task<bool> SetOtp(string email, OtpCodeDTO model)
+        {
+			var user =  await GetUserByEmail(email);
+            if (user != null)
+            {
+				user.OtpCode = Int32.Parse(model.OTPCode);
+				user.OtpExpiredTime = model.ExpiredTime;
+				return await _unitOfWork.SaveChangeAsync();
+            }
+			return false;
+        }
+
+        public async Task<bool> VerifyingOtp(string email, string otp)
+        {
+            var user = await GetUserByEmail(email);
+            if (user != null)
+            {
+				if (user.OtpCode == Int32.Parse(otp) && user.OtpExpiredTime > DateTime.Now)
+				{
+					return true;
+				}
+            }
+            return false;
+        }
+
+        public async Task<bool> ChangePassword(ForgotPasswordDTO model)
+        {
+            var user = await GetUserByEmail(model.Email);
+			if(user == null)
+			{
+				return false;
+			}
+
+            var salt = GenerateSalt();
+            var passwordHash = GenerateHashedPassword(model.Password, salt);
+			user.Salt = salt;
+			user.PasswordHash = passwordHash;
+			return await _unitOfWork.SaveChangeAsync();
+        }
+
+        public async Task<bool> CheckUserExistById(Guid userId)
+        {
+           var user = await _unitOfWork.User.GetByCondition(c => c.UserId == userId);
+			if( user == null)
+			{
+				return false;
+			}
+			return true;
         }
     }
 }
