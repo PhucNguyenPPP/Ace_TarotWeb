@@ -1,4 +1,5 @@
 using Api_Ace.MiddleWares;
+using Api_Ace.WebSocket;
 using AutoMapper;
 using BLL.Interface;
 using BLL.Services;
@@ -34,6 +35,7 @@ builder.Services.AddScoped<IUserServiceTypeService, UserServiceTypeService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -91,7 +93,21 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
+void ConfigureServices(IServiceCollection services)
+{
+	services.AddSignalR();
+}
 
+void Configure(IApplicationBuilder
+ app, IWebHostEnvironment env)
+{
+	app.UseRouting();
+	app.UseEndpoints(endpoints =>
+	{
+		endpoints.MapHub<ChatHub>("/chatHub");
+
+	});
+}
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
