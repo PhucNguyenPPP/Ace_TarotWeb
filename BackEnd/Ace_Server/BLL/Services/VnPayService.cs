@@ -29,7 +29,6 @@ namespace BLL.Services
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]!);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
-            var tick = DateTime.Now.Ticks.ToString();
             var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == BookingId);
             if (booking == null)
             {
@@ -45,10 +44,10 @@ namespace BLL.Services
             AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]!);
             AddRequestData("vnp_IpAddr", GetIpAddress(context));
             AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]!);
-            AddRequestData("vnp_OrderInfo", $"Pay ${booking.Price * 100} for ${booking.BookingNumber} of Ace Tarot");
-            AddRequestData("vnp_OrderType", $"Pay ${booking.Price * 100} for ${booking.BookingNumber} of Ace Tarot");
+            AddRequestData("vnp_OrderInfo", $"Pay {booking.Price * 100} for {booking.BookingNumber} of Ace Tarot");
+            AddRequestData("vnp_OrderType", $"Pay {booking.Price * 100} for {booking.BookingNumber} of Ace Tarot");
             AddRequestData("vnp_ReturnUrl", urlCallBack!);
-            AddRequestData("vnp_TxnRef", tick);
+            AddRequestData("vnp_TxnRef", $"{booking.BookingNumber}");
 
             var paymentUrl = CreateRequestUrl(_configuration["Vnpay:BaseUrl"]!, _configuration["Vnpay:HashSecret"]!);
 

@@ -1,12 +1,108 @@
 import { FormControlLabel, Radio, RadioGroup, TextField, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { GetServiceOfServiceType, GetServiceTypeOfTarotReader } from '../../../api/ServiceApi';
+import { GetAllFormMeetingOfTarotReader } from '../../../api/FormMeetingApi';
+import { toast } from 'react-toastify';
 
-function ServiceForm({ tarotReaderData }) {
-    const [selectedService, setSelectedService] = useState('');
+function ServiceForm({ tarotReaderData, onDataUpdate, serviceData }) {
+    const [serviceType, setServiceType] = useState([]);
+    const [serviceList, setServiceList] = useState([]);
+    const [formMeetingList, setFormMeetingList] = useState([]);
+    const [selectedService, setSelectedService] = useState(serviceData.serviceId || '');
+    const [selectedServiceType, setSelectedServiceType] = useState(serviceData.serviceTypeId || '');
+    const [selectedServiceName, setSelectedServiceName] = useState(serviceData.serviceName || '');
+    const [selectedFormMeeting, setSelectedFormMeeting] = useState(serviceData.formMeetingId || '');
+    const [selectedAmount, setSelectedAmount] = useState(serviceData.questionAmount || 0);
+    const [selectedServiceDuration, setSelectedServiceDuration] = useState(serviceData.serviceDuration || 0)
+
+
+    useEffect(() => {
+        const fetchServiceTypeOfTarotReader = async () => {
+            const response = await GetServiceTypeOfTarotReader(tarotReaderData.userId);
+            if (response.ok) {
+                const responseData = await response.json();
+                setServiceType(responseData.result);
+            } else {
+                throw new Error('Failed to fetch service type of tarot reader');
+            }
+        };
+
+        fetchServiceTypeOfTarotReader();
+
+        const fetchServiceOfServiceType = async () => {
+            const response = await GetServiceOfServiceType(selectedServiceType);
+            if (response.ok) {
+                const responseData = await response.json();
+                setServiceList(responseData.result);
+            } else {
+                setServiceList([])
+                throw new Error('Failed to fetch service of service type');
+            }
+        };
+
+        fetchServiceOfServiceType();
+
+        const fetchFormMeetingOfTarotReader = async () => {
+            const response = await GetAllFormMeetingOfTarotReader(tarotReaderData.userId);
+            if (response.ok) {
+                const responseData = await response.json();
+                setFormMeetingList(responseData.result);
+            } else {
+                setFormMeetingList([]);
+                throw new Error('Failed to fetch form meeting of tarot reader');
+            }
+        };
+
+        fetchFormMeetingOfTarotReader();
+
+    }, [selectedServiceType])
+
+    const handleServiceTypeChange = (event) => {
+        setSelectedServiceType(event.target.value)
+        setSelectedServiceName('');
+        setSelectedAmount(0);
+    }
+
+    const handleFormMeetingChange = (event) => {
+        setSelectedFormMeeting(event.target.value);
+    }
 
     const handleRadioChange = (event) => {
-        setSelectedService(event.target.value);
+        const serviceId = event.target.value;
+        setSelectedService(serviceId);
+        setSelectedAmount(0);
+        const selectedServiceObject = serviceList.find(service => service.serviceId === serviceId);
+
+        if (selectedServiceObject) {
+            setSelectedServiceName(selectedServiceObject.serviceName);
+            if(selectedServiceObject.serviceName !== "Theo câu hỏi lẻ"){
+                setSelectedServiceDuration(selectedServiceObject.duration);
+            } else {
+                setSelectedServiceDuration(0);
+            }
+        }
     };
+
+    const handleInputQuestionAmount = (event) => {
+        setSelectedAmount(event.target.value);
+        const selectedServiceObject = serviceList.find(service => service.serviceId === selectedService);
+        if (selectedServiceObject) {
+            if(selectedServiceObject.serviceName === "Theo câu hỏi lẻ"){
+                setSelectedServiceDuration(selectedServiceObject.duration * event.target.value);
+            }
+        }
+    }
+
+    useEffect(() => {
+        onDataUpdate({
+            serviceId: selectedService,
+            serviceTypeId: selectedServiceType,
+            serviceName: selectedServiceName,
+            formMeetingId: selectedFormMeeting,
+            questionAmount: selectedAmount,
+            serviceDuration: selectedServiceDuration
+        });
+    }, [selectedFormMeeting, selectedServiceType, selectedService, selectedAmount])
 
     return (
         <div>
@@ -98,16 +194,69 @@ function ServiceForm({ tarotReaderData }) {
                                 }}>
                                 <div className='flex justify-center mt-7'>
                                     <select
+                                        value={selectedServiceType}
                                         style={{
                                             border: '3px solid black',
                                             padding: '5px 10px',
                                             borderRadius: '10px',
                                             textAlign: 'center',
                                             fontWeight: 'bolder'
-                                        }}>
+                                        }}
+                                        onChange={handleServiceTypeChange}
+                                    >
                                         <option value=''>1. CHỌN LOẠI BÀI</option>
-                                        <option value='TAROT'>TAROT</option>
-                                        <option value='BÀI TRÀ'>BÀI TRÀ</option>
+                                        {serviceType && serviceType.length > 0 &&
+                                            serviceType.map((i) => (
+                                                <option key={i.serviceTypeId} value={i.serviceTypeId}>
+                                                    {i.serviceTypeName}
+                                                </option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='flex'>
+                            <div className='w-1/5'
+                                style={{
+                                    borderBottom: '2px solid white',
+                                    backgroundColor: '#5900E5',
+                                }}>
+                                <Typography
+                                    sx={{
+                                        color: 'white',
+                                        fontSize: 20,
+                                        textAlign: 'center',
+                                        padding: '30px 10px',
+                                        fontWeight: 'bold',
+                                    }}
+                                >Hình thức
+                                </Typography>
+                            </div>
+                            <div className='w-4/5'
+                                style={{
+                                    borderBottom: '2px solid #5900E5',
+                                }}>
+                                <div className='flex justify-center mt-7'>
+                                    <select
+                                        value={selectedFormMeeting}
+                                        style={{
+                                            border: '3px solid black',
+                                            padding: '5px 10px',
+                                            borderRadius: '10px',
+                                            textAlign: 'center',
+                                            fontWeight: 'bolder'
+                                        }}
+                                        onChange={handleFormMeetingChange}
+                                    >
+                                        <option value=''>1. CHỌN HÌNH THỨC</option>
+                                        {formMeetingList && formMeetingList.length > 0 &&
+                                            formMeetingList.map((i) => (
+                                                <option key={i.formMeetingId} value={i.formMeetingId}>
+                                                    {i.formMeetingName}
+                                                </option>
+                                            ))
+                                        }
                                     </select>
                                 </div>
                             </div>
@@ -147,48 +296,26 @@ function ServiceForm({ tarotReaderData }) {
                                             value={selectedService}
                                             onChange={handleRadioChange}
                                         >
-                                            <div className='pr-8'>
-                                                <FormControlLabel
-                                                    value="Combo câu hỏi"
-                                                    control={<Radio />}
-                                                    label="Combo câu hỏi"
-                                                />
-                                                <Typography
-                                                    sx={{
-                                                        fontSize: 20,
-                                                        ml: 2
-                                                    }}
-                                                >120.000/30 phút
-                                                </Typography>
-                                            </div>
-                                            <div className='pr-8'>
-                                                <FormControlLabel
-                                                    value="Chủ đề"
-                                                    control={<Radio />}
-                                                    label="Chủ đề"
-                                                />
-                                                <Typography
-                                                    sx={{
-                                                        fontSize: 20,
-                                                        ml: 2
-                                                    }}
-                                                >200.000/30 phút
-                                                </Typography>
-                                            </div>
-                                            <div className='pr-8'>
-                                                <FormControlLabel
-                                                    value="Theo câu hỏi"
-                                                    control={<Radio />}
-                                                    label="Theo câu hỏi"
-                                                />
-                                                <Typography
-                                                    sx={{
-                                                        fontSize: 20,
-                                                        ml: 2
-                                                    }}
-                                                >30.000/1 câu/8p
-                                                </Typography>
-                                            </div>
+                                            {serviceList && serviceList.length > 0 &&
+                                                serviceList.map((i) => (
+                                                    <div key={i.serviceId} className='pr-8'>
+                                                        <FormControlLabel
+                                                            value={i.serviceId}
+                                                            control={<Radio />}
+                                                            label={i.serviceName}
+                                                        />
+                                                        <Typography
+                                                            sx={{
+                                                                fontSize: 20,
+                                                                ml: 2
+                                                            }}
+                                                        >
+                                                            {new Intl.NumberFormat('vi-VN').format(i.price)} VND
+                                                            / {i.duration} phút
+                                                        </Typography>
+                                                    </div>
+                                                ))
+                                            }
                                         </RadioGroup>
                                     </div>
                                 </div>
@@ -204,13 +331,17 @@ function ServiceForm({ tarotReaderData }) {
                                     >Theo câu hỏi:
                                     </Typography>
 
-                                    {selectedService === "Theo câu hỏi" && (
+                                    {selectedServiceName === "Theo câu hỏi lẻ" && (
                                         <div className='flex flex-wrap mb-8'>
                                             <div className='flex flex-wrap w-full'>
                                                 <TextField
+                                                    onChange={handleInputQuestionAmount}
                                                     type="number"
+                                                    value={selectedAmount}
                                                     inputProps={{
                                                         inputMode: 'numeric',
+                                                        min: 0,
+                                                        max: 10,
                                                         sx: {
                                                             padding: '5px 5px',
                                                         },

@@ -1,6 +1,7 @@
 * {
-  font-family: "Inter";
+  font-family: "Inter" !important;
 }
+
 /* #root {
   max-width: 1280px;
   margin: 0 auto;

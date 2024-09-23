@@ -1,13 +1,13 @@
 const baseUrl = import.meta.env.VITE_API_HOST;
 
-export const GetAllFormMeeting = async () => {
+export const GetServiceTypeOfTarotReader = async (userId) => {
     try {
-        const url = `${baseUrl}/api/FormMeeting/form_meetings`;
+        const url = `${baseUrl}/api/UserServiceType/user_service_type?userId=${userId}`;
         const request = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-            },
+            }
         };
         const response = await fetch(url, request);
         return response;
@@ -16,14 +16,14 @@ export const GetAllFormMeeting = async () => {
     }
 };
 
-export const GetAllFormMeetingOfTarotReader = async (userId) => {
+export const GetServiceOfServiceType = async (serviceTypeId) => {
     try {
-        const url = `${baseUrl}/api/FormMeeting/form-meetings-tarot-reader?userId=${userId}`;
+        const url = `${baseUrl}/api/Service/Service?serviceTypeId=${serviceTypeId}`;
         const request = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-            },
+            }
         };
         const response = await fetch(url, request);
         return response;

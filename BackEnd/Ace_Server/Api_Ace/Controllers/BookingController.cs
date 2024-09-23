@@ -33,13 +33,13 @@ namespace Api_Ace.Controllers
             }
 
             var bookingResult = await _bookingService.CreateBooking(model);
-            if (bookingResult)
+            if (bookingResult.IsSuccess)
             {
-                return Ok(new ResponseDTO("Tạo lịch thành công", 200, true, null));
+                return Ok(bookingResult);
             }
             else
             {
-                return BadRequest(new ResponseDTO("Tạo lịch không thành công", 400, true, null));
+                return BadRequest(bookingResult);
             }
         }
     }

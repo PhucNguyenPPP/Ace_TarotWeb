@@ -8,7 +8,7 @@ namespace Common.DTO.Payment
 {
     public class VnPayResponseDTO
     {
-        public Guid BoookingId { get; set; }
+        public string BookingNumber { get; set; } = null!;
         public string TransactionInfo { get; set; } = null!;
         public string TransactionNumber { get; set; } = null!;
         public bool IsSuccess { get; set; }
