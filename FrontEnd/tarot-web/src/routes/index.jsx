@@ -14,6 +14,7 @@ import SignUpTarotReaderPage from "../pages/AuthenPage/SignUpTarotReaderPage";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import ForgotPasswordPage from "../pages/AuthenPage/ForgotPasswordPage";
 import HomeTarotReaderPage from "../pages/HomePage/HomeTarotReaderPage";
+import WaitingCheckoutPage from "../pages/PaymentPage/WaitingCheckoutPage";
 
 export const router = createBrowserRouter([
   {
@@ -90,6 +91,10 @@ export const router = createBrowserRouter([
     path: "/home-tarot-reader",
     element: <HomeTarotReaderPage />,
     errorElement: <Error />,
+  },
+  { path: "/waiting-checkout", 
+    element: <WaitingCheckoutPage />, 
+    errorElement: <Error/> 
   }
 ]);
 
