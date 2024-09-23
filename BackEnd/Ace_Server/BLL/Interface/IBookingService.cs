@@ -12,7 +12,7 @@ namespace BLL.Interface
 {
     public interface IBookingService
     {
-        Task<bool> CreateBooking(BookingDTO bookingDTO);
+        Task<ResponseDTO> CreateBooking(BookingDTO bookingDTO);
         Task<ResponseDTO> CheckValidationCreateBooking(BookingDTO bookingDTO);
         Task<bool> CheckBookingExist(Guid bookingId);
     }
