@@ -183,5 +183,56 @@ namespace BLL.Services
             }
             return true;
         }
-    }
+
+		public async Task<ResponseDTO> ViewBookingOfCustomer(Guid cusID, bool bookingDate, bool asc)
+		{
+			var customer = await _unitOfWork.User.GetByCondition(c => c.UserId.Equals(cusID));
+			if (customer == null)
+			{
+				return new ResponseDTO("Không tìm thấy khách hàng", 404, false);
+			}
+            
+                var list = _unitOfWork.Booking.GetAllByCondition(b => b.CustomerId == cusID).ToList();
+               
+			if (list == null)
+			{
+				return new ResponseDTO("Không tìm thấy lịch hẹn của khách hàng", 404, false);
+			}
+            var listDTO = _mapper.Map<List<BookingOfCustomerDTO>>(list);
+            foreach (var item in listDTO)
+            {
+                if (item != null) 
+                {
+                    var nickname = await _unitOfWork.User.GetByCondition(u => u.UserId == item.TarotReaderId);
+                    if (nickname != null) {
+                        item.Nickname = nickname.NickName;
+                    }
+                    item.BookingDate = item.StartTime.Date;
+                }
+            }
+            if (bookingDate)
+            {
+                if (asc)
+                {
+                    listDTO = listDTO.OrderBy(b => b.StartTime).ToList();
+                }
+                else
+                {
+					listDTO = listDTO.OrderByDescending(b => b.StartTime).ToList();
+				}
+            }
+            else
+            {
+				if (asc)
+				{
+					listDTO = listDTO.OrderBy(b => b.CreatedDate).ToList();
+				}
+				else
+				{
+					listDTO = listDTO.OrderByDescending(b => b.CreatedDate).ToList();
+				}
+			}
+            return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listDTO);
+		}
+	}
 }
