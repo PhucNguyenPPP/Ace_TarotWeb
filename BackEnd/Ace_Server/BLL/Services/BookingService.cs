@@ -15,6 +15,7 @@ using Common.DTO.User;
 using DAL.Entities;
 using DAL.UnitOfWork;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BLL.Services
@@ -252,4 +253,70 @@ namespace BLL.Services
 			return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listBookingOfCustomerDTO);
 		}
 	}
+
+        public ResponseDTO GetBookingDetail(Guid bookingId)
+        {
+            var booking = _unitOfWork.Booking.GetAllByCondition(c => c.BookingId == bookingId).FirstOrDefault();
+            if(booking == null)
+            {
+                return new ResponseDTO("Không tồn tại", 400, false);
+            }
+            var reader = _unitOfWork.User.GetAllByCondition(c=> c.UserId == booking.TarotReaderId).FirstOrDefault() ?? null;
+            var service = _unitOfWork.Service.GetAllByCondition(c=> c.ServiceId == booking.ServiceId).FirstOrDefault();
+            var serviceType = _unitOfWork.ServiceType.GetAllByCondition(c => c.ServiceTypeId == service.ServiceTypeId).FirstOrDefault();
+            var formMeeting = _unitOfWork.FormMeeting.GetAllByCondition(c => c.FormMeetingId == booking.FormMeetingId).FirstOrDefault();
+            BookingDetailDTO detailDTO = new BookingDetailDTO();
+            detailDTO.TarotReaderName = reader.NickName;
+            detailDTO.Status = booking.Status;
+            detailDTO.BookingId = booking.BookingId;
+            detailDTO.BookingNumber = booking.BookingNumber;
+            detailDTO.CreatedDate = booking.CreatedDate;
+            detailDTO.BookingDate = DateOnly.FromDateTime(booking.StartTime);
+            detailDTO.StartTime = TimeOnly.FromDateTime(booking.StartTime);
+            detailDTO.EndTime = TimeOnly.FromDateTime(booking.EndTime);
+            detailDTO.ServiceTypeName = serviceType.ServiceTypeName;
+            detailDTO.ServiceName = service.ServiceName;
+            detailDTO.QuestionAmount = booking.QuestionAmount;
+            detailDTO.BehaviorRating = booking.BehaviorRating;
+            detailDTO.BehaviorFeedback = booking.BehaviorFeedback;
+            detailDTO.FormMeetingName = formMeeting.FormMeetingName;
+
+            var list = _mapper.Map<BookingDetailDTO>(detailDTO);
+            return new ResponseDTO("Hiển thị chi tiết đặt lịch thành công", 200, true, list);
+
+
+        }
+
+        public async Task<ResponseDTO> CreateFeedback(Guid bookingId, int behaviorRating, string behaviorFeedback)
+        {
+            var booking = _unitOfWork.Booking.GetAllByCondition(c=> c.BookingId == bookingId).FirstOrDefault();
+            if (booking == null)
+            {
+                return new ResponseDTO("Không tồn tại", 400, false);
+            }
+            booking.BehaviorRating = behaviorRating;
+            booking.BehaviorFeedback = behaviorFeedback;
+            _unitOfWork.Booking.Update(booking);
+            var result = await _unitOfWork.SaveChangeAsync();
+            if (result)
+            {
+                return new ResponseDTO("Đánh giá thành công", 200, true, booking.BookingId);
+            }
+            else
+            {
+                return new ResponseDTO("Đánh giá không thành công", 400, false, null);
+            }
+        }
+
+        public async Task<ResponseDTO> CheckValidationCreateFeedback(Guid bookingId, int behaviorRating, string behaviorFeedback)
+        {
+            if (behaviorRating > 5 || behaviorRating < 1)
+            {
+                return new ResponseDTO("Đánh giá không hợp lệ", 400, false);
+            }
+            return new ResponseDTO("Check thành công", 200, true);
+        }
+
+
+    }
 }
