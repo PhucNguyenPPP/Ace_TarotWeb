@@ -185,22 +185,21 @@ namespace BLL.Services
             return true;
         }
 
-		public async Task<ResponseDTO> ViewBookingOfCustomer(Guid cusID, bool bookingDate, bool asc,
-                                                                 int pageNumber, int rowsPerpage)
+		public async Task<ResponseDTO> ViewBookingOfCustomer(Guid cusID, bool bookingDate, bool asc, string? search,
+																 int pageNumber, int rowsPerpage)
 		{
 			var customer = await _unitOfWork.User.GetByCondition(c => c.UserId.Equals(cusID));
 			if (customer == null)
 			{
 				return new ResponseDTO("Không tìm thấy khách hàng", 404, false);
 			}
-            
                 var list = _unitOfWork.Booking.GetAllByCondition(b => b.CustomerId == cusID).ToList();
                
 			if (list == null)
 			{
 				return new ResponseDTO("Không tìm thấy lịch hẹn của khách hàng", 404, false);
 			}
-            var listDTO = _mapper.Map<List<BookingOfCustomerDTO>>(list);
+            List<BookingOfCustomerDTO> listDTO = _mapper.Map<List<BookingOfCustomerDTO>>(list);
             foreach (var item in listDTO)
             {
                 if (item != null) 
@@ -212,6 +211,15 @@ namespace BLL.Services
                     item.BookingDate = item.StartTime.Date;
                 }
             }
+            if (search != null) 
+            {
+				var tempList = listDTO.Where(b => b.Nickname.ToLower().Contains(search.ToLower())).ToList();
+				listDTO = tempList;
+			}
+            if (!listDTO.Any()) 
+            {
+
+            } 
             if (bookingDate)
             {
                 if (asc)

@@ -43,10 +43,10 @@ namespace Api_Ace.Controllers
             }
         }
 		[HttpGet("bookings-of-customer")]
-		public async Task<IActionResult> ViewBookingOfCustomer([FromQuery]Guid cusID, [FromQuery] bool bookingDate, [FromQuery] bool asc,
+		public async Task<IActionResult> ViewBookingOfCustomer([FromQuery]Guid cusID, [FromQuery] bool bookingDate, [FromQuery] bool asc, [FromQuery] String? search,
 																[FromQuery] int pageNumber, [FromQuery] int rowsPerpage) //true là asc, false là des
 		{
-			ResponseDTO responseDTO = await _bookingService.ViewBookingOfCustomer(cusID,bookingDate,asc,pageNumber,rowsPerpage);
+			ResponseDTO responseDTO = await _bookingService.ViewBookingOfCustomer(cusID,bookingDate,asc,search,pageNumber,rowsPerpage);
 			if (responseDTO.IsSuccess == false)
 			{
 				if (responseDTO.StatusCode == 404)
