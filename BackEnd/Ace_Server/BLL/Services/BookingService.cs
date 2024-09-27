@@ -10,6 +10,7 @@ using BLL.Interface;
 using Common.Constant;
 using Common.DTO.Booking;
 using Common.DTO.General;
+using Common.DTO.Paging;
 using Common.DTO.User;
 using DAL.Entities;
 using DAL.UnitOfWork;
@@ -184,7 +185,8 @@ namespace BLL.Services
             return true;
         }
 
-		public async Task<ResponseDTO> ViewBookingOfCustomer(Guid cusID, bool bookingDate, bool asc)
+		public async Task<ResponseDTO> ViewBookingOfCustomer(Guid cusID, bool bookingDate, bool asc,
+                                                                 int pageNumber, int rowsPerpage)
 		{
 			var customer = await _unitOfWork.User.GetByCondition(c => c.UserId.Equals(cusID));
 			if (customer == null)
@@ -232,7 +234,14 @@ namespace BLL.Services
 					listDTO = listDTO.OrderByDescending(b => b.CreatedDate).ToList();
 				}
 			}
-            return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listDTO);
+			var finalList = PagedList<BookingOfCustomerDTO>.ToPagedList(listDTO.AsQueryable(), pageNumber, rowsPerpage);
+			ListBookingOfCustomerDTO listBookingOfCustomerDTO = new ListBookingOfCustomerDTO();
+			listBookingOfCustomerDTO.List = finalList;
+			listBookingOfCustomerDTO.CurrentPage = pageNumber;
+			listBookingOfCustomerDTO.RowsPerPages = rowsPerpage;
+			listBookingOfCustomerDTO.TotalCount = listDTO.Count;
+			listBookingOfCustomerDTO.TotalPages = (int)Math.Ceiling(listDTO.Count / (double)rowsPerpage);
+			return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listBookingOfCustomerDTO);
 		}
 	}
 }

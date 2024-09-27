@@ -402,5 +402,46 @@ namespace BLL.Services
 			}
 			return true;
         }
-    }
+
+		public async Task<ResponseDTO> UpdateUser(UpdateUserDTO updateUserDTO)
+		{
+			var user = await _unitOfWork.User.GetByCondition(c => c.UserId == updateUserDTO.UserId);
+			if (user == null)
+			{
+				return new ResponseDTO("Không tìm thấy tài khoản", 400, false);
+			}
+			if (updateUserDTO.DateOfBirth >= DateTime.Now)
+			{
+				return new ResponseDTO("Ngày sinh không hợp lệ", 400, false);
+			}
+			if (updateUserDTO.Gender != GenderConstant.Male && updateUserDTO.Gender != GenderConstant.Female
+				&& updateUserDTO.Gender != GenderConstant.Other)
+			{
+				return new ResponseDTO("Giới tính không hợp lệ", 400, false);
+			}
+			var checkEmailExist = CheckEmailExist(updateUserDTO.Email);
+			if (checkEmailExist)
+			{
+				return new ResponseDTO("Email đã tồn tại", 400, false);
+			}
+			var checkPhoneExist = CheckPhoneExist(updateUserDTO.Phone);
+			if (checkPhoneExist)
+			{
+				return new ResponseDTO("Số điện thoại đã tồn tại", 400, false);
+			}
+			user.FullName = updateUserDTO.FullName;
+			user.Email= updateUserDTO.Email;	
+			user.DateOfBirth = updateUserDTO.DateOfBirth;
+			user.Gender = updateUserDTO.Gender;
+			user.Phone = updateUserDTO.Phone;
+			user.Address = updateUserDTO.Address;
+			_unitOfWork.User.Update(user);
+			bool updated = await _unitOfWork.SaveChangeAsync();
+			if (updated)
+			{
+				return new ResponseDTO("Chỉnh sửa thông tin thành công", 200, true);
+			}
+			return new ResponseDTO("Chỉnh sửa thông tin thất bài", 500, true);
+		}
+	}
 }
