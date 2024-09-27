@@ -1,5 +1,6 @@
 ﻿using BLL.Interface;
 using BLL.Services;
+using BLL.WebSocketHandler;
 using Common.DTO.General;
 using Common.DTO.Message;
 using Microsoft.AspNetCore.Http;
@@ -12,9 +13,11 @@ namespace Api_Ace.Controllers
 	public class MessageController : ControllerBase
 	{
 		private readonly IMessageService _messageService;
-		public MessageController(IMessageService messageService)
+		private readonly WebSocketHandler _webSocketHandler;
+		public MessageController(IMessageService messageService, WebSocketHandler webSocketHandler)
 		{
 			_messageService = messageService;
+			_webSocketHandler = webSocketHandler;
 		}
 		[HttpGet("messages")]
 		public async Task<IActionResult> GetMessage(Guid user1, Guid user2)
@@ -35,7 +38,7 @@ namespace Api_Ace.Controllers
 			return Ok(responseDTO);
 		}
 		[HttpPost("message")]
-		public async Task<IActionResult> CreateMessage([FromForm] MessageDTO messageDTO)
+		public async Task<IActionResult> CreateMessage([FromBody] MessageDTO messageDTO)
 		{
 			ResponseDTO responseDTO = await _messageService.CreateMessage(messageDTO);
 			if (responseDTO.IsSuccess == false)
@@ -50,7 +53,22 @@ namespace Api_Ace.Controllers
 				}
 			}
 
-			return Ok(responseDTO);
+            await _webSocketHandler.BroadcastMessageAsync (messageDTO.Content);
+
+            return Ok(responseDTO);
+		}
+
+        [HttpGet("chat-users")]
+        public IActionResult GetAllUserChat (Guid userId)
+		{
+			var result =  _messageService.GetAllUserChat(userId);
+			if(result.Count > 0)
+			{
+				return Ok(new ResponseDTO("Lấy toàn bộ đoạn chat thành công", 200, true, result));
+			} else
+			{
+				return NotFound(new ResponseDTO("Không tìm thấy đoạn chat nào", 404, false, result));
+			}
 		}
 	}
 }

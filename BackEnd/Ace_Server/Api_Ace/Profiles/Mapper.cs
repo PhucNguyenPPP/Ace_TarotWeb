@@ -51,7 +51,8 @@ namespace Api_Ace.Profiles
                 .ReverseMap();
             CreateMap<DAL.Entities.Message, MessageDTO>().ReverseMap();
 			CreateMap<BookingOfCustomerDTO, Booking>().ReverseMap();
-			#endregion
-		}
+            CreateMap<DAL.Entities.Message, MessageResponseDTO>().ReverseMap();
+            #endregion
+        }
     }
 }
