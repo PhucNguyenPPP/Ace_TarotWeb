@@ -53,6 +53,24 @@ namespace Api_Ace.Controllers
 
 			return Ok(responseDTO);
 		}
+		[HttpPut("updated-user")]
+		public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO updateUserDTO)
+		{
+			ResponseDTO responseDTO = await _userService.UpdateUser(updateUserDTO);
+			if (responseDTO.IsSuccess == false)
+			{
+				if (responseDTO.StatusCode == 400)
+				{
+					return NotFound(responseDTO);
+				}
+				if (responseDTO.StatusCode == 500)
+				{
+					return BadRequest(responseDTO);
+				}
+			}
+
+			return Ok(responseDTO);
+		}
 	}
 }
 
