@@ -218,8 +218,8 @@ namespace BLL.Services
 			}
             if (!listDTO.Any()) 
             {
-
-            } 
+				return new ResponseDTO("Không có lịch hẹn trùng thông tin", 404, false);
+			} 
             if (bookingDate)
             {
                 if (asc)
