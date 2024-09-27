@@ -60,7 +60,7 @@ namespace Api_Ace.Controllers
 			return Ok(responseDTO);
 		}
 
-	}
+	
 
         [HttpGet("booking-detail")]
         public async Task<IActionResult> GetBookingDetail([FromBody] Guid bookingId)

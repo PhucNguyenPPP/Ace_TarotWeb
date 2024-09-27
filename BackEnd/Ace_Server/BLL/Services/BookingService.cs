@@ -252,7 +252,7 @@ namespace BLL.Services
 			listBookingOfCustomerDTO.TotalPages = (int)Math.Ceiling(listDTO.Count / (double)rowsPerpage);
 			return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listBookingOfCustomerDTO);
 		}
-	}
+	
 
         public ResponseDTO GetBookingDetail(Guid bookingId)
         {
