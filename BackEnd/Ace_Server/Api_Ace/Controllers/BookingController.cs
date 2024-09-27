@@ -63,7 +63,7 @@ namespace Api_Ace.Controllers
 	
 
         [HttpGet("booking-detail")]
-        public async Task<IActionResult> GetBookingDetail([FromBody] Guid bookingId)
+        public async Task<IActionResult> GetBookingDetail( Guid bookingId)
         {
             ResponseDTO responseDTO = _bookingService.GetBookingDetail(bookingId);
             if (responseDTO.IsSuccess == false)
