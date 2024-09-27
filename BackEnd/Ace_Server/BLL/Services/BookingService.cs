@@ -252,7 +252,7 @@ namespace BLL.Services
 			listBookingOfCustomerDTO.TotalPages = (int)Math.Ceiling(listDTO.Count / (double)rowsPerpage);
 			return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listBookingOfCustomerDTO);
 		}
-	}
+	
 
         public ResponseDTO GetBookingDetail(Guid bookingId)
         {
@@ -289,7 +289,7 @@ namespace BLL.Services
 
         public async Task<ResponseDTO> CreateFeedback(Guid bookingId, int behaviorRating, string behaviorFeedback)
         {
-            var booking = _unitOfWork.Booking.GetAllByCondition(c=> c.BookingId == bookingId).FirstOrDefault();
+            var booking = _unitOfWork.Booking.GetAllByCondition(c=> c.BookingId == bookingId && c.Status == BookingStatus.Completed).FirstOrDefault();
             if (booking == null)
             {
                 return new ResponseDTO("Không tồn tại", 400, false);
