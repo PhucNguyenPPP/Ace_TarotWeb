@@ -289,7 +289,7 @@ namespace BLL.Services
 
         public async Task<ResponseDTO> CreateFeedback(Guid bookingId, int behaviorRating, string behaviorFeedback)
         {
-            var booking = _unitOfWork.Booking.GetAllByCondition(c=> c.BookingId == bookingId).FirstOrDefault();
+            var booking = _unitOfWork.Booking.GetAllByCondition(c=> c.BookingId == bookingId && c.Status == BookingStatus.Completed).FirstOrDefault();
             if (booking == null)
             {
                 return new ResponseDTO("Không tồn tại", 400, false);
