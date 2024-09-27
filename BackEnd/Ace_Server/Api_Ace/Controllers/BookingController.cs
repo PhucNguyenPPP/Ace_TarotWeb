@@ -43,6 +43,24 @@ namespace Api_Ace.Controllers
                 return BadRequest(bookingResult);
             }
         }
+		[HttpGet("bookings-of-customer")]
+		public async Task<IActionResult> ViewBookingOfCustomer([FromQuery]Guid cusID, [FromQuery] bool bookingDate, [FromQuery] bool asc, [FromQuery] String? search,
+																[FromQuery] int pageNumber, [FromQuery] int rowsPerpage) //true là asc, false là des
+		{
+			ResponseDTO responseDTO = await _bookingService.ViewBookingOfCustomer(cusID,bookingDate,asc,search,pageNumber,rowsPerpage);
+			if (responseDTO.IsSuccess == false)
+			{
+				if (responseDTO.StatusCode == 404)
+				{
+					return NotFound(responseDTO);
+				}
+				return BadRequest(responseDTO);
+				
+			}
+			return Ok(responseDTO);
+		}
+
+	}
 
         [HttpGet("booking-detail")]
         public async Task<IActionResult> GetBookingDetail([FromBody] Guid bookingId)

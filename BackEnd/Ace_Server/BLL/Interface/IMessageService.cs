@@ -13,6 +13,7 @@ namespace BLL.Interface
 	{
 		Task<ResponseDTO> CreateMessage(MessageDTO newMessage);
 		Task<ResponseDTO> GetMessages(Guid per1Id, Guid per2Id);
+		List<UserChatDTO?> GetAllUserChat(Guid userId);
 	}
 }
 

@@ -10,6 +10,7 @@ using BLL.Interface;
 using Common.Constant;
 using Common.DTO.Booking;
 using Common.DTO.General;
+using Common.DTO.Paging;
 using Common.DTO.User;
 using DAL.Entities;
 using DAL.UnitOfWork;
@@ -184,6 +185,74 @@ namespace BLL.Services
             }
             return true;
         }
+
+		public async Task<ResponseDTO> ViewBookingOfCustomer(Guid cusID, bool bookingDate, bool asc, string? search,
+																 int pageNumber, int rowsPerpage)
+		{
+			var customer = await _unitOfWork.User.GetByCondition(c => c.UserId.Equals(cusID));
+			if (customer == null)
+			{
+				return new ResponseDTO("Không tìm thấy khách hàng", 404, false);
+			}
+                var list = _unitOfWork.Booking.GetAllByCondition(b => b.CustomerId == cusID).ToList();
+               
+			if (list == null)
+			{
+				return new ResponseDTO("Không tìm thấy lịch hẹn của khách hàng", 404, false);
+			}
+            List<BookingOfCustomerDTO> listDTO = _mapper.Map<List<BookingOfCustomerDTO>>(list);
+            foreach (var item in listDTO)
+            {
+                if (item != null) 
+                {
+                    var nickname = await _unitOfWork.User.GetByCondition(u => u.UserId == item.TarotReaderId);
+                    if (nickname != null) {
+                        item.Nickname = nickname.NickName;
+                    }
+                    item.BookingDate = item.StartTime.Date;
+                }
+            }
+            if (search != null) 
+            {
+				var tempList = listDTO.Where(b => b.Nickname.ToLower().Contains(search.ToLower())).ToList();
+				listDTO = tempList;
+			}
+            if (!listDTO.Any()) 
+            {
+				return new ResponseDTO("Không có lịch hẹn trùng thông tin", 404, false);
+			} 
+            if (bookingDate)
+            {
+                if (asc)
+                {
+                    listDTO = listDTO.OrderBy(b => b.StartTime).ToList();
+                }
+                else
+                {
+					listDTO = listDTO.OrderByDescending(b => b.StartTime).ToList();
+				}
+            }
+            else
+            {
+				if (asc)
+				{
+					listDTO = listDTO.OrderBy(b => b.CreatedDate).ToList();
+				}
+				else
+				{
+					listDTO = listDTO.OrderByDescending(b => b.CreatedDate).ToList();
+				}
+			}
+			var finalList = PagedList<BookingOfCustomerDTO>.ToPagedList(listDTO.AsQueryable(), pageNumber, rowsPerpage);
+			ListBookingOfCustomerDTO listBookingOfCustomerDTO = new ListBookingOfCustomerDTO();
+			listBookingOfCustomerDTO.List = finalList;
+			listBookingOfCustomerDTO.CurrentPage = pageNumber;
+			listBookingOfCustomerDTO.RowsPerPages = rowsPerpage;
+			listBookingOfCustomerDTO.TotalCount = listDTO.Count;
+			listBookingOfCustomerDTO.TotalPages = (int)Math.Ceiling(listDTO.Count / (double)rowsPerpage);
+			return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listBookingOfCustomerDTO);
+		}
+	}
 
         public ResponseDTO GetBookingDetail(Guid bookingId)
         {
