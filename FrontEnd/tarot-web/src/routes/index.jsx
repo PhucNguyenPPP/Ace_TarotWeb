@@ -15,7 +15,7 @@ import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import ForgotPasswordPage from "../pages/AuthenPage/ForgotPasswordPage";
 import HomeTarotReaderPage from "../pages/HomePage/HomeTarotReaderPage";
 import WaitingCheckoutPage from "../pages/PaymentPage/WaitingCheckoutPage";
-import ChatPage from "../pages/ChatPage/ChatPage";
+import ChatListPage from "../pages/ChatPage/ChatListPage";
 
 export const router = createBrowserRouter([
   {
@@ -97,8 +97,8 @@ export const router = createBrowserRouter([
     element: <WaitingCheckoutPage />, 
     errorElement: <Error/> 
   },
-  { path: "/chat", 
-    element: <ChatPage />, 
+  { path: "/chat-list", 
+    element: <ChatListPage />, 
     errorElement: <Error/> 
   }
 ]);

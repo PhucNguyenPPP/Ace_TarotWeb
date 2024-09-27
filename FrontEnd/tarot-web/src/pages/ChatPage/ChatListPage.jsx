@@ -1,15 +1,15 @@
 import Footer from "../../components/layouts/Footer/Footer";
 import Header from "../../components/layouts/Header/Header";
-import Chat from "../../components/partial/ChatPage/Chat";
+import ChatList from "../../components/partial/ChatListPage/ChatList";
 
-const ChatPage = () => {
+const ChatListPage = () => {
     return (
         <>
             <Header/>
-            <Chat/>
+            <ChatList/>
             <Footer />
         </>
     );
 };
 
-export default ChatPage
+export default ChatListPage
