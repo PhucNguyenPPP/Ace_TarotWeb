@@ -202,7 +202,7 @@ namespace BLL.Services
 				if (list == null || list.Count() == 0)
 				{
 					return new ResponseDTO("Không tìm được Tarot Reader trùng khớp thông tin", 400, false);
-				}		
+				}
 				var listDTO = _mapper.Map<List<UserDetailDTO>>(list);
 				foreach (var item in listDTO)
 				{
@@ -290,118 +290,118 @@ namespace BLL.Services
 			return new ResponseDTO("Lấy thông tin chi tiết của Tarot Reader thành công", 200, true, userDetailDTO);
 		}
 
-        public async Task<bool> SignUpReader(SignUpReaderRequestDTO signUpReaderRequestDTO)
-        {
-            var reader = _mapper.Map<User>(signUpReaderRequestDTO);
+		public async Task<bool> SignUpReader(SignUpReaderRequestDTO signUpReaderRequestDTO)
+		{
+			var reader = _mapper.Map<User>(signUpReaderRequestDTO);
 			var role = await GetReaderRole();
-            if (role == null)
-            {
-                return false;
-            }
-            var salt = GenerateSalt();
-            var passwordHash = GenerateHashedPassword(signUpReaderRequestDTO.Password, salt);
-            var avatarLink = await _imageService.StoreImageAndGetLink(signUpReaderRequestDTO.AvatarLink, "users_img");
+			if (role == null)
+			{
+				return false;
+			}
+			var salt = GenerateSalt();
+			var passwordHash = GenerateHashedPassword(signUpReaderRequestDTO.Password, salt);
+			var avatarLink = await _imageService.StoreImageAndGetLink(signUpReaderRequestDTO.AvatarLink, "users_img");
 
-            reader.UserId = Guid.NewGuid();
-            reader.RoleId = role.RoleId;
-            reader.Salt = salt;
-            reader.PasswordHash = passwordHash;
-            reader.AvatarLink = avatarLink;
+			reader.UserId = Guid.NewGuid();
+			reader.RoleId = role.RoleId;
+			reader.Salt = salt;
+			reader.PasswordHash = passwordHash;
+			reader.AvatarLink = avatarLink;
 
-            reader.Status = true;
+			reader.Status = true;
 
-            await _unitOfWork.User.AddAsync(reader);
-            return await _unitOfWork.SaveChangeAsync();
-        }
+			await _unitOfWork.User.AddAsync(reader);
+			return await _unitOfWork.SaveChangeAsync();
+		}
 
-        public async Task<ResponseDTO> CheckValidationSignUpReader(SignUpReaderRequestDTO model)
-        {
-            if (model.DateOfBirth >= DateTime.Now)
-            {
-                return new ResponseDTO("Ngày sinh không hợp lệ", 400, false);
-            }
+		public async Task<ResponseDTO> CheckValidationSignUpReader(SignUpReaderRequestDTO model)
+		{
+			if (model.DateOfBirth >= DateTime.Now)
+			{
+				return new ResponseDTO("Ngày sinh không hợp lệ", 400, false);
+			}
 
-            if (model.Gender != GenderConstant.Male && model.Gender != GenderConstant.Female
-                && model.Gender != GenderConstant.Other)
-            {
-                return new ResponseDTO("Giới tính không hợp lệ", 400, false);
-            }
+			if (model.Gender != GenderConstant.Male && model.Gender != GenderConstant.Female
+				&& model.Gender != GenderConstant.Other)
+			{
+				return new ResponseDTO("Giới tính không hợp lệ", 400, false);
+			}
 
-            var checkUserNameExist = CheckUserNameExist(model.UserName);
-            if (checkUserNameExist)
-            {
-                return new ResponseDTO("Tên đăng nhập đã tồn tại", 400, false);
-            }
+			var checkUserNameExist = CheckUserNameExist(model.UserName);
+			if (checkUserNameExist)
+			{
+				return new ResponseDTO("Tên đăng nhập đã tồn tại", 400, false);
+			}
 
-            var checkEmailExist = CheckEmailExist(model.Email);
-            if (checkEmailExist)
-            {
-                return new ResponseDTO("Email đã tồn tại", 400, false);
-            }
+			var checkEmailExist = CheckEmailExist(model.Email);
+			if (checkEmailExist)
+			{
+				return new ResponseDTO("Email đã tồn tại", 400, false);
+			}
 
-            var checkPhoneExist = CheckPhoneExist(model.Phone);
-            if (checkPhoneExist)
-            {
-                return new ResponseDTO("Số điện thoại đã tồn tại", 400, false);
-            }
+			var checkPhoneExist = CheckPhoneExist(model.Phone);
+			if (checkPhoneExist)
+			{
+				return new ResponseDTO("Số điện thoại đã tồn tại", 400, false);
+			}
 
-            return new ResponseDTO("Check thành công", 200, true);
-        }
+			return new ResponseDTO("Check thành công", 200, true);
+		}
 
-        public Task<User?> GetUserByEmail(string email)
-        {
-            return _unitOfWork.User.GetByCondition(c => c.Email == email);
-        }
+		public Task<User?> GetUserByEmail(string email)
+		{
+			return _unitOfWork.User.GetByCondition(c => c.Email == email);
+		}
 
-        public async Task<bool> SetOtp(string email, OtpCodeDTO model)
-        {
-			var user =  await GetUserByEmail(email);
-            if (user != null)
-            {
+		public async Task<bool> SetOtp(string email, OtpCodeDTO model)
+		{
+			var user = await GetUserByEmail(email);
+			if (user != null)
+			{
 				user.OtpCode = Int32.Parse(model.OTPCode);
 				user.OtpExpiredTime = model.ExpiredTime;
 				return await _unitOfWork.SaveChangeAsync();
-            }
+			}
 			return false;
-        }
+		}
 
-        public async Task<bool> VerifyingOtp(string email, string otp)
-        {
-            var user = await GetUserByEmail(email);
-            if (user != null)
-            {
+		public async Task<bool> VerifyingOtp(string email, string otp)
+		{
+			var user = await GetUserByEmail(email);
+			if (user != null)
+			{
 				if (user.OtpCode == Int32.Parse(otp) && user.OtpExpiredTime > DateTime.Now)
 				{
 					return true;
 				}
-            }
-            return false;
-        }
+			}
+			return false;
+		}
 
-        public async Task<bool> ChangePassword(ForgotPasswordDTO model)
-        {
-            var user = await GetUserByEmail(model.Email);
-			if(user == null)
+		public async Task<bool> ChangePassword(ForgotPasswordDTO model)
+		{
+			var user = await GetUserByEmail(model.Email);
+			if (user == null)
 			{
 				return false;
 			}
 
-            var salt = GenerateSalt();
-            var passwordHash = GenerateHashedPassword(model.Password, salt);
+			var salt = GenerateSalt();
+			var passwordHash = GenerateHashedPassword(model.Password, salt);
 			user.Salt = salt;
 			user.PasswordHash = passwordHash;
 			return await _unitOfWork.SaveChangeAsync();
-        }
+		}
 
-        public async Task<bool> CheckUserExistById(Guid userId)
-        {
-           var user = await _unitOfWork.User.GetByCondition(c => c.UserId == userId);
-			if( user == null)
+		public async Task<bool> CheckUserExistById(Guid userId)
+		{
+			var user = await _unitOfWork.User.GetByCondition(c => c.UserId == userId);
+			if (user == null)
 			{
 				return false;
 			}
 			return true;
-        }
+		}
 
 		public async Task<ResponseDTO> UpdateUser(UpdateUserDTO updateUserDTO)
 		{
@@ -419,18 +419,25 @@ namespace BLL.Services
 			{
 				return new ResponseDTO("Giới tính không hợp lệ", 400, false);
 			}
-			var checkEmailExist = CheckEmailExist(updateUserDTO.Email);
-			if (checkEmailExist)
+			if (!updateUserDTO.Email.Equals(user.Email))
 			{
-				return new ResponseDTO("Email đã tồn tại", 400, false);
+
+				var checkEmailExist = CheckEmailExist(updateUserDTO.Email);
+				if (checkEmailExist)
+				{
+					return new ResponseDTO("Email đã tồn tại", 400, false);
+				}
 			}
-			var checkPhoneExist = CheckPhoneExist(updateUserDTO.Phone);
-			if (checkPhoneExist)
+			if (!updateUserDTO.Phone.Equals(user.Phone))
 			{
-				return new ResponseDTO("Số điện thoại đã tồn tại", 400, false);
+				var checkPhoneExist = CheckPhoneExist(updateUserDTO.Phone);
+				if (checkPhoneExist)
+				{
+					return new ResponseDTO("Số điện thoại đã tồn tại", 400, false);
+				}
 			}
 			user.FullName = updateUserDTO.FullName;
-			user.Email= updateUserDTO.Email;	
+			user.Email = updateUserDTO.Email;
 			user.DateOfBirth = updateUserDTO.DateOfBirth;
 			user.Gender = updateUserDTO.Gender;
 			user.Phone = updateUserDTO.Phone;
