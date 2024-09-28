@@ -20,9 +20,9 @@ namespace Common.DTO.Booking
 
         public DateOnly BookingDate { get; set; }
 
-        public TimeOnly StartTime { get; set; }
+        public DateTime StartTime { get; set; }
 
-        public TimeOnly EndTime { get; set; }
+        public DateTime EndTime { get; set; }
 
         public string ServiceTypeName { get; set; }
 
@@ -35,5 +35,7 @@ namespace Common.DTO.Booking
         public string? BehaviorFeedback { get; set; }
 
         public string FormMeetingName { get; set; }
+
+        public string MeetLink { get; set; }
     }
 }

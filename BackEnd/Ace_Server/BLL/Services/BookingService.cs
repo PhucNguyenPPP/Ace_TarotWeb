@@ -271,14 +271,15 @@ namespace BLL.Services
             detailDTO.BookingNumber = booking.BookingNumber;
             detailDTO.CreatedDate = booking.CreatedDate;
             detailDTO.BookingDate = DateOnly.FromDateTime(booking.StartTime);
-            detailDTO.StartTime = TimeOnly.FromDateTime(booking.StartTime);
-            detailDTO.EndTime = TimeOnly.FromDateTime(booking.EndTime);
+            detailDTO.StartTime = booking.StartTime;
+            detailDTO.EndTime = booking.EndTime;
             detailDTO.ServiceTypeName = serviceType.ServiceTypeName;
             detailDTO.ServiceName = service.ServiceName;
             detailDTO.QuestionAmount = booking.QuestionAmount;
             detailDTO.BehaviorRating = booking.BehaviorRating;
             detailDTO.BehaviorFeedback = booking.BehaviorFeedback;
             detailDTO.FormMeetingName = formMeeting.FormMeetingName;
+            detailDTO.MeetLink = reader.MeetLink;
 
             var list = _mapper.Map<BookingDetailDTO>(detailDTO);
             return new ResponseDTO("Hiển thị chi tiết đặt lịch thành công", 200, true, list);
