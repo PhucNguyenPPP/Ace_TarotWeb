@@ -38,7 +38,7 @@ function TarotReaderDetail() {
 
     if (!tarotReaderData) {
         return (
-            <div className='flex items-center justify-center h-screen'>
+            <div className='flex items-center justify-center h-screen mt-10'>
                 <CircularProgress color='primary' />
             </div>
         );

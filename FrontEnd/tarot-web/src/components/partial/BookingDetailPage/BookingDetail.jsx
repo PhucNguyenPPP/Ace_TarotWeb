@@ -1,10 +1,40 @@
 import { useState } from 'react';
 import styles from './booking-detail.module.scss'
-import { Rating } from '@mui/material';
+import { CircularProgress, Rating } from '@mui/material';
 import Textarea from '@mui/joy/Textarea';
+import { useLocation } from 'react-router-dom';
 
 function BookingDetail() {
     const [ratingStar, setRatingStar] = useState(0);
+    const location = useLocation();
+    const { bookingId } = location.state || {};
+    const [bookingDetailData, setBookingDetailData] = useState(null);
+
+    // useEffect(() => {
+    //     if (userId) {
+    //         const fetchTarotReaderDetail = async () => {
+
+    //             const response = await GetTarotReaderDetail(userId);
+    //             if (response.ok) {
+    //                 const responseData = await response.json();
+    //                 setBookingDetailData(responseData.result);
+    //             } else {
+    //                 throw new Error('Failed to fetch booking detail');
+    //             }
+
+    //         };
+
+    //         fetchTarotReaderDetail();
+    //     }
+    // }, [bookingId]);
+    
+    if (!bookingDetailData) {
+        return (
+            <div className='flex items-center justify-center h-screen mt-10'>
+                <CircularProgress color='primary' />
+            </div>
+        );
+    }
 
     return (
         <div

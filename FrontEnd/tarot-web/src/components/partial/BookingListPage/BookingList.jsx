@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import Select from 'react-select';
+import { useNavigate } from 'react-router-dom';
 
 function BookingList() {
 
@@ -73,6 +74,8 @@ function BookingList() {
         { value: 'false', label: <span>Ngày hẹn <ArrowDownwardIcon /></span> }
     ];
     const { user } = useAuth();
+    const navigate = useNavigate();
+    
 
     useEffect(() => {
         const fetchBookingList = async () => {
@@ -106,6 +109,10 @@ function BookingList() {
         setFilterBookingDateAsc(event.value);
         setCurrentPage(1);
     }
+
+    const handleNavigate = (bookingId) => {
+        navigate('/booking-detail', { state: { bookingId } });
+    };
 
     return (
         <div
@@ -204,7 +211,12 @@ function BookingList() {
                                         </StyledTableCell>
                                         <StyledTableCell align="center">{row.status}</StyledTableCell>
                                         <StyledTableCell align="center">
-                                            <button className={styles.btn_detail}>CHI TIẾT </button>
+                                            <button
+                                                className={styles.btn_detail}
+                                                onClick={() => handleNavigate(row.bookingId)}
+                                            >
+                                                CHI TIẾT
+                                            </button>
                                         </StyledTableCell>
                                     </StyledTableRow>
                                 ))}
