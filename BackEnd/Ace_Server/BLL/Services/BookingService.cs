@@ -253,7 +253,6 @@ namespace BLL.Services
 			return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listBookingOfCustomerDTO);
 		}
 	
-
         public ResponseDTO GetBookingDetail(Guid bookingId)
         {
             var booking = _unitOfWork.Booking.GetAllByCondition(c => c.BookingId == bookingId).FirstOrDefault();
