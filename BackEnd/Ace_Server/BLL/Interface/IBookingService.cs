@@ -16,5 +16,9 @@ namespace BLL.Interface
         Task<ResponseDTO> CheckValidationCreateBooking(BookingDTO bookingDTO);
         Task<bool> CheckBookingExist(Guid bookingId);
 		Task<ResponseDTO> ViewBookingOfCustomer(Guid cusID, bool bookingDate, bool asc, int pageNumber, int rowsPerpage);
-	}
+        Task<ResponseDTO> CheckValidationUpdateWaitingForConfirmCompleted(Guid bookingId);
+        Task<bool> UpdateWaitingForConfirmCompleted(Guid bookingId);
+        Task<ResponseDTO> CheckValidationUpdateCompleted(Guid bookingId);
+        Task<bool> UpdateCompleted(Guid bookingId);
+    }
 }

@@ -94,7 +94,7 @@ namespace BLL.Services
                 RefreshTokenId = Guid.NewGuid(),
                 UserId = userId,
                 JwtId = jwtId,
-                ExpiredAt = DateTime.Now.AddHours(1),
+                ExpiredAt = DateTime.Now.AddHours(24),
                 IsValid = true,
                 RefreshToken1 = CreateRandomToken(),
             };
@@ -114,7 +114,7 @@ namespace BLL.Services
                 new Claim(ClaimTypes.Role, roleName.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, jwtId),
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddSeconds(45).ToString(), ClaimValueTypes.Integer64)
+                new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddMinutes(60).ToString(), ClaimValueTypes.Integer64)
             };
 
             var key = _config.GetSection("ApiSetting")["Secret"];
@@ -123,7 +123,7 @@ namespace BLL.Services
 
             var token = new JwtSecurityToken(
                claims: claims,
-               expires: DateTime.Now.AddMinutes(15),
+               expires: DateTime.Now.AddMinutes(60),
                signingCredentials: credentials
            );
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -260,7 +260,7 @@ namespace BLL.Services
                 RefreshTokenId = Guid.NewGuid(),
                 UserId = userId,
                 JwtId = jwtId,
-                ExpiredAt = time?.ExpiredAt != null ? time.ExpiredAt : DateTime.Now.AddMinutes(15),
+                ExpiredAt = time?.ExpiredAt != null ? time.ExpiredAt : DateTime.Now.AddHours(24),
                 IsValid = true,
                 RefreshToken1 = CreateRandomToken(),
             };
