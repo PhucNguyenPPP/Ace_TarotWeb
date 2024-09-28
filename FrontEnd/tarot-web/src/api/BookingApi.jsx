@@ -39,3 +39,35 @@ export const GetAllBooking = async (customerId, pageNumber, rowsPerPage, searchV
         console.log(err);
     }
 };
+
+export const GetBookingDetail = async (bookingId) => {
+    try {
+        const url = `${baseUrl}/api/Booking/booking-detail?bookingId=${bookingId}`;
+        const request = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        const response = await fetch(url, request);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const CreateFeedback = async (bookingId, ratingStar, feedback) => {
+    try {
+        const url = `${baseUrl}/api/Booking/create-feedback?bookingId=${bookingId}&behaviorRating=${ratingStar}&behaviorFeedback=${feedback}`;
+        const request = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        const response = await fetch(url, request);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+};
