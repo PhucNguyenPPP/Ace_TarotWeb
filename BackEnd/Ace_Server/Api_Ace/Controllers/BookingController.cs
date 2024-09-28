@@ -106,5 +106,55 @@ namespace Api_Ace.Controllers
             }
         }
 
+        [HttpPut("complete-booking-tarot-reader")]
+        public async Task<IActionResult> CompleteBookingByTarotReader(Guid bookingId)
+        {
+            var check = await _bookingService.CheckValidationUpdateWaitingForConfirmCompleted(bookingId);
+            if (!check.IsSuccess && check.StatusCode == 404)
+            {
+                return NotFound(check);
+            }
+
+            if (!check.IsSuccess && check.StatusCode == 400)
+            {
+                return BadRequest(check);
+            }
+
+            var result = await _bookingService.UpdateWaitingForConfirmCompleted(bookingId);
+            if (result)
+            {
+                return Ok(new ResponseDTO("Cập nhật trạng thái lịch hẹn thành công", 200, true));
+            }
+            else
+            {
+                return BadRequest(new ResponseDTO("Cập nhật trạng thái lịch hẹn thất bại", 400, false));
+            }
+        }
+
+        [HttpPut("complete-booking-customer")]
+        public async Task<IActionResult> CompleteBookingByCustomer(Guid bookingId)
+        {
+            var check = await _bookingService.CheckValidationUpdateCompleted(bookingId);
+            if (!check.IsSuccess && check.StatusCode == 404)
+            {
+                return NotFound(check);
+            }
+
+            if (!check.IsSuccess && check.StatusCode == 400)
+            {
+                return BadRequest(check);
+            }
+
+            var result = await _bookingService.UpdateCompleted(bookingId);
+            if (result)
+            {
+                return Ok(new ResponseDTO("Cập nhật trạng thái lịch hẹn thành công", 200, true));
+            }
+            else
+            {
+                return BadRequest(new ResponseDTO("Cập nhật trạng thái lịch hẹn thất bại", 400, false));
+            }
+        }
+
     }
 }

@@ -4,11 +4,12 @@ import ChatList from "../../components/partial/ChatListPage/ChatList";
 
 const ChatListPage = () => {
     return (
-        <>
-            <Header/>
-            <ChatList/>
-            <Footer />
-        </>
+        <div className="min-h-screen">
+            <Header />
+            <ChatList />
+        </div>
+
+
     );
 };
 
