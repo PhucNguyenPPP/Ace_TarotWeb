@@ -156,5 +156,24 @@ namespace Api_Ace.Controllers
             }
         }
 
+        [HttpPost("create-complaint")]
+        public async Task<IActionResult> CreateComplaint([FromForm]BookingComplaintDTO bookingComplaintDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseDTO(ModelState.ToString() ?? "Unknow error", 400, false, null));
+            }
+
+            var feedbackResult = await _bookingService.CreateComplaint(bookingComplaintDTO);
+            if (feedbackResult.IsSuccess)
+            {
+                return Ok(feedbackResult);
+            }
+            else
+            {
+                return BadRequest(feedbackResult);
+            }
+        }
+
     }
 }

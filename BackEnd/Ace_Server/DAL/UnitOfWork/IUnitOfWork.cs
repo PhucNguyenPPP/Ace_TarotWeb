@@ -30,6 +30,7 @@ namespace DAL.UnitOfWork
         IServiceRepository Service { get; }
         ITransactionRepository Transaction { get; }
         IMessageRepository Message { get; }
+        IComplaintImageRepository ComplaintImage { get; }
 
     }
 }
