@@ -25,12 +25,14 @@ namespace BLL.Services
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IVnPayService _vnPayService;
+        private readonly IImageService _imageService;
         public BookingService(IMapper mapper, IUnitOfWork unitOfWork,
-            IVnPayService vnPayService)
+            IVnPayService vnPayService, IImageService imageService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _vnPayService = vnPayService;
+            _imageService = imageService;
         }
 
         public async Task<ResponseDTO> CreateBooking(BookingDTO bookingDTO)
@@ -380,6 +382,42 @@ namespace BLL.Services
             booking.Status = BookingStatus.Completed;
 
             return await _unitOfWork.SaveChangeAsync();
+        }
+
+        public async Task<ResponseDTO> CreateComplaint(BookingComplaintDTO complaint)
+        {
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaint.BookingId);
+            if(!booking.Status.Equals(BookingStatus.WaitForConfirmCompleted))
+            {
+                return new ResponseDTO("Trạng thái booking không hợp lệ!", 400, false);
+            }
+            booking.ComplaintDescription = complaint.ComplaintDescription;
+            booking.Status = BookingStatus.ComplaintProgress;
+            _unitOfWork.Booking.Update(booking);
+
+            ComplaintImage complaintImage = new ComplaintImage();
+            complaintImage.BookingId = complaint.BookingId;
+            complaintImage.ComplaintImageId = Guid.NewGuid();
+            List<string> formFiles = new List<string>();
+            
+            for(int i = 0; i < complaint.ImageLink.Count; i++)
+            {
+                var avatarLink = await _imageService.StoreImageAndGetLink(complaint.ImageLink[i], "koiAvatar_img");
+                formFiles.Add(avatarLink);
+
+                complaintImage.BookingId = complaint.BookingId;
+                complaintImage.ComplaintImageId = Guid.NewGuid();
+                complaintImage.ImageLink = avatarLink;
+                await _unitOfWork.ComplaintImage.AddAsync(complaintImage);
+                await _unitOfWork.SaveChangeAsync();
+                if (i == complaint.ImageLink.Count - 1)
+                {
+                    return new ResponseDTO("Gửi khiếu nại thành công", 200, true);
+                }
+            }
+
+            return new ResponseDTO("Vui lòng thêm ảnh", 400, false, null);
+            
         }
     }
 }
