@@ -3,6 +3,7 @@ import styles from './Chat.module.scss';
 import { CircularProgress } from '@mui/material';
 import useAuth from '../../../hooks/useAuth';
 import { GetAllChatUsers, GetMessage, SendMessage } from '../../../api/ChatApi';
+import InboxIcon from '@mui/icons-material/Inbox';
 
 function ChatList() {
     const [newMessage, setNewMessage] = useState("");
@@ -10,11 +11,13 @@ function ChatList() {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [chatUsers, setChatUsers] = useState([]);
+    const [notification, setNotification] = useState('');
     const { user } = useAuth();
     const socketRef = useRef(null);
-    const messagesEndRef = useRef(null); // Tạo ref cho phần cuối của danh sách tin nhắn
+    const messagesEndRef = useRef(null);
 
     const fetchGetMessages = async () => {
+        setLoading(true);
         if (currentChatUser) {
             const response = await GetMessage(user.userId, currentChatUser.userId);
             if (response.ok) {
@@ -24,9 +27,11 @@ function ChatList() {
                 console.error('Failed to fetch messages');
             }
         }
+        setLoading(false);
     };
 
     const fetchGetAllChatUsers = async () => {
+        setLoading(true);
         const response = await GetAllChatUsers(user.userId);
         if (response.ok) {
             const responseData = await response.json();
@@ -34,9 +39,12 @@ function ChatList() {
             if (responseData.result.length > 0) {
                 setCurrentChatUser(responseData.result[0]);
             }
+        } else if (response.status === 404) {
+            setNotification('Bạn chưa có bất kỳ đoạn chat nào');
         } else {
             console.error('Failed to fetch chat users');
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -48,7 +56,6 @@ function ChatList() {
     useEffect(() => {
         if (currentChatUser) {
             fetchGetMessages();
-            setLoading(false);
         }
     }, [currentChatUser]);
 
@@ -108,6 +115,16 @@ function ChatList() {
         return (
             <div className='flex justify-center h-screen mt-10'>
                 <CircularProgress />
+            </div>
+        );
+    }
+
+    if (notification !== '') {
+        return (
+            <div className='h-screen mt-10'>
+                <div className='flex justify-center'>
+                    <h1 className='text-red-500 text-3xl'>{notification}</h1>
+                </div>
             </div>
         );
     }

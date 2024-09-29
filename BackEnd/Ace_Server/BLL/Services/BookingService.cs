@@ -253,7 +253,6 @@ namespace BLL.Services
 			return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listBookingOfCustomerDTO);
 		}
 	
-
         public ResponseDTO GetBookingDetail(Guid bookingId)
         {
             var booking = _unitOfWork.Booking.GetAllByCondition(c => c.BookingId == bookingId).FirstOrDefault();
@@ -272,14 +271,15 @@ namespace BLL.Services
             detailDTO.BookingNumber = booking.BookingNumber;
             detailDTO.CreatedDate = booking.CreatedDate;
             detailDTO.BookingDate = DateOnly.FromDateTime(booking.StartTime);
-            detailDTO.StartTime = TimeOnly.FromDateTime(booking.StartTime);
-            detailDTO.EndTime = TimeOnly.FromDateTime(booking.EndTime);
+            detailDTO.StartTime = booking.StartTime;
+            detailDTO.EndTime = booking.EndTime;
             detailDTO.ServiceTypeName = serviceType.ServiceTypeName;
             detailDTO.ServiceName = service.ServiceName;
             detailDTO.QuestionAmount = booking.QuestionAmount;
             detailDTO.BehaviorRating = booking.BehaviorRating;
             detailDTO.BehaviorFeedback = booking.BehaviorFeedback;
             detailDTO.FormMeetingName = formMeeting.FormMeetingName;
+            detailDTO.MeetLink = reader.MeetLink;
 
             var list = _mapper.Map<BookingDetailDTO>(detailDTO);
             return new ResponseDTO("Hiển thị chi tiết đặt lịch thành công", 200, true, list);
@@ -317,6 +317,69 @@ namespace BLL.Services
             return new ResponseDTO("Check thành công", 200, true);
         }
 
+        public async Task<ResponseDTO> CheckValidationUpdateWaitingForConfirmCompleted(Guid bookingId)
+        {
+            var checkExist = await CheckBookingExist(bookingId);
+            if (!checkExist)
+            {
+                return new ResponseDTO("Lịch hẹn không tồn tại", 404, false);
+            }
 
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == bookingId);
+            if (booking.Status != BookingStatus.Paid)
+            {
+                return new ResponseDTO("Trạng thái của lịch hẹn không hợp lệ", 400, false);
+            }
+
+            if (booking.EndTime > DateTime.Now)
+            {
+                return new ResponseDTO("Lịch hẹn chưa kết thúc", 400, false);
+            }
+            return new ResponseDTO("Check thành công", 200, true);
+        }
+
+        public async Task<bool> UpdateWaitingForConfirmCompleted(Guid bookingId)
+        {
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == bookingId);
+            if (booking == null)
+            {
+                return false;
+            }
+
+            booking.Status = BookingStatus.WaitForConfirmCompleted;
+            booking.EndDate = DateTime.Now;
+
+            return await _unitOfWork.SaveChangeAsync();
+        }
+
+        public async Task<ResponseDTO> CheckValidationUpdateCompleted(Guid bookingId)
+        {
+            var checkExist = await CheckBookingExist(bookingId);
+            if (!checkExist)
+            {
+                return new ResponseDTO("Lịch hẹn không tồn tại", 404, false);
+            }
+
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == bookingId);
+            if (booking.Status != BookingStatus.WaitForConfirmCompleted)
+            {
+                return new ResponseDTO("Trạng thái của lịch hẹn không hợp lệ", 400, false);
+            }
+
+            return new ResponseDTO("Check thành công", 200, true);
+        }
+
+        public async Task<bool> UpdateCompleted(Guid bookingId)
+        {
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == bookingId);
+            if (booking == null)
+            {
+                return false;
+            }
+
+            booking.Status = BookingStatus.Completed;
+
+            return await _unitOfWork.SaveChangeAsync();
+        }
     }
 }
