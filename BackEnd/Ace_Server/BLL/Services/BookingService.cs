@@ -419,5 +419,53 @@ namespace BLL.Services
             return new ResponseDTO("Vui lòng thêm ảnh", 400, false, null);
             
         }
-    }
+
+		public async Task<ResponseDTO> CheckValidationResponse(ComplaintResponseDTO complaintResponseDTO)
+		{
+			var checkExist = await CheckBookingExist(complaintResponseDTO.BookingId);
+			if (!checkExist)
+			{
+				return new ResponseDTO("Lịch hẹn không tồn tại", 404, false);
+			}
+			var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaintResponseDTO.BookingId);
+			if (!booking.Status.Equals(BookingStatus.ComplaintProgress))
+			{
+				return new ResponseDTO("Trạng thái của lịch hẹn không hợp lệ", 400, false);
+			}
+            if (!complaintResponseDTO.ApproveDeny.Equals("Approve") && !complaintResponseDTO.ApproveDeny.Equals("Deny"))
+            {
+				return new ResponseDTO("Vui lòng chấp nhận/từ chối khiếu nại", 400, false);
+			}
+			if (complaintResponseDTO.ComplaintRefundPercentage>100 || complaintResponseDTO.ComplaintRefundPercentage<0)
+			{
+				return new ResponseDTO("Vui lòng hoàn tiền 0-100%", 400, false);
+			}
+            if (complaintResponseDTO.ApproveDeny.Equals("Deny") && complaintResponseDTO.ComplaintRefundPercentage > 0)
+            {
+				return new ResponseDTO("Nếu khiếu nại bị từ chối, khách hàng sẽ không được hoàn tiền", 400, false);
+			}
+			return new ResponseDTO("Check thành công", 200, true);
+		}
+
+		public async Task<bool> ReponseComplaint(ComplaintResponseDTO complaintResponseDTO)
+		{
+			var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaintResponseDTO.BookingId);
+			if (booking == null)
+			{
+				return false;
+			}
+			booking.ComplaintResponse = complaintResponseDTO.ComplaintResponse;
+            booking.ComplaintRefundPercentage=complaintResponseDTO.ComplaintRefundPercentage;
+			if (complaintResponseDTO.ApproveDeny.Equals("Approve"))
+            {
+                booking.Status = BookingStatus.ComplaintSuccessfully;
+            }
+            else 
+            {
+				booking.Status = BookingStatus.ComplaintFailed;
+			}
+            _unitOfWork.Booking.Update(booking);
+			return await _unitOfWork.SaveChangeAsync();
+		}
+	}
 }
