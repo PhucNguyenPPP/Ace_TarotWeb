@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.DTO.General;
 
-namespace BLL.Services
+namespace BLL.Interface
 {
     public interface IUserSlotService
     {
