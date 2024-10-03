@@ -73,7 +73,7 @@ function Home() {
 
         fetchAllCardType();
 
-        const fetchAllTopic  = async () => {
+        const fetchAllTopic = async () => {
             const response = await GetAllTopic();
             if (response.ok) {
                 const responseData = await response.json();
@@ -149,7 +149,7 @@ function Home() {
                                 }}
                             >
                                 <option value='0'>2. Chọn chủ đề</option>
-                                {topicData  && topicData.length > 0 && (
+                                {topicData && topicData.length > 0 && (
                                     topicData.map((topic) => (
                                         <option key={topic.topicId} value={topic.topicId}>{topic.topicName}</option>
                                     ))
@@ -202,8 +202,8 @@ function Home() {
 
                 {(meaningCard && meaningCard.length > 0) && (
                     meaningCard.map((card, index) => (
-                        <div className='flex text-white pt-10' style={{ width: '60%', margin: '0 auto' }}>
-                            <div key={card.cardId} className="flex flex-col items-center mx-2 text-center pr-10">
+                        <div key={card.cardId} className='flex text-white pt-10' style={{ width: '60%', margin: '0 auto' }}>
+                            <div className="flex flex-col items-center mx-2 text-center pr-10">
                                 <Card
                                     ImageLink={card.cardAfterMeaning.imageLink}
                                 />
@@ -217,6 +217,20 @@ function Home() {
                     ))
                 )}
             </div>
+
+            {(meaningCard && meaningCard.length > 0) && (
+                <div className='flex justify-center mt-10'>
+                    <a href='/tarot-reader-list'
+                        style={{
+                            backgroundColor: '#FFB11A',
+                            borderRadius: '10px',
+                            padding: "10px 30px"
+                        }} >
+                        Xem chi tiết
+                    </a>
+                </div>
+            )}
+
         </div>
     );
 }
