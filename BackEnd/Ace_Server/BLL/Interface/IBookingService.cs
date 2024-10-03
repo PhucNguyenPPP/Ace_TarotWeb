@@ -23,5 +23,9 @@ namespace BLL.Interface
         Task<bool> UpdateWaitingForConfirmCompleted(Guid bookingId);
         Task<ResponseDTO> CheckValidationUpdateCompleted(Guid bookingId);
         Task<bool> UpdateCompleted(Guid bookingId);
-    }
+
+        Task<ResponseDTO> CreateComplaint (BookingComplaintDTO complaintDTO);
+		Task<ResponseDTO> CheckValidationResponse(ComplaintResponseDTO complaintResponseDTO);
+		Task<bool> ReponseComplaint(ComplaintResponseDTO complaintResponseDTO);
+	}
 }

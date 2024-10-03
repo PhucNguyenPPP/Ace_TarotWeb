@@ -25,12 +25,14 @@ namespace BLL.Services
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IVnPayService _vnPayService;
+        private readonly IImageService _imageService;
         public BookingService(IMapper mapper, IUnitOfWork unitOfWork,
-            IVnPayService vnPayService)
+            IVnPayService vnPayService, IImageService imageService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _vnPayService = vnPayService;
+            _imageService = imageService;
         }
 
         public async Task<ResponseDTO> CreateBooking(BookingDTO bookingDTO)
@@ -381,5 +383,89 @@ namespace BLL.Services
 
             return await _unitOfWork.SaveChangeAsync();
         }
-    }
+
+        public async Task<ResponseDTO> CreateComplaint(BookingComplaintDTO complaint)
+        {
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaint.BookingId);
+            if(!booking.Status.Equals(BookingStatus.WaitForConfirmCompleted))
+            {
+                return new ResponseDTO("Trạng thái booking không hợp lệ!", 400, false);
+            }
+            booking.ComplaintDescription = complaint.ComplaintDescription;
+            booking.Status = BookingStatus.ComplaintProgress;
+            _unitOfWork.Booking.Update(booking);
+
+            ComplaintImage complaintImage = new ComplaintImage();
+            complaintImage.BookingId = complaint.BookingId;
+            complaintImage.ComplaintImageId = Guid.NewGuid();
+            List<string> formFiles = new List<string>();
+            
+            for(int i = 0; i < complaint.ImageLink.Count; i++)
+            {
+                var avatarLink = await _imageService.StoreImageAndGetLink(complaint.ImageLink[i], "koiAvatar_img");
+                formFiles.Add(avatarLink);
+
+                complaintImage.BookingId = complaint.BookingId;
+                complaintImage.ComplaintImageId = Guid.NewGuid();
+                complaintImage.ImageLink = avatarLink;
+                await _unitOfWork.ComplaintImage.AddAsync(complaintImage);
+                await _unitOfWork.SaveChangeAsync();
+                if (i == complaint.ImageLink.Count - 1)
+                {
+                    return new ResponseDTO("Gửi khiếu nại thành công", 200, true);
+                }
+            }
+
+            return new ResponseDTO("Vui lòng thêm ảnh", 400, false, null);
+            
+        }
+
+		public async Task<ResponseDTO> CheckValidationResponse(ComplaintResponseDTO complaintResponseDTO)
+		{
+			var checkExist = await CheckBookingExist(complaintResponseDTO.BookingId);
+			if (!checkExist)
+			{
+				return new ResponseDTO("Lịch hẹn không tồn tại", 404, false);
+			}
+			var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaintResponseDTO.BookingId);
+			if (!booking.Status.Equals(BookingStatus.ComplaintProgress))
+			{
+				return new ResponseDTO("Trạng thái của lịch hẹn không hợp lệ", 400, false);
+			}
+            if (!complaintResponseDTO.ApproveDeny.Equals("Approve") && !complaintResponseDTO.ApproveDeny.Equals("Deny"))
+            {
+				return new ResponseDTO("Vui lòng chấp nhận/từ chối khiếu nại", 400, false);
+			}
+			if (complaintResponseDTO.ComplaintRefundPercentage>100 || complaintResponseDTO.ComplaintRefundPercentage<0)
+			{
+				return new ResponseDTO("Vui lòng hoàn tiền 0-100%", 400, false);
+			}
+            if (complaintResponseDTO.ApproveDeny.Equals("Deny") && complaintResponseDTO.ComplaintRefundPercentage > 0)
+            {
+				return new ResponseDTO("Nếu khiếu nại bị từ chối, khách hàng sẽ không được hoàn tiền", 400, false);
+			}
+			return new ResponseDTO("Check thành công", 200, true);
+		}
+
+		public async Task<bool> ReponseComplaint(ComplaintResponseDTO complaintResponseDTO)
+		{
+			var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaintResponseDTO.BookingId);
+			if (booking == null)
+			{
+				return false;
+			}
+			booking.ComplaintResponse = complaintResponseDTO.ComplaintResponse;
+            booking.ComplaintRefundPercentage=complaintResponseDTO.ComplaintRefundPercentage;
+			if (complaintResponseDTO.ApproveDeny.Equals("Approve"))
+            {
+                booking.Status = BookingStatus.ComplaintSuccessfully;
+            }
+            else 
+            {
+				booking.Status = BookingStatus.ComplaintFailed;
+			}
+            _unitOfWork.Booking.Update(booking);
+			return await _unitOfWork.SaveChangeAsync();
+		}
+	}
 }

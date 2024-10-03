@@ -156,5 +156,49 @@ namespace Api_Ace.Controllers
             }
         }
 
-    }
+        [HttpPost("create-complaint")]
+        public async Task<IActionResult> CreateComplaint([FromForm]BookingComplaintDTO bookingComplaintDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseDTO(ModelState.ToString() ?? "Unknow error", 400, false, null));
+            }
+
+            var feedbackResult = await _bookingService.CreateComplaint(bookingComplaintDTO);
+            if (feedbackResult.IsSuccess)
+            {
+                return Ok(feedbackResult);
+            }
+            else
+            {
+                return BadRequest(feedbackResult);
+            }
+        }
+        [HttpPut("complaint-response")]
+		public async Task<IActionResult> ReponseComplaint(ComplaintResponseDTO complaintResponseDTO)
+        {
+			var check = await _bookingService.CheckValidationResponse(complaintResponseDTO);
+			if (!check.IsSuccess && check.StatusCode == 404)
+			{
+				return NotFound(check);
+			}
+
+			if (!check.IsSuccess && check.StatusCode == 400)
+			{
+				return BadRequest(check);
+			}
+			var result = await _bookingService.ReponseComplaint(complaintResponseDTO);
+			if (result)
+			{
+				return Ok(new ResponseDTO("Trả lời khiếu nại thành công", 200, true));
+			}
+			else
+			{
+				return BadRequest(new ResponseDTO("Trả lời khiếu nại thất bại", 400, false));
+			}
+
+		}
+
+
+	}
 }
