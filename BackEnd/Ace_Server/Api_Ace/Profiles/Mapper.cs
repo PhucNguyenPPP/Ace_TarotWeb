@@ -50,7 +50,9 @@ namespace Api_Ace.Profiles
                 .ForMember(dest => dest.FormMeetingName, opt => opt.MapFrom(src => src.FormMeeting.FormMeetingName))
                 .ReverseMap();
             CreateMap<DAL.Entities.Message, MessageDTO>().ReverseMap();
-			CreateMap<BookingOfCustomerDTO, Booking>().ReverseMap();
+			CreateMap<Booking, BookingOfCustomerDTO>()
+                 .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.FullName))
+                .ReverseMap();
             CreateMap<DAL.Entities.Message, MessageResponseDTO>().ReverseMap();
             #endregion
         }
