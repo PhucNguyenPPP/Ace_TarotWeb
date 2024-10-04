@@ -376,7 +376,6 @@ function BookingDetail() {
                         </div>
                     ) : null}
 
-                    {/* Complaint Popup Form */}
                     <Dialog open={openPopup} onClose={handleClosePopup}>
                         <DialogTitle className='text-center'
                             style={{ fontWeight: 'bold' }}>Gửi khiếu nại</DialogTitle>
