@@ -25,7 +25,15 @@ public partial class Booking
 
     public DateTime EndTime { get; set; }
 
+    public DateTime? EndDate { get; set; }
+
     public int? QuestionAmount { get; set; }
+
+    public string? ComplaintDescription { get; set; }
+
+    public string? ComplaintResponse { get; set; }
+
+    public int? ComplaintRefundPercentage { get; set; }
 
     public string Status { get; set; } = null!;
 
@@ -36,6 +44,8 @@ public partial class Booking
     public Guid TarotReaderId { get; set; }
 
     public Guid ServiceId { get; set; }
+
+    public virtual ICollection<ComplaintImage> ComplaintImages { get; set; } = new List<ComplaintImage>();
 
     public virtual User Customer { get; set; } = null!;
 

@@ -1,12 +1,9 @@
 using Api_Ace.MiddleWares;
-using AutoMapper;
 using BLL.Interface;
 using BLL.Services;
-using DAL.Repositories;
-using DAL.Repositories.Interface;
+using BLL.WebSocketHandler;
 using DAL.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -34,6 +31,8 @@ builder.Services.AddScoped<IUserServiceTypeService, UserServiceTypeService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddSingleton<WebSocketHandler>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -75,8 +74,6 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-
-
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
@@ -100,6 +97,27 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromMinutes(2), // Kho?ng th?i gian g?i tín hi?u ?? duy trì k?t n?i (2 phút)
+    ReceiveBufferSize = 4 * 1024 // Kích th??c b? ??m cho d? li?u nh?n
+};
+
+app.UseWebSockets(webSocketOptions);
+
+app.Map("/ws", async context =>
+{
+    if (context.WebSockets.IsWebSocketRequest)
+    {
+        var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+        await WebSocketHandler.HandleWebSocketAsync(context, webSocket);
+    }
+    else
+    {
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+    }
+});
+
 app.UseHttpsRedirection();
 
 app.UseRouting();

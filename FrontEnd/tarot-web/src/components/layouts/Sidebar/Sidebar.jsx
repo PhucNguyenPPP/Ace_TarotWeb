@@ -2,15 +2,17 @@ import { MoreVertical } from "lucide-react";
 import { useContext, createContext, useState } from "react";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import useAuth from "../../../hooks/useAuth";
 
 const SidebarContext = createContext();
 
 export default function Sidebar({ children }) {
   const [expanded, setExpanded] = useState(true);
+  const { user } = useAuth();
 
   return (
-    <aside className={`h-screen ${expanded ? "w-64" : "w-16"}`}>
-      <nav className="h-full flex flex-col bg-white border-r shadow-sm" style={{backgroundColor: '#FFD232'}}>
+    <aside className={`min-h-screen max-h-max ${expanded ? "w-64" : "w-16"}`}>
+      <nav className="min-h-screen h-full flex flex-col bg-white border-r shadow-sm" style={{backgroundColor: '#FFD232'}}>
         <div className="p-4 pb-2 flex justify-between items-center">
           <img
             src="image/logo.png"
@@ -32,7 +34,7 @@ export default function Sidebar({ children }) {
 
         <div className="border-t flex p-3">
           <img
-            src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
+            src={user.avatarLink}
             alt=""
             className="w-10 h-10 rounded-md"
           />
@@ -40,8 +42,8 @@ export default function Sidebar({ children }) {
             className={`flex justify-between items-center overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}
           >
             <div className="leading-4">
-              <h4 className="font-semibold">John Doe</h4>
-              <span className="text-xs text-gray-600">johndoe@gmail.com</span>
+              <h4 className="font-semibold">{user.fullName}</h4>
+              <span className="text-xs text-gray-600">{user.email}</span>
             </div>
             <MoreVertical size={20} />
           </div>

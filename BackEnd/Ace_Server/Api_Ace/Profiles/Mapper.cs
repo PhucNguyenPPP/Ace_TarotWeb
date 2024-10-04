@@ -6,6 +6,7 @@ using Common.DTO.CardPosition;
 using Common.DTO.CardType;
 using Common.DTO.FormMeeting;
 using Common.DTO.Language;
+using Common.DTO.Message;
 using Common.DTO.Service;
 using Common.DTO.ServiceType;
 using Common.DTO.Slot;
@@ -48,7 +49,11 @@ namespace Api_Ace.Profiles
             CreateMap<UserFormMeeting, FormMeetingOfReaderDTO>()
                 .ForMember(dest => dest.FormMeetingName, opt => opt.MapFrom(src => src.FormMeeting.FormMeetingName))
                 .ReverseMap();
-
+            CreateMap<DAL.Entities.Message, MessageDTO>().ReverseMap();
+			CreateMap<Booking, BookingOfCustomerDTO>()
+                 .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.FullName))
+                .ReverseMap();
+            CreateMap<DAL.Entities.Message, MessageResponseDTO>().ReverseMap();
             #endregion
         }
     }

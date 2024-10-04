@@ -20,7 +20,12 @@ const pages = [
     { name: 'Liên hệ', link: '/contact' },
     { name: 'Cộng đồng', link: '/' },
 ];
-const settings = ['Hồ sơ', 'Đăng xuất'];
+const settings = [
+    { name: 'Hồ sơ ', link: '/profile' },
+    { name: 'Lịch hẹn', link: '/booking-list' },
+    { name: 'Tin nhắn', link: '/chat-list' },
+    { name: 'Đăng xuất', link: '/' }
+];
 function Header() {
     const { user } = useAuth();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -106,8 +111,8 @@ function Header() {
                                     onClose={handleCloseUserMenu}
                                 >
                                     {settings.map((setting) => (
-                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                            <Typography textAlign="center">{setting}</Typography>
+                                        <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+                                            <a href={setting.link}>{setting.name}</a>
                                         </MenuItem>
                                     ))}
                                 </Menu>
