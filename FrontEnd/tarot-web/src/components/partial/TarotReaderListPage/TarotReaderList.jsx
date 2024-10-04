@@ -12,7 +12,8 @@ import {
     FormControlLabel,
     Radio,
     FormGroup,
-    Checkbox
+    Checkbox,
+    CircularProgress
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -34,6 +35,7 @@ function TarotReaderList() {
     const [formFilter, setFormFilter] = useState([]);
     const [languageData, setLanguageData] = useState([]);
     const [formMeetingData, setFormMeetingData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleInputSearch = debounce((e) => {
@@ -72,6 +74,7 @@ function TarotReaderList() {
 
     useEffect(() => {
         const fetchAllLanguage = async () => {
+            setIsLoading(true);
             const response = await GetAllLanguage();
             if (response.ok) {
                 const responseData = await response.json();
@@ -79,11 +82,13 @@ function TarotReaderList() {
             } else {
                 throw new Error('Failed to fetch all language');
             }
+            setIsLoading(false);
         }
 
         fetchAllLanguage();
 
         const fetchAllFormMeeting = async () => {
+            setIsLoading(true);
             const response = await GetAllFormMeeting();
             if (response.ok) {
                 const responseData = await response.json();
@@ -91,11 +96,13 @@ function TarotReaderList() {
             } else {
                 throw new Error('Failed to fetch all form meeting');
             }
+            setIsLoading(false);
         }
 
         fetchAllFormMeeting();
 
         const fetchTarotReaderList = async () => {
+            setIsLoading(true);
             const response = await GetTarotReaderList(searchValue, currentPage,
                 rowsPerPage, genderFilter, languageFilter, formFilter);
             if (response.ok) {
@@ -106,10 +113,19 @@ function TarotReaderList() {
             } else {
                 throw new Error('Failed to fetch tarot reader list');
             }
+            setIsLoading(false);
         };
 
         fetchTarotReaderList();
     }, [searchValue, currentPage, genderFilter, languageFilter, formFilter]);
+
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
+                <CircularProgress />
+            </div>
+        );
+    }
 
     return (
         <div>

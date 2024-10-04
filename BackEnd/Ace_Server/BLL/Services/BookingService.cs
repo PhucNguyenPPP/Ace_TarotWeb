@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.Configuration.Conventions;
+﻿using AutoMapper;
 using BLL.Interface;
 using Common.Constant;
 using Common.DTO.Booking;
 using Common.DTO.General;
 using Common.DTO.Paging;
-using Common.DTO.User;
 using DAL.Entities;
 using DAL.UnitOfWork;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Identity.Client;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BLL.Services
@@ -198,7 +189,10 @@ namespace BLL.Services
             {
                 return new ResponseDTO("Không tìm thấy khách hàng", 404, false);
             }
-            var list = _unitOfWork.Booking.GetAllByCondition(b => b.CustomerId == cusID || b.TarotReaderId == cusID).ToList();
+            var list = _unitOfWork.Booking.GetAllByCondition(b => b.CustomerId == cusID || b.TarotReaderId == cusID)
+                .Include(c => c.Customer)
+                .Include(c => c.TarotReader)
+                .ToList();
 
             if (list == null)
             {
@@ -260,7 +254,9 @@ namespace BLL.Services
 
         public ResponseDTO GetBookingDetail(Guid bookingId)
         {
-            var booking = _unitOfWork.Booking.GetAllByCondition(c => c.BookingId == bookingId).FirstOrDefault();
+            var booking = _unitOfWork.Booking.GetAllByCondition(c => c.BookingId == bookingId)
+                .Include(c => c.Customer)
+                .FirstOrDefault();
             if (booking == null)
             {
                 return new ResponseDTO("Không tồn tại", 400, false);
@@ -273,6 +269,7 @@ namespace BLL.Services
             detailDTO.TarotReaderId = reader.UserId.ToString();
             detailDTO.TarotReaderName = reader.NickName;
             detailDTO.CustomerId = booking.CustomerId.ToString();
+            detailDTO.CustomerName = booking.Customer.FullName;
             detailDTO.Status = booking.Status;
             detailDTO.BookingId = booking.BookingId;
             detailDTO.BookingNumber = booking.BookingNumber;

@@ -35,9 +35,9 @@ function Chat() {
 
     useEffect(() => {
         if (!user) {
-           return;
+            return;
         }
-        if(currentChatUserId === '') {
+        if (currentChatUserId === '') {
             if (user.userId === customerId) {
                 setCurrentChatUserId(tarotReaderId)
             } else {
@@ -50,7 +50,7 @@ function Chat() {
 
     useEffect(() => {
         const fetchTarotReaderDetail = async () => {
-
+            setLoading(true);
             const response = await GetTarotReaderDetail(currentChatUserId);
             if (response.ok) {
                 const responseData = await response.json();
@@ -58,7 +58,7 @@ function Chat() {
             } else {
                 throw new Error('Failed to fetch tarot reader detail');
             }
-
+            setLoading(false);
         };
 
         fetchTarotReaderDetail();
@@ -113,7 +113,7 @@ function Chat() {
 
     if (loading) {
         return (
-            <div className='flex justify-center h-screen mt-10'>
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
                 <CircularProgress />
             </div>
         );

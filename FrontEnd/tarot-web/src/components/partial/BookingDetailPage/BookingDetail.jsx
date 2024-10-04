@@ -15,6 +15,7 @@ function BookingDetail() {
     const [bookingDetailData, setBookingDetailData] = useState(null);
     const [ratingStar, setRatingStar] = useState(0);
     const [feedback, setFeedback] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -28,6 +29,7 @@ function BookingDetail() {
     };
 
     const fetchGetBookingDetail = async () => {
+        setIsLoading(true);
         const response = await GetBookingDetail(bookingId);
         if (response.ok) {
             const responseData = await response.json();
@@ -36,6 +38,7 @@ function BookingDetail() {
             const responseData = await response.json();
             toast.error(responseData.result);
         }
+        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -55,6 +58,7 @@ function BookingDetail() {
             return;
         }
 
+        setIsLoading(true);
         const response = await CreateFeedback(bookingId, ratingStar, feedback);
         if (response.ok) {
             toast.success('Đánh giá thành công');
@@ -63,9 +67,11 @@ function BookingDetail() {
             const responseData = await response.json();
             toast.error('Đánh giá thất bại: ' + responseData.message);
         }
+        setIsLoading(false);
     };
 
     const handleCompleteByTarotReader = async () => {
+        setIsLoading(true);
         const response = await CompleteBookingByTarotReader(bookingId);
         if (response.ok) {
             toast.success('Xác nhận hoàn thành lịch hẹn thành công');
@@ -74,9 +80,11 @@ function BookingDetail() {
             const responseData = await response.json();
             toast.error(responseData.message);
         }
+        setIsLoading(false);
     };
 
     const handleCompleteByCustomer = async () => {
+        setIsLoading(true);
         const response = await CompleteBookingByCustomer(bookingId);
         if (response.ok) {
             toast.success('Xác nhận hoàn thành lịch hẹn thành công');
@@ -85,6 +93,7 @@ function BookingDetail() {
             const responseData = await response.json();
             toast.error(responseData.message);
         }
+        setIsLoading(false);
     };
 
     const { getRootProps, getInputProps } = useDropzone({
@@ -109,6 +118,7 @@ function BookingDetail() {
             return;
         }
 
+        setIsLoading(true);
         const response = await SendRequestComplaint(bookingId, complaintText, uploadedImages)
         if (response.ok) {
             toast.success('Gửi khiếu nại thành công');
@@ -118,6 +128,7 @@ function BookingDetail() {
             const responseData = await response.json();
             toast.error(responseData.message);
         }
+        setIsLoading(false);
     };
 
     const handleClosePopup = () => {
@@ -132,10 +143,18 @@ function BookingDetail() {
         navigate('/chat', { state: { customerId, tarotReaderId } });
     };
 
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
+                <CircularProgress />
+            </div>
+        );
+    }
+
     if (!bookingDetailData) {
         return (
-            <div className='flex items-center justify-center h-screen mt-10'>
-                <CircularProgress color='primary' />
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
+                <CircularProgress />
             </div>
         );
     }
@@ -143,6 +162,8 @@ function BookingDetail() {
     return (
         <div
             style={{
+                width: '100%',
+                minHeight: '100vh',
                 height: 'max-content',
                 backgroundImage: "url('/image/BG-01.png')",
                 backgroundSize: 'cover'
@@ -153,7 +174,12 @@ function BookingDetail() {
             <div className={styles.container_content}>
 
                 <div className={styles.header_content}>
-                    <p className={styles.tarot_reader_name}>Tarot Reader: {bookingDetailData.tarotReaderName}</p>
+                    {user.roleName === 'Tarot Reader' && (
+                        <p className={styles.tarot_reader_name}>Khách hàng: {bookingDetailData.customerName}</p>
+                    )}
+                     {user.roleName === 'Customer' && (
+                        <p className={styles.tarot_reader_name}>Tarot Reader: {bookingDetailData.tarotReaderName}</p>
+                    )}
                     <div className={styles.container_status}>
                         <p className='pr-3'>Trạng thái:</p>
                         <p className={styles.status}>{bookingDetailData.status}</p>
