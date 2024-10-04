@@ -7,7 +7,7 @@ export default function TarotReaderSideBar() {
         <Sidebar>
             <SidebarItem icon={<HomeOutlinedIcon/>} text={"Trang chủ"} href={"/"}/>
             <SidebarItem icon={<PersonOutlineOutlinedIcon />} text={"Quản lý lịch hẹn"} href={"/booking-list"}/>
-            <SidebarItem icon={<PersonOutlineOutlinedIcon />} text={"Quản lý lịch làm"} href={"/page-tarot-reader"}/>
+            <SidebarItem icon={<PersonOutlineOutlinedIcon />} text={"Quản lý lịch làm"} href={"/shedule-tarot-reader"}/>
             <SidebarItem icon={<PersonOutlineOutlinedIcon />} text={"Quản lý dịch vụ"} href={"/page-tarot-reader"}/>
             <SidebarItem icon={<PersonOutlineOutlinedIcon />} text={"Quản lý trang"} href={"/page-tarot-reader"}/>
             <SidebarItem icon={<PersonOutlineOutlinedIcon />} text={"Quản lý trang"} href={"/page-tarot-reader"}/>

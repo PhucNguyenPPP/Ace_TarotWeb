@@ -14,7 +14,6 @@ const BookingListPage = () => {
                         <TarotReaderSideBar />
                         <BookingList />
                     </div>
-
                     <Footer />
                 </>
             ) : (
