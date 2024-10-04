@@ -3,6 +3,7 @@ import CardSpreadLayout from './CardSpreadLayout';
 import Card from '../Card/Card';
 import { GetAllCardType, GetAllTopic, GetMeaningCard, GetRandomCardList } from '../../../api/CardApi';
 import { toast } from 'react-toastify';
+import { CircularProgress } from '@mui/material';
 // import { WidthFull } from '@mui/icons-material';
 
 function Home() {
@@ -16,6 +17,7 @@ function Home() {
     const [meaningCard, setMeaningCard] = useState([]);
     const [cardType, setCardType] = useState([]);
     const [topicData, setTopicData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const cardCountRow1 = 16;
     const cardCountRow2 = 16;
@@ -62,6 +64,7 @@ function Home() {
 
     useEffect(() => {
         const fetchAllCardType = async () => {
+            setIsLoading(true);
             const response = await GetAllCardType();
             if (response.ok) {
                 const responseData = await response.json();
@@ -69,11 +72,13 @@ function Home() {
             } else {
                 throw new Error('Failed to fetch card types');
             }
+            setIsLoading(false);
         };
 
         fetchAllCardType();
 
         const fetchAllTopic = async () => {
+            setIsLoading(true);
             const response = await GetAllTopic();
             if (response.ok) {
                 const responseData = await response.json();
@@ -81,12 +86,14 @@ function Home() {
             } else {
                 throw new Error('Failed to fetch topic');
             }
+            setIsLoading(false);
         };
 
         fetchAllTopic();
 
         if (type !== '0') {
             const fetchRandomCardList = async () => {
+                setIsLoading(true);
                 const response = await GetRandomCardList(type);
                 if (response.ok) {
                     const responseData = await response.json();
@@ -94,12 +101,20 @@ function Home() {
                 } else {
                     throw new Error('Failed to fetch');
                 }
-
+                setIsLoading(false);
             };
 
             fetchRandomCardList();
         }
     }, [type]);
+
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
+                <CircularProgress />
+            </div>
+        );
+    }
 
     return (
         <div className='p-10'
