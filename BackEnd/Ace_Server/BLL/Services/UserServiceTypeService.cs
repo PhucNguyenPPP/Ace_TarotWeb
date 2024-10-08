@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BLL.Interface;
+using Common.Constant;
 using Common.DTO.General;
 using Common.DTO.ServiceType;
 using DAL.UnitOfWork;
@@ -21,7 +22,7 @@ namespace BLL.Services
         public ResponseDTO GetAllServiceType(Guid userId)
         {
                 var serviceType = _unitOfWork.UserServiceType
-                .GetAllByCondition(x => x.UserId == userId && x.Status == true)
+                .GetAllByCondition(x => x.UserId == userId && x.Status == true &&x.User.Role.RoleName == RoleConstant.TarotReader)
                 .Include(c=> c.ServiceType).ToList();
             if (serviceType.IsNullOrEmpty() || serviceType.Count() == 0)
             {
