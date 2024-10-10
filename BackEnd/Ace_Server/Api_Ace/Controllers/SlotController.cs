@@ -1,7 +1,10 @@
-﻿using BLL.Interface;
+﻿using AutoMapper;
+using BLL.Interface;
 using BLL.Services;
 using Common.DTO.CardPosition;
 using Common.DTO.General;
+using Common.DTO.Slot;
+using DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,5 +30,12 @@ namespace Api_Ace.Controllers
 			return Ok(responseDTO);
 		}
 
-	}
+        [HttpGet("all-slots")]
+        public IActionResult GetAllSlotSystem()
+        {
+            var list = _slotService.GetAllSlotOfSystem();
+            return Ok(new ResponseDTO("Lấy slot thành công", 200, true, list));
+        }
+
+    }
 }

@@ -10,6 +10,7 @@ using Common.DTO.General;
 using Common.DTO.UserSlot;
 using DAL.Entities;
 using DAL.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using static System.Reflection.Metadata.BlobBuilder;
 
@@ -48,7 +49,9 @@ namespace BLL.Services
 		public async Task<ResponseDTO> GetSlotOfDate(DateOnly date, Guid guid)
 		{
 			var slotList = _unitOfWork.Slot.GetAllByCondition(s => s.StartTime.Date == date.ToDateTime(TimeOnly.MinValue).Date).Select(s => s.SlotId).ToList();
-			var userSlotList = _unitOfWork.UserSlot.GetAllByCondition(uslot => slotList.Contains(uslot.SlotId)).OrderBy(c => c.Slot.StartTime);
+			var userSlotList = _unitOfWork.UserSlot.GetAllByCondition(uslot => slotList.Contains(uslot.SlotId))
+				.Include(c => c.Slot)
+				.OrderBy(c => c.Slot.StartTime);
 			var listDTO = _mapper.Map<List<UserSlotOfDateDTO>>(userSlotList);
 			if (listDTO.Count() > 0)
 			{
