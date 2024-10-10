@@ -23,24 +23,27 @@ namespace Api_Ace.Profiles
         {
             #region
             CreateMap<SignUpCustomerRequestDTO, User>().ReverseMap();
-			CreateMap<TarotReaderDTO, User>().ReverseMap();
+            CreateMap<TarotReaderDTO, User>().ReverseMap();
             CreateMap<FreeTarotCardDTO, Card>().ReverseMap();
-			CreateMap<CardTypeDTO, CardType>().ReverseMap();
+            CreateMap<CardTypeDTO, CardType>().ReverseMap();
             CreateMap<User, LocalUserDTO>()
             .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
             .ReverseMap();
             CreateMap<CardPosition, CardPositionDTO>().ReverseMap();
-			CreateMap<Card, CardAfterMeaningDTO>().ReverseMap();
-			CreateMap<User, UserDetailDTO>().ReverseMap();
-			CreateMap <Language, LanguageOfReaderDTO>().ReverseMap();
-			CreateMap<ServiceType, ServiceTypeDTO>().ReverseMap();
-			CreateMap<FormMeeting, FormMeetingOfReaderDTO>().ReverseMap();
-			CreateMap<Slot, SlotDTO>().ReverseMap();
+            CreateMap<Card, CardAfterMeaningDTO>().ReverseMap();
+            CreateMap<User, UserDetailDTO>().ReverseMap();
+            CreateMap<Language, LanguageOfReaderDTO>().ReverseMap();
+            CreateMap<ServiceType, ServiceTypeDTO>().ReverseMap();
+            CreateMap<FormMeeting, FormMeetingOfReaderDTO>().ReverseMap();
+            CreateMap<Slot, SlotDTO>().ReverseMap();
             CreateMap<Topic, TopicDTO>().ReverseMap();
             CreateMap<SignUpReaderRequestDTO, User>().ReverseMap();
-			CreateMap<UserSlotOfDateDTO, UserSlot>().ReverseMap();
-		
-	
+            CreateMap<UserSlot, UserSlotOfDateDTO>()
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Slot.StartTime))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.Slot.EndTime))
+                .ReverseMap();
+
+
             CreateMap<Service, ServiceDTO>().ReverseMap();
             CreateMap<UserServiceType, ServiceTypeOfUserDTO>()
             .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.ServiceType != null ? src.ServiceType.ServiceTypeName : "Unknown"))  // Handle nulls in AutoMapper
@@ -50,10 +53,14 @@ namespace Api_Ace.Profiles
                 .ForMember(dest => dest.FormMeetingName, opt => opt.MapFrom(src => src.FormMeeting.FormMeetingName))
                 .ReverseMap();
             CreateMap<DAL.Entities.Message, MessageDTO>().ReverseMap();
-			CreateMap<Booking, BookingOfCustomerDTO>()
+            CreateMap<Booking, BookingOfCustomerDTO>()
                  .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.FullName))
                 .ReverseMap();
             CreateMap<DAL.Entities.Message, MessageResponseDTO>().ReverseMap();
+            CreateMap<Slot, SlotResponseSystemDTO>()
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartTime))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndTime))
+                .ReverseMap();
             #endregion
         }
     }
