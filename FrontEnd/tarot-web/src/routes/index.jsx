@@ -19,6 +19,7 @@ import ChatListPage from "../pages/ChatPage/ChatListPage";
 import ChatPage from "../pages/ChatPage/ChatPage";
 import RoleBasedGuard from "../guards/RoleBasedGuard";
 import SheduleTarotReaderPage from "../pages/SheduleTarotReaderPage/SheduleTarotReaderPage";
+import GuestAuth from "../guards/GuestGuard";
 
 export const router = createBrowserRouter([
   {
@@ -28,7 +29,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    element: <GuestAuth><LoginPage /></GuestAuth>,
     errorElement: <Error />,
   },
   {
@@ -106,6 +107,11 @@ export const router = createBrowserRouter([
   ,
   { path: "/shedule-tarot-reader", 
     element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><SheduleTarotReaderPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/home-tarot-reader", 
+    element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><HomeTarotReaderPage/></RoleBasedGuard>,
     errorElement: <Error/> 
   }
 ]);
