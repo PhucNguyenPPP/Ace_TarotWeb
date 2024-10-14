@@ -48,7 +48,7 @@ function TimeForm({ tarotReaderData, serviceData }) {
     const [slotOfDate, setSlotOfDate] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [generateSlots, setGenerateSlots] = useState([]);
-    const [selectedSlot, setSelectedSlot]= useState([]);
+    const [selectedSlot, setSelectedSlot] = useState([]);
     const { user } = useAuth();
 
     const handleClose = () => {
@@ -61,6 +61,7 @@ function TimeForm({ tarotReaderData, serviceData }) {
             if (dateHasSlot.includes(dayjs(startDate).format('YYYY-MM-DD'))) {
                 if (startDate) {
                     const fetchSlotOfDate = async () => {
+                        setIsLoading(true);
                         const response = await GetSlotOfDate(dayjs(startDate).format('YYYY-MM-DD'), tarotReaderData.userId);
                         setSelectedDate(dayjs(startDate).format('DD-MM-YYYY'))
                         if (response.ok) {
@@ -69,6 +70,7 @@ function TimeForm({ tarotReaderData, serviceData }) {
                         } else {
                             throw new Error('Failed to fetch slot of date');
                         }
+                        setIsLoading(false);
                     };
 
                     fetchSlotOfDate();
@@ -128,22 +130,22 @@ function TimeForm({ tarotReaderData, serviceData }) {
     };
 
     const getUserSlotId = (startTime) => {
-        var slot =  slotOfDate.find(c => c.startTime === startTime && c.status === true);
+        var slot = slotOfDate.find(c => c.startTime === startTime && c.status === true);
         return slot.userSlotId
     }
 
     const handleChooseSlot = (event) => {
         if (event.target.checked) {
-          setSelectedSlot((prevSlots) => [...prevSlots, event.target.value]);
+            setSelectedSlot((prevSlots) => [...prevSlots, event.target.value]);
         } else {
             setSelectedSlot((prevSlots) => prevSlots.filter((slot) => slot !== event.target.value));
         }
-      };
+    };
 
     const handleClickPayment = () => {
         var slotAmount = Math.ceil(serviceData.serviceDuration / 30)
-        if(selectedSlot.length !== slotAmount){
-            toast.error("Vui lòng chọn " + slotAmount + " slot" );
+        if (selectedSlot.length !== slotAmount) {
+            toast.error("Vui lòng chọn " + slotAmount + " slot");
             return;
         }
 
@@ -151,29 +153,29 @@ function TimeForm({ tarotReaderData, serviceData }) {
             const selectedSlotsDetails = selectedSlot
                 .map((userSlotId) => slotOfDate.find((slot) => slot.userSlotId === userSlotId))
                 .sort((a, b) => dayjs(a.startTime, 'H:mm').diff(dayjs(b.startTime, 'H:mm')));
-    
+
             let areSlotsSequential = true;
             for (let i = 1; i < selectedSlotsDetails.length; i++) {
                 const prevSlotEndTime = dayjs(selectedSlotsDetails[i - 1].endTime, 'H:mm');
                 const currentSlotStartTime = dayjs(selectedSlotsDetails[i].startTime, 'H:mm');
-    
+
                 if (!currentSlotStartTime.isSame(prevSlotEndTime)) {
                     areSlotsSequential = false;
                     break;
                 }
             }
-    
+
             if (!areSlotsSequential) {
                 toast.error("Vui lòng chọn các slot liền kề nhau.");
                 return;
             }
         }
 
-        if(user?.userId){
+        if (user?.userId) {
             const fetchCreateBooking = async () => {
                 setIsLoading(true);
                 var data = {};
-                if(serviceData.serviceName === "Theo câu hỏi lẻ"){
+                if (serviceData.serviceName === "Theo câu hỏi lẻ") {
                     data = {
                         customerId: user.userId,
                         tarotReaderId: tarotReaderData.userId,
@@ -190,7 +192,7 @@ function TimeForm({ tarotReaderData, serviceData }) {
                         formMeetingId: serviceData.formMeetingId,
                         userSlotId: selectedSlot
                     }
-                } 
+                }
                 const response = await CreateBooking(data);
                 setOpenPopover(false);
                 if (response.ok) {
@@ -198,7 +200,7 @@ function TimeForm({ tarotReaderData, serviceData }) {
                     toast.success("Tạo lịch hẹn thành công")
                     setTimeout(() => {
                     }, 1000);
-                    
+
                     const fetchCreatePaymentUrl = async () => {
                         const response = await CreatePaymentUrl(responseData.result);
                         const responseDataCreateUrl = await response.json();
@@ -209,14 +211,14 @@ function TimeForm({ tarotReaderData, serviceData }) {
                             throw new Error('Failed to fetch create payment url');
                         }
                     };
-            
+
                     fetchCreatePaymentUrl();
 
                 } else {
                     throw new Error('Failed to fetch create booking');
                 }
             };
-    
+
             fetchCreateBooking();
         } else {
             toast.error("Vui lòng đăng nhập để có thể đặt lịch");
@@ -229,19 +231,7 @@ function TimeForm({ tarotReaderData, serviceData }) {
     return (
         <div>
             {isLoading ?
-                <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100%',
-                    backgroundColor: 'rgba(128, 128, 128, 0.5)',
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100vw',
-                    zIndex: 1000,
-                }}>
+                <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
                     <CircularProgress />
                 </div>
                 :
@@ -327,8 +317,16 @@ function TimeForm({ tarotReaderData, serviceData }) {
                                     borderRadius: '30px',
                                 }}
                                 onClick={handleClickPayment}
+                                disabled={isLoading}
                             >
-                                THANH TOÁN <KeyboardArrowRightIcon />
+                                {isLoading ? (
+                                    <>
+                                        <CircularProgress size={24} sx={{ position: 'absolute' }} />
+                                        <span style={{ visibility: 'hidden' }}>THANH TOÁN</span>
+                                    </>
+                                ) : (
+                                    'THANH TOÁN'
+                                )} <KeyboardArrowRightIcon />
                             </button>
                         </div>
                         <div className='flex flex-wrap justify-center'>

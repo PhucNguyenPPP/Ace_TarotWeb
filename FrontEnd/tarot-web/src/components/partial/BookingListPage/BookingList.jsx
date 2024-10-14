@@ -8,7 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { colors, debounce, InputAdornment, Pagination, TextField } from '@mui/material';
+import { CircularProgress, colors, debounce, InputAdornment, Pagination, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { GetAllBooking } from '../../../api/BookingApi';
 import useAuth from '../../../hooks/useAuth';
@@ -69,17 +69,19 @@ function BookingList() {
     const [totalPages, setTotalPages] = useState(1);
     const [searchValue, setSearchValue] = useState('');
     const [filterBookingDateAsc, setFilterBookingDateAsc] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const options = [
         { value: 'true', label: <span>Ngày hẹn <ArrowUpwardIcon /></span> },
         { value: 'false', label: <span>Ngày hẹn <ArrowDownwardIcon /></span> }
     ];
     const { user } = useAuth();
     const navigate = useNavigate();
-    
+
 
     useEffect(() => {
         const fetchBookingList = async () => {
             if (user) {
+                setIsLoading(true);
                 const response = await GetAllBooking(user.userId, currentPage, rowsPerPage, searchValue, filterBookingDateAsc);
                 if (response.ok) {
                     const responseData = await response.json();
@@ -91,6 +93,7 @@ function BookingList() {
                 } else {
                     throw new Error('Failed to fetch booking list');
                 }
+                setIsLoading(false);
             }
         };
         fetchBookingList();
@@ -114,9 +117,18 @@ function BookingList() {
         navigate('/booking-detail', { state: { bookingId } });
     };
 
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
+                <CircularProgress />
+            </div>
+        );
+    }
+
     return (
         <div
             style={{
+                width: '100%',
                 minHeight: '100vh',
                 height: 'max-content',
                 backgroundImage: "url('/image/BG-01.png')",
@@ -165,7 +177,12 @@ function BookingList() {
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell align='center'>ID</StyledTableCell>
-                                <StyledTableCell align='center'>Tarot reader</StyledTableCell>
+                                {user.roleName === 'Tarot Reader' && (
+                                    <StyledTableCell align='center'>Khách hàng</StyledTableCell>
+                                )}
+                                {user.roleName === 'Customer' && (
+                                    <StyledTableCell align='center'>Tarot Reader</StyledTableCell>
+                                )}
                                 <StyledTableCell align='center'>Ngày đặt lịch</StyledTableCell>
                                 <StyledTableCell align='center'>Ngày hẹn</StyledTableCell>
                                 <StyledTableCell align='center'>Thời gian</StyledTableCell>
@@ -181,7 +198,13 @@ function BookingList() {
                                         <StyledTableCell align="center">
                                             {row.bookingNumber}
                                         </StyledTableCell>
-                                        <StyledTableCell align="center">{row.nickname}</StyledTableCell>
+                                        {user.roleName === 'Tarot Reader' && (
+                                            <StyledTableCell align="center">{row.customerName}</StyledTableCell>
+                                        )}
+
+                                        {user.roleName === 'Customer' && (
+                                             <StyledTableCell align="center">{row.nickname}</StyledTableCell>
+                                        )}
                                         <StyledTableCell align='center'>
                                             {formatDateTime(row.createdDate, {
                                                 day: '2-digit',

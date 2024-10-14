@@ -22,6 +22,7 @@ const pages = [
 ];
 const settings = [
     { name: 'Hồ sơ ', link: '/profile' },
+    { name: 'Lịch hẹn', link: '/booking-list' },
     { name: 'Tin nhắn', link: '/chat-list' },
     { name: 'Đăng xuất', link: '/' }
 ];

@@ -1,0 +1,44 @@
+.pageContainer{
+    background-color: #5900e5;
+    width: 100%;
+}
+
+.tableContainer {
+    border-radius: 8px;
+    height: max-content;
+    width: 90%;
+    margin: 0 auto;
+}
+
+
+.tableHeader {
+    background-color: #ffc107;
+}
+
+.highlightedText {
+    color: #4b0082;
+    font-weight: bold;
+}
+
+.MuiTableCell-root {
+    border: 1px solid black;
+}
+
+.MuiTableCell-head {
+    font-weight: bold;
+    color: black;
+}
+
+.MuiTableCell-body {
+    color: white;
+}
+
+.iconButton {
+    color: white;
+}
+
+.loadingContainer {
+    display: flex;
+    padding: 10px 0;
+    justify-content: center;
+}

@@ -1,4 +1,4 @@
-import { FormControlLabel, Radio, RadioGroup, TextField, Typography } from '@mui/material';
+import { CircularProgress, FormControlLabel, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { GetServiceOfServiceType, GetServiceTypeOfTarotReader } from '../../../api/ServiceApi';
 import { GetAllFormMeetingOfTarotReader } from '../../../api/FormMeetingApi';
@@ -8,16 +8,17 @@ function ServiceForm({ tarotReaderData, onDataUpdate, serviceData }) {
     const [serviceType, setServiceType] = useState([]);
     const [serviceList, setServiceList] = useState([]);
     const [formMeetingList, setFormMeetingList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedService, setSelectedService] = useState(serviceData.serviceId || '');
     const [selectedServiceType, setSelectedServiceType] = useState(serviceData.serviceTypeId || '');
     const [selectedServiceName, setSelectedServiceName] = useState(serviceData.serviceName || '');
     const [selectedFormMeeting, setSelectedFormMeeting] = useState(serviceData.formMeetingId || '');
     const [selectedAmount, setSelectedAmount] = useState(serviceData.questionAmount || 0);
-    const [selectedServiceDuration, setSelectedServiceDuration] = useState(serviceData.serviceDuration || 0)
-
+    const [selectedServiceDuration, setSelectedServiceDuration] = useState(serviceData.serviceDuration || 0);
 
     useEffect(() => {
         const fetchServiceTypeOfTarotReader = async () => {
+            setIsLoading(true);
             const response = await GetServiceTypeOfTarotReader(tarotReaderData.userId);
             if (response.ok) {
                 const responseData = await response.json();
@@ -25,11 +26,13 @@ function ServiceForm({ tarotReaderData, onDataUpdate, serviceData }) {
             } else {
                 throw new Error('Failed to fetch service type of tarot reader');
             }
+            setIsLoading(false);
         };
 
         fetchServiceTypeOfTarotReader();
 
         const fetchServiceOfServiceType = async () => {
+            setIsLoading(true);
             const response = await GetServiceOfServiceType(selectedServiceType);
             if (response.ok) {
                 const responseData = await response.json();
@@ -38,11 +41,13 @@ function ServiceForm({ tarotReaderData, onDataUpdate, serviceData }) {
                 setServiceList([])
                 throw new Error('Failed to fetch service of service type');
             }
+            setIsLoading(false);
         };
 
         fetchServiceOfServiceType();
 
         const fetchFormMeetingOfTarotReader = async () => {
+            setIsLoading(true);
             const response = await GetAllFormMeetingOfTarotReader(tarotReaderData.userId);
             if (response.ok) {
                 const responseData = await response.json();
@@ -51,6 +56,7 @@ function ServiceForm({ tarotReaderData, onDataUpdate, serviceData }) {
                 setFormMeetingList([]);
                 throw new Error('Failed to fetch form meeting of tarot reader');
             }
+            setIsLoading(false);
         };
 
         fetchFormMeetingOfTarotReader();
@@ -103,6 +109,14 @@ function ServiceForm({ tarotReaderData, onDataUpdate, serviceData }) {
             serviceDuration: selectedServiceDuration
         });
     }, [selectedFormMeeting, selectedServiceType, selectedService, selectedAmount])
+
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
+                <CircularProgress />
+            </div>
+        );
+    }
 
     return (
         <div>

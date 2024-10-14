@@ -10,6 +10,7 @@ function TarotReaderDetail() {
     const location = useLocation();
     const { userId } = location.state || {};
     const [tarotReaderData, setTarotReaderData] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleNavigate = (userId) => {
@@ -19,7 +20,7 @@ function TarotReaderDetail() {
     useEffect(() => {
         if (userId) {
             const fetchTarotReaderDetail = async () => {
-
+                setIsLoading(true);
                 const response = await GetTarotReaderDetail(userId);
                 if (response.ok) {
                     const responseData = await response.json();
@@ -27,19 +28,25 @@ function TarotReaderDetail() {
                 } else {
                     throw new Error('Failed to fetch tarot reader detail');
                 }
-
+                setIsLoading(false);
             };
 
             fetchTarotReaderDetail();
         }
     }, [userId]);
 
-
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
+                <CircularProgress />
+            </div>
+        );
+    }
 
     if (!tarotReaderData) {
         return (
-            <div className='flex items-center justify-center h-screen mt-10'>
-                <CircularProgress color='primary' />
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
+                <CircularProgress />
             </div>
         );
     }

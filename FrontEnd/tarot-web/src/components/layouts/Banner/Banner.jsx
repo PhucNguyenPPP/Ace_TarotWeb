@@ -1,8 +1,17 @@
 function Banner() {
     return (
-        <div style={{ height: '80px', backgroundColor: '#5900E5', color: 'white'}}>
-            <h1 className="text-center" >Banner quảng cáo</h1>
-        </div>
+        <div style={{
+            backgroundColor: '#5900E5',
+            color: 'white',
+            backgroundImage: 'url(/image/BannerHomePage.png)',
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            height: '230px',
+            aspectRatio: 'auto'
+          }}>
+          </div>
+          
     );
 }
 

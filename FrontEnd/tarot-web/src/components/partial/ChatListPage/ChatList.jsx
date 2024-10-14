@@ -113,7 +113,7 @@ function ChatList() {
 
     if (loading) {
         return (
-            <div className='flex justify-center h-screen mt-10'>
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
                 <CircularProgress />
             </div>
         );

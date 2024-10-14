@@ -9,10 +9,9 @@ namespace Common.DTO.Booking
 	public class BookingOfCustomerDTO
 	{
 		public Guid BookingId { get; set; }
-
 		public string BookingNumber { get; set; } = null!;
 		public Guid TarotReaderId { get; set; } //tarot reader
-
+        public string CustomerName { get; set; }
 		public string? Nickname { get; set; } = null!;
 		public decimal Price { get; set; }
 

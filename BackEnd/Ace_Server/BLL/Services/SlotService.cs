@@ -79,5 +79,14 @@ namespace BLL.Services
 			}
 		}
 
-	}
+        public List<SlotResponseSystemDTO> GetAllSlotOfSystem()
+        {
+            var list = _unitOfWork.Slot
+				.GetAllByCondition(c => c.StartTime >  DateTime.Now)
+				.OrderBy(c => c.StartTime)
+				.ToList();
+            var mapList = _mapper.Map<List<SlotResponseSystemDTO>>(list);
+            return mapList;
+        }
+    }
 }

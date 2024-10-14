@@ -8,7 +8,10 @@ namespace Common.DTO.Booking
 {
     public class BookingDetailDTO
     {
+        public string? TarotReaderId{ get; set; }
         public string? TarotReaderName { get; set; }
+        public string? CustomerId { get; set; }
+        public string? CustomerName { get; set; }
 
         public string Status { get; set; } = null!;
 

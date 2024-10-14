@@ -1,0 +1,105 @@
+.chatContainer {
+    display: flex;
+    background-color: #f0f2f5;
+    height: 90vh; /* Make the container fill the entire viewport height */
+    justify-content: center;
+}
+
+
+.chatContent {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    position: relative;
+    overflow: hidden; /* Hide overflow to prevent scrolling of entire chatContent */
+
+    .chatHeader {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        background-color: #f9f9f9;
+        
+        h4 {
+            margin: 0;
+            margin-left: 15px;
+            font-size: 18px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+    }
+
+    .chatMessages {
+        flex-grow: 1;
+        padding: 20px;
+        overflow-y: auto; /* Enable scrolling for messages */
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100vh - 160px); /* Calculate height excluding header and input */
+    }
+
+    .message {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        max-width: 60%;
+        position: relative;
+
+        p {
+            margin: 0;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: black;
+            margin-top: 5px;
+        }
+    }
+
+    .messageReceived {
+        background-color: #e4e6eb;
+        align-self: flex-start;
+    }
+
+    .messageSent {
+        background-color: #0084ff;
+        color: white;
+        align-self: flex-end;
+    }
+
+    .chatInput {
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        position: relative;
+        
+        input {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+            outline: none;
+        }
+
+        button {
+            background-color: #0084ff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #005bb5;
+            }
+        }
+    }
+}

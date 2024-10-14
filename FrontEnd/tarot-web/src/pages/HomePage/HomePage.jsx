@@ -6,9 +6,9 @@ import Home from "../../components/partial/HomePage/Home";
 const HomePage = () => {
     return (
         <>
-            <Header/>
-            <Banner/>
-            <Home/>
+            <Header />
+            <Banner />
+            <Home />
             <Footer />
         </>
     );

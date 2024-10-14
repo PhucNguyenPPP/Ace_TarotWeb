@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.Configuration.Conventions;
+﻿using AutoMapper;
 using BLL.Interface;
 using Common.Constant;
 using Common.DTO.Booking;
 using Common.DTO.General;
 using Common.DTO.Paging;
-using Common.DTO.User;
 using DAL.Entities;
 using DAL.UnitOfWork;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Identity.Client;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BLL.Services
@@ -48,7 +39,7 @@ namespace BLL.Services
                 num = "B" + rand.Next(999);
                 booking.BookingNumber = num;
             } while (bookNum.Any(c => c.BookingNumber == num));
-            
+
             booking.Status = BookingStatus.NotPaid;
             var service = _unitOfWork.Service.GetAllByCondition(c => c.ServiceId == bookingDTO.ServiceId).Select(c => c.ServiceName).FirstOrDefault();
             var price = _unitOfWork.Service.GetAllByCondition(c => c.ServiceId == bookingDTO.ServiceId).Select(c => c.Price).FirstOrDefault();
@@ -65,10 +56,10 @@ namespace BLL.Services
             }
 
             var checkSLot = _unitOfWork.UserSlot.GetAllByCondition(c => c.Status == true);
-            
-            if(bookingDTO.userSlotId.Count == 1)
+
+            if (bookingDTO.userSlotId.Count == 1)
             {
-                if(checkSLot.Any(c=> c.UserSlotId == bookingDTO.userSlotId[0]))
+                if (checkSLot.Any(c => c.UserSlotId == bookingDTO.userSlotId[0]))
                 {
                     var slotId = _unitOfWork.UserSlot.GetAllByCondition(c => c.UserSlotId == bookingDTO.userSlotId[0]).Select(c => c.SlotId).FirstOrDefault();
                     var slot = _unitOfWork.Slot.GetAllByCondition(c => c.SlotId == slotId);
@@ -82,40 +73,42 @@ namespace BLL.Services
             else
             {
                 List<Guid> slotIds = new List<Guid>();
-                for(int i = 0; i < bookingDTO.userSlotId.Count; i++)
+                for (int i = 0; i < bookingDTO.userSlotId.Count; i++)
                 {
                     var slotId = _unitOfWork.UserSlot.GetAllByCondition(c => c.UserSlotId == bookingDTO.userSlotId[i]).Select(c => c.SlotId).FirstOrDefault();
                     slotIds.Add(slotId);
                     UserSlot? userSlot = _unitOfWork.UserSlot.GetAllByCondition(c => c.UserSlotId == bookingDTO.userSlotId[i]).FirstOrDefault();
-                    userSlot.Status =false;
-                    userSlot.BookingId= booking.BookingId;
+                    userSlot.Status = false;
+                    userSlot.BookingId = booking.BookingId;
                 }
                 List<DateTime> startTime = new List<DateTime>();
                 List<DateTime> endTime = new List<DateTime>();
-                DateTime earliest = _unitOfWork.Slot.GetAllByCondition(c => c.SlotId == slotIds[0]).Select(c=> c.StartTime).FirstOrDefault();
+                DateTime earliest = _unitOfWork.Slot.GetAllByCondition(c => c.SlotId == slotIds[0]).Select(c => c.StartTime).FirstOrDefault();
                 DateTime lastest = _unitOfWork.Slot.GetAllByCondition(c => c.SlotId == slotIds[0]).Select(c => c.EndTime).FirstOrDefault();
-                for (int i =0; i< slotIds.Count; i++)
+                for (int i = 0; i < slotIds.Count; i++)
                 {
                     var slot = _unitOfWork.Slot.GetAllByCondition(c => c.SlotId == slotIds[i]);
-                    if(earliest > slot.Select(c => c.StartTime).FirstOrDefault())
+                    if (earliest > slot.Select(c => c.StartTime).FirstOrDefault())
                     {
                         earliest = slot.Select(c => c.StartTime).FirstOrDefault();
-                    }else if(lastest < slot.Select(c => c.EndTime).FirstOrDefault())
+                    }
+                    else if (lastest < slot.Select(c => c.EndTime).FirstOrDefault())
                     {
                         lastest = slot.Select(c => c.EndTime).FirstOrDefault();
                     }
-                    
+
                 }
                 booking.StartTime = earliest;
                 booking.EndTime = lastest;
             }
-            
+
             await _unitOfWork.Booking.AddAsync(booking);
             var result = await _unitOfWork.SaveChangeAsync();
             if (result)
             {
                 return new ResponseDTO("Tạo lịch thành công", 200, true, booking.BookingId);
-            } else
+            }
+            else
             {
                 return new ResponseDTO("Tạo lịch không thành công", 400, false, null);
             }
@@ -124,19 +117,19 @@ namespace BLL.Services
         public async Task<ResponseDTO> CheckValidationCreateBooking(BookingDTO bookingDTO)
         {
             var tarotReader = _unitOfWork.User.GetAllByCondition(c => c.Role.RoleName == RoleConstant.TarotReader);
-            if(!tarotReader.Any(c=> c.UserId == bookingDTO.TarotReaderId))
+            if (!tarotReader.Any(c => c.UserId == bookingDTO.TarotReaderId))
             {
                 return new ResponseDTO("Không tìm thấy Tarot Reader", 400, false);
             }
 
             var customer = _unitOfWork.User.GetAllByCondition(c => c.Role.RoleName == RoleConstant.Customer);
-            if(!customer.Any(c=> c.UserId == bookingDTO.CustomerId))
+            if (!customer.Any(c => c.UserId == bookingDTO.CustomerId))
             {
                 return new ResponseDTO("Không tìm thấy khách hàng", 400, false);
             }
 
             var service = _unitOfWork.Service.GetAll();
-            if(!service.Any(c => c.ServiceId == bookingDTO.ServiceId))
+            if (!service.Any(c => c.ServiceId == bookingDTO.ServiceId))
             {
                 return new ResponseDTO("Không tìm thấy dịch vụ", 400, false);
             }
@@ -175,7 +168,7 @@ namespace BLL.Services
                     }
                 }
             }
-                    return new ResponseDTO("Check thành công", 200, true);
+            return new ResponseDTO("Check thành công", 200, true);
         }
 
         public async Task<bool> CheckBookingExist(Guid bookingId)
@@ -188,41 +181,45 @@ namespace BLL.Services
             return true;
         }
 
-		public async Task<ResponseDTO> ViewBookingOfCustomer(Guid cusID, bool bookingDate, bool asc, string? search,
-																 int pageNumber, int rowsPerpage)
-		{
-			var customer = await _unitOfWork.User.GetByCondition(c => c.UserId.Equals(cusID));
-			if (customer == null)
-			{
-				return new ResponseDTO("Không tìm thấy khách hàng", 404, false);
-			}
-                var list = _unitOfWork.Booking.GetAllByCondition(b => b.CustomerId == cusID).ToList();
-               
-			if (list == null)
-			{
-				return new ResponseDTO("Không tìm thấy lịch hẹn của khách hàng", 404, false);
-			}
+        public async Task<ResponseDTO> ViewBookingOfCustomer(Guid cusID, bool bookingDate, bool asc, string? search,
+                                                                 int pageNumber, int rowsPerpage)
+        {
+            var customer = await _unitOfWork.User.GetByCondition(c => c.UserId.Equals(cusID));
+            if (customer == null)
+            {
+                return new ResponseDTO("Không tìm thấy khách hàng", 404, false);
+            }
+            var list = _unitOfWork.Booking.GetAllByCondition(b => b.CustomerId == cusID || b.TarotReaderId == cusID)
+                .Include(c => c.Customer)
+                .Include(c => c.TarotReader)
+                .ToList();
+
+            if (list == null)
+            {
+                return new ResponseDTO("Không tìm thấy lịch hẹn của khách hàng", 404, false);
+            }
             List<BookingOfCustomerDTO> listDTO = _mapper.Map<List<BookingOfCustomerDTO>>(list);
             foreach (var item in listDTO)
             {
-                if (item != null) 
+                if (item != null)
                 {
                     var nickname = await _unitOfWork.User.GetByCondition(u => u.UserId == item.TarotReaderId);
-                    if (nickname != null) {
+                    if (nickname != null)
+                    {
                         item.Nickname = nickname.NickName;
                     }
                     item.BookingDate = item.StartTime.Date;
                 }
             }
-            if (search != null) 
+            if (search != null)
             {
-				var tempList = listDTO.Where(b => b.Nickname.ToLower().Contains(search.ToLower())).ToList();
-				listDTO = tempList;
-			}
-            if (!listDTO.Any()) 
+                var tempList = listDTO.Where(b => b.Nickname.ToLower().Contains(search.ToLower())).ToList();
+                listDTO = tempList;
+            }
+            if (!listDTO.Any())
             {
-				return new ResponseDTO("Không có lịch hẹn trùng thông tin", 404, false);
-			} 
+                return new ResponseDTO("Không có lịch hẹn trùng thông tin", 404, false);
+            }
             if (bookingDate)
             {
                 if (asc)
@@ -231,43 +228,48 @@ namespace BLL.Services
                 }
                 else
                 {
-					listDTO = listDTO.OrderByDescending(b => b.StartTime).ToList();
-				}
+                    listDTO = listDTO.OrderByDescending(b => b.StartTime).ToList();
+                }
             }
             else
             {
-				if (asc)
-				{
-					listDTO = listDTO.OrderBy(b => b.CreatedDate).ToList();
-				}
-				else
-				{
-					listDTO = listDTO.OrderByDescending(b => b.CreatedDate).ToList();
-				}
-			}
-			var finalList = PagedList<BookingOfCustomerDTO>.ToPagedList(listDTO.AsQueryable(), pageNumber, rowsPerpage);
-			ListBookingOfCustomerDTO listBookingOfCustomerDTO = new ListBookingOfCustomerDTO();
-			listBookingOfCustomerDTO.List = finalList;
-			listBookingOfCustomerDTO.CurrentPage = pageNumber;
-			listBookingOfCustomerDTO.RowsPerPages = rowsPerpage;
-			listBookingOfCustomerDTO.TotalCount = listDTO.Count;
-			listBookingOfCustomerDTO.TotalPages = (int)Math.Ceiling(listDTO.Count / (double)rowsPerpage);
-			return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listBookingOfCustomerDTO);
-		}
-	
+                if (asc)
+                {
+                    listDTO = listDTO.OrderBy(b => b.CreatedDate).ToList();
+                }
+                else
+                {
+                    listDTO = listDTO.OrderByDescending(b => b.CreatedDate).ToList();
+                }
+            }
+            var finalList = PagedList<BookingOfCustomerDTO>.ToPagedList(listDTO.AsQueryable(), pageNumber, rowsPerpage);
+            ListBookingOfCustomerDTO listBookingOfCustomerDTO = new ListBookingOfCustomerDTO();
+            listBookingOfCustomerDTO.List = finalList;
+            listBookingOfCustomerDTO.CurrentPage = pageNumber;
+            listBookingOfCustomerDTO.RowsPerPages = rowsPerpage;
+            listBookingOfCustomerDTO.TotalCount = listDTO.Count;
+            listBookingOfCustomerDTO.TotalPages = (int)Math.Ceiling(listDTO.Count / (double)rowsPerpage);
+            return new ResponseDTO("Lấy các lịch hẹn của khách hàng thành công", 200, true, listBookingOfCustomerDTO);
+        }
+
         public ResponseDTO GetBookingDetail(Guid bookingId)
         {
-            var booking = _unitOfWork.Booking.GetAllByCondition(c => c.BookingId == bookingId).FirstOrDefault();
-            if(booking == null)
+            var booking = _unitOfWork.Booking.GetAllByCondition(c => c.BookingId == bookingId)
+                .Include(c => c.Customer)
+                .FirstOrDefault();
+            if (booking == null)
             {
                 return new ResponseDTO("Không tồn tại", 400, false);
             }
-            var reader = _unitOfWork.User.GetAllByCondition(c=> c.UserId == booking.TarotReaderId).FirstOrDefault() ?? null;
-            var service = _unitOfWork.Service.GetAllByCondition(c=> c.ServiceId == booking.ServiceId).FirstOrDefault();
+            var reader = _unitOfWork.User.GetAllByCondition(c => c.UserId == booking.TarotReaderId).FirstOrDefault() ?? null;
+            var service = _unitOfWork.Service.GetAllByCondition(c => c.ServiceId == booking.ServiceId).FirstOrDefault();
             var serviceType = _unitOfWork.ServiceType.GetAllByCondition(c => c.ServiceTypeId == service.ServiceTypeId).FirstOrDefault();
             var formMeeting = _unitOfWork.FormMeeting.GetAllByCondition(c => c.FormMeetingId == booking.FormMeetingId).FirstOrDefault();
             BookingDetailDTO detailDTO = new BookingDetailDTO();
+            detailDTO.TarotReaderId = reader.UserId.ToString();
             detailDTO.TarotReaderName = reader.NickName;
+            detailDTO.CustomerId = booking.CustomerId.ToString();
+            detailDTO.CustomerName = booking.Customer.FullName;
             detailDTO.Status = booking.Status;
             detailDTO.BookingId = booking.BookingId;
             detailDTO.BookingNumber = booking.BookingNumber;
@@ -291,7 +293,7 @@ namespace BLL.Services
 
         public async Task<ResponseDTO> CreateFeedback(Guid bookingId, int behaviorRating, string behaviorFeedback)
         {
-            var booking = _unitOfWork.Booking.GetAllByCondition(c=> c.BookingId == bookingId && c.Status == BookingStatus.Completed).FirstOrDefault();
+            var booking = _unitOfWork.Booking.GetAllByCondition(c => c.BookingId == bookingId && c.Status == BookingStatus.Completed).FirstOrDefault();
             if (booking == null)
             {
                 return new ResponseDTO("Không tồn tại", 400, false);
@@ -387,7 +389,7 @@ namespace BLL.Services
         public async Task<ResponseDTO> CreateComplaint(BookingComplaintDTO complaint)
         {
             var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaint.BookingId);
-            if(!booking.Status.Equals(BookingStatus.WaitForConfirmCompleted))
+            if (!booking.Status.Equals(BookingStatus.WaitForConfirmCompleted))
             {
                 return new ResponseDTO("Trạng thái booking không hợp lệ!", 400, false);
             }
@@ -399,10 +401,10 @@ namespace BLL.Services
             complaintImage.BookingId = complaint.BookingId;
             complaintImage.ComplaintImageId = Guid.NewGuid();
             List<string> formFiles = new List<string>();
-            
-            for(int i = 0; i < complaint.ImageLink.Count; i++)
+
+            for (int i = 0; i < complaint.ImageLink.Count; i++)
             {
-                var avatarLink = await _imageService.StoreImageAndGetLink(complaint.ImageLink[i], "koiAvatar_img");
+                var avatarLink = await _imageService.StoreImageAndGetLink(complaint.ImageLink[i], "complaint_img");
                 formFiles.Add(avatarLink);
 
                 complaintImage.BookingId = complaint.BookingId;
@@ -417,55 +419,55 @@ namespace BLL.Services
             }
 
             return new ResponseDTO("Vui lòng thêm ảnh", 400, false, null);
-            
+
         }
 
-		public async Task<ResponseDTO> CheckValidationResponse(ComplaintResponseDTO complaintResponseDTO)
-		{
-			var checkExist = await CheckBookingExist(complaintResponseDTO.BookingId);
-			if (!checkExist)
-			{
-				return new ResponseDTO("Lịch hẹn không tồn tại", 404, false);
-			}
-			var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaintResponseDTO.BookingId);
-			if (!booking.Status.Equals(BookingStatus.ComplaintProgress))
-			{
-				return new ResponseDTO("Trạng thái của lịch hẹn không hợp lệ", 400, false);
-			}
+        public async Task<ResponseDTO> CheckValidationResponse(ComplaintResponseDTO complaintResponseDTO)
+        {
+            var checkExist = await CheckBookingExist(complaintResponseDTO.BookingId);
+            if (!checkExist)
+            {
+                return new ResponseDTO("Lịch hẹn không tồn tại", 404, false);
+            }
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaintResponseDTO.BookingId);
+            if (!booking.Status.Equals(BookingStatus.ComplaintProgress))
+            {
+                return new ResponseDTO("Trạng thái của lịch hẹn không hợp lệ", 400, false);
+            }
             if (!complaintResponseDTO.ApproveDeny.Equals("Approve") && !complaintResponseDTO.ApproveDeny.Equals("Deny"))
             {
-				return new ResponseDTO("Vui lòng chấp nhận/từ chối khiếu nại", 400, false);
-			}
-			if (complaintResponseDTO.ComplaintRefundPercentage>100 || complaintResponseDTO.ComplaintRefundPercentage<0)
-			{
-				return new ResponseDTO("Vui lòng hoàn tiền 0-100%", 400, false);
-			}
+                return new ResponseDTO("Vui lòng chấp nhận/từ chối khiếu nại", 400, false);
+            }
+            if (complaintResponseDTO.ComplaintRefundPercentage > 100 || complaintResponseDTO.ComplaintRefundPercentage < 0)
+            {
+                return new ResponseDTO("Vui lòng hoàn tiền 0-100%", 400, false);
+            }
             if (complaintResponseDTO.ApproveDeny.Equals("Deny") && complaintResponseDTO.ComplaintRefundPercentage > 0)
             {
-				return new ResponseDTO("Nếu khiếu nại bị từ chối, khách hàng sẽ không được hoàn tiền", 400, false);
-			}
-			return new ResponseDTO("Check thành công", 200, true);
-		}
+                return new ResponseDTO("Nếu khiếu nại bị từ chối, khách hàng sẽ không được hoàn tiền", 400, false);
+            }
+            return new ResponseDTO("Check thành công", 200, true);
+        }
 
-		public async Task<bool> ReponseComplaint(ComplaintResponseDTO complaintResponseDTO)
-		{
-			var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaintResponseDTO.BookingId);
-			if (booking == null)
-			{
-				return false;
-			}
-			booking.ComplaintResponse = complaintResponseDTO.ComplaintResponse;
-            booking.ComplaintRefundPercentage=complaintResponseDTO.ComplaintRefundPercentage;
-			if (complaintResponseDTO.ApproveDeny.Equals("Approve"))
+        public async Task<bool> ReponseComplaint(ComplaintResponseDTO complaintResponseDTO)
+        {
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingId == complaintResponseDTO.BookingId);
+            if (booking == null)
+            {
+                return false;
+            }
+            booking.ComplaintResponse = complaintResponseDTO.ComplaintResponse;
+            booking.ComplaintRefundPercentage = complaintResponseDTO.ComplaintRefundPercentage;
+            if (complaintResponseDTO.ApproveDeny.Equals("Approve"))
             {
                 booking.Status = BookingStatus.ComplaintSuccessfully;
             }
-            else 
+            else
             {
-				booking.Status = BookingStatus.ComplaintFailed;
-			}
+                booking.Status = BookingStatus.ComplaintFailed;
+            }
             _unitOfWork.Booking.Update(booking);
-			return await _unitOfWork.SaveChangeAsync();
-		}
-	}
+            return await _unitOfWork.SaveChangeAsync();
+        }
+    }
 }

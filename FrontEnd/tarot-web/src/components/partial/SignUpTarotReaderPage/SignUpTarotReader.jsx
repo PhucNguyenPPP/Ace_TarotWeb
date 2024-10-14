@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { TextField, Button, Typography, Box, InputLabel, FormControl, Input, MenuItem, Select, FormControlLabel, Radio, RadioGroup, TextareaAutosize } from '@mui/material';
+import { TextField, Button, Typography, Box, InputLabel, FormControl, Input, MenuItem, Select, FormControlLabel, Radio, RadioGroup, TextareaAutosize, CircularProgress } from '@mui/material';
 import { RegisterTarotReader } from '../../../api/AuthenApi';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const SignUpTarotReader = () => {
     const { handleSubmit, control, register, formState: { errors } } = useForm();
     const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const getTodayDate = () => {
@@ -20,6 +21,7 @@ const SignUpTarotReader = () => {
 
     const maxDate = getTodayDate();
     const onSubmit = async (data) => {
+        setIsLoading(true);
         const response = await RegisterTarotReader(data);
         if (response.ok) {
             const responseData = await response.json();
@@ -33,6 +35,7 @@ const SignUpTarotReader = () => {
             setErrorMessage(responseData.message)
             toast.error("Đăng kí thất bại: " + responseData.message)
         }
+        setIsLoading(false);
     };
 
     return (
@@ -395,8 +398,16 @@ const SignUpTarotReader = () => {
                         color="primary"
                         fullWidth
                         sx={{ mt: 2 }}
+                        disabled={isLoading}
                     >
-                        ĐĂNG KÍ
+                        {isLoading ? (
+                            <>
+                                <CircularProgress size={24} sx={{ position: 'absolute' }} />
+                                <span style={{ visibility: 'hidden' }}>ĐĂNG KÍ</span>
+                            </>
+                        ) : (
+                            'ĐĂNG KÍ'
+                        )}
                     </Button>
                 </form>
             </Box>
