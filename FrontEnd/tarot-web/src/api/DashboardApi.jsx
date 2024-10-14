@@ -31,3 +31,19 @@ export const GetProfitByAdmin = async (startDate, endDate, roleId) => {
         console.log(err);
     }
 };
+
+export const GetProfitOfCurrentYearByAdmin = async (currentYear) => {
+    try {
+        const url = `${baseUrl}/api/Dashboard/profit-of-month?year=${currentYear}`;
+        const request = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        const response = await fetch(url, request);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+};
