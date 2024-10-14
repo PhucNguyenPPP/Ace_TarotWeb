@@ -28,6 +28,7 @@ namespace Api_Ace.Profiles
             CreateMap<CardTypeDTO, CardType>().ReverseMap();
             CreateMap<User, LocalUserDTO>()
             .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
+            .ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => src.Role.RoleId))
             .ReverseMap();
             CreateMap<CardPosition, CardPositionDTO>().ReverseMap();
             CreateMap<Card, CardAfterMeaningDTO>().ReverseMap();
