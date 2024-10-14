@@ -83,6 +83,48 @@ namespace BLL.Services
 
         }
 
+        public async Task<ResponseDTO> GetProfitByYear(int year, Guid roleid, Guid tarotReaderId)
+        {
+            List<ProfitByMonthDTO> list = new List<ProfitByMonthDTO>();
+            var tarotReaderRole = await _userService.GetReaderRole();
+            var adminRole = await _userService.GetAdminRole();
+            if (roleid == tarotReaderRole.RoleId)
+            {
+                if (tarotReaderId == Guid.Empty)
+                {
+                    return new ResponseDTO("Vui lòng nhập Tarot Reader Id", 400, false);
+                }
+            }
+            else if (roleid != adminRole.RoleId)
+            {
+                return new ResponseDTO("Vui lòng nhập Role hợp lệ", 400, false);
+            }
+            for (int i = 1; i <= 12; i++)
+            {
+                ProfitByMonthDTO profitByMonth = new ProfitByMonthDTO();
+                profitByMonth.Month = i;
+                list.Add(profitByMonth);
+            }
+            foreach (var item in list)
+            {
+                var lastDayOfMonth = new DateOnly();
+                var firstDayOfNextMonth = new DateOnly();
+                if (item.Month == 12)
+                {
+                    lastDayOfMonth = new DateOnly(year, 12, 31);
+                }
+                else
+                {
+                    firstDayOfNextMonth = new DateOnly(year, item.Month + 1, 1);
+                    lastDayOfMonth = firstDayOfNextMonth.AddDays(-1);
+                }
+                var firstDayOfMonth = new DateOnly(year, item.Month, 1);
+                var profit = await GetProfitByTimeRange(firstDayOfMonth, lastDayOfMonth, roleid, tarotReaderId);
+                item.Profit = (decimal)profit.Result;
+            }
+            return new ResponseDTO("Lấy thông tin lợi nhuận theo năm thành công", 200, true, list);
+        }
+
         public async Task<ResponseDTO> GetRevenueByTimeRange(DateOnly startdate, DateOnly enddate, Guid roleid, Guid tarotReaderId)
         {
             var readerRole =  await _userService.GetReaderRole();
