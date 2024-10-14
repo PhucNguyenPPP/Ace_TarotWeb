@@ -58,6 +58,24 @@ namespace Api_Ace.Controllers
 
             return Ok(responseDTO);
         }
+        [HttpGet("profit-of-month")]
+        public async Task<IActionResult> GetProfitByYear([Required] int year)
+        {
+            ResponseDTO responseDTO = await _dashboardService.GetProfitByYear(year);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 404)
+                {
+                    return NotFound(responseDTO);
+                }
+                else
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+
+            return Ok(responseDTO);
+        }
 
     }
 }

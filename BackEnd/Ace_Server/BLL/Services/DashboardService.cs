@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using BLL.Interface;
 using Common.Constant;
+using Common.DTO.Dashboard;
 using Common.DTO.General;
 using DAL.Entities;
 using DAL.UnitOfWork;
+using Microsoft.Identity.Client;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace BLL.Services
@@ -47,6 +50,37 @@ namespace BLL.Services
                 profit= revenueSum*60/100;
             }
             return new ResponseDTO("Lấy thông tin lợi nhuận thành công", 200, true, profit);
+        }
+
+        public async Task<ResponseDTO> GetProfitByYear(int year)
+        {
+            List<ProfitByMonthDTO> list = new List<ProfitByMonthDTO>();
+            var adminRole = await _userService.GetAdminRole();
+            for (int i = 1; i <= 12; i++)
+            {
+                ProfitByMonthDTO profitByMonth = new ProfitByMonthDTO();
+                profitByMonth.Month = i;
+                list.Add(profitByMonth);
+            }
+            foreach (var item in list)
+            {
+                var lastDayOfMonth = new DateOnly();
+                var firstDayOfNextMonth = new DateOnly();
+                if (item.Month == 12)
+                {
+                    lastDayOfMonth = new DateOnly(year, 12, 31);
+                }
+                else
+                {
+                    firstDayOfNextMonth = new DateOnly(year, item.Month + 1, 1);
+                    lastDayOfMonth = firstDayOfNextMonth.AddDays(-1);
+                }
+                var firstDayOfMonth = new DateOnly(year,item.Month, 1);
+                var profit = await GetProfitByTimeRange(firstDayOfMonth, lastDayOfMonth,adminRole.RoleId,Guid.Empty);
+                item.Profit = (decimal)profit.Result;
+            }
+            return new ResponseDTO("Lấy thông tin lợi nhuận theo năm thành công", 200, true, list);
+
         }
 
         public async Task<ResponseDTO> GetRevenueByTimeRange(DateOnly startdate, DateOnly enddate, Guid roleid, Guid tarotReaderId)
