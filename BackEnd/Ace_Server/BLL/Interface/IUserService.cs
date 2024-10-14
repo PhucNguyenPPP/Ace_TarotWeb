@@ -31,6 +31,6 @@ namespace BLL.Interface
         Task<bool> CheckUserExistById(Guid userId);
 		Task<ResponseDTO> UpdateUser(UpdateUserDTO updateUserDTO);
         Task<Role> GetReaderRole();
-
+        Task<Role> GetAdminRole();
     }
 }

@@ -58,6 +58,25 @@ namespace Api_Ace.Controllers
 
             return Ok(responseDTO);
         }
+        [HttpGet("profit-of-month")]
+        public async Task<IActionResult> GetProfitByYear([Required] int year, [Required] Guid roleid,
+                                                                 Guid tarotReaderId)
+        {
+            ResponseDTO responseDTO = await _dashboardService.GetProfitByYear(year, roleid,tarotReaderId);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 404)
+                {
+                    return NotFound(responseDTO);
+                }
+                else
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+
+            return Ok(responseDTO);
+        }
 
         [HttpGet("total-user")]
         public async Task<IActionResult> GetTotalUser(string role)

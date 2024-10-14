@@ -450,5 +450,11 @@ namespace BLL.Services
 			}
 			return new ResponseDTO("Chỉnh sửa thông tin thất bài", 500, true);
 		}
-	}
+
+        public async Task<Role> GetAdminRole()
+        {
+            var result = await _unitOfWork.Role.GetByCondition(c => c.RoleName == RoleConstant.Admin);
+            return result;
+        }
+    }
 }
