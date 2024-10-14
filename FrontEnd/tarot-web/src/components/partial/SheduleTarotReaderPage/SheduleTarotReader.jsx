@@ -43,7 +43,6 @@ function ScheduleTarotReader({ tarotReaderData }) {
     };
 
     const fetchSlotOfDate = async (startDate) => {
-        setIsLoading(true);
         const response = await GetSlotOfDate(dayjs(startDate).format('YYYY-MM-DD'), user.userId);
         setSelectedDate(dayjs(startDate).format('DD/MM/YYYY'));
         if (response.ok) {
@@ -52,7 +51,6 @@ function ScheduleTarotReader({ tarotReaderData }) {
         } else {
             setSlotOfDate([]);
         }
-        setIsLoading(false);
     };
 
     useEffect(() => {

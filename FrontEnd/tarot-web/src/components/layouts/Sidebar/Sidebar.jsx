@@ -32,7 +32,7 @@ export default function Sidebar({ children }) {
           <ul className="flex-1 px-2">{children}</ul>
         </SidebarContext.Provider>
 
-        <div className="border-t flex p-3">
+        {/* <div className="border-t flex p-3">
           <img
             src={user.avatarLink}
             alt=""
@@ -47,7 +47,7 @@ export default function Sidebar({ children }) {
             </div>
             <MoreVertical size={20} />
           </div>
-        </div>
+        </div> */}
       </nav>
     </aside>
   );

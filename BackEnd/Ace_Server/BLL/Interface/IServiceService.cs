@@ -10,5 +10,6 @@ namespace BLL.Interface
     public interface IServiceService
     {
         Task<ResponseDTO> GetAllService(Guid serviceTypeId);
+        ResponseDTO GetAllServiceTypeSystem();
     }
 }

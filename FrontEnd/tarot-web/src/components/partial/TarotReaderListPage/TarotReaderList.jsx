@@ -119,14 +119,6 @@ function TarotReaderList() {
         fetchTarotReaderList();
     }, [searchValue, currentPage, genderFilter, languageFilter, formFilter]);
 
-    if (isLoading) {
-        return (
-            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
-                <CircularProgress />
-            </div>
-        );
-    }
-
     return (
         <div>
             <div className='text-center'>
