@@ -25,6 +25,30 @@ namespace BLL.Services
             _userService = userService;
         }
 
+        public async Task<ResponseDTO> GetProfitByTimeRange(DateOnly startdate, DateOnly enddate, Guid roleid, Guid tarotReaderId)
+        {
+            var revenue = await GetRevenueByTimeRange(startdate, enddate, roleid, tarotReaderId);
+            decimal revenueSum = 0;
+            if (revenue.IsSuccess) {
+                revenueSum = (decimal)revenue.Result;
+            }
+            else
+            {
+                return revenue;
+            }
+            var readerRole = await _userService.GetReaderRole();
+            decimal profit;
+            if (roleid.Equals(readerRole.RoleId))
+            {
+                profit = revenueSum * 40/100;
+            }
+            else
+            {
+                profit= revenueSum*60/100;
+            }
+            return new ResponseDTO("Lấy thông tin lợi nhuận thành công", 200, true, profit);
+        }
+
         public async Task<ResponseDTO> GetRevenueByTimeRange(DateOnly startdate, DateOnly enddate, Guid roleid, Guid tarotReaderId)
         {
             var readerRole =  await _userService.GetReaderRole();

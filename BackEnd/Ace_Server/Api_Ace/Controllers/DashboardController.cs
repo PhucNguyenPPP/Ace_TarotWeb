@@ -37,5 +37,27 @@ namespace Api_Ace.Controllers
 
             return Ok(responseDTO);
         }
+        [HttpGet("profit")]
+        public async Task<IActionResult> GetProfitByTimeRange([Required] DateOnly startdate,
+                                                                [Required] DateOnly enddate,
+                                                                 [Required] Guid roleid,
+                                                                 Guid tarotReaderId)
+        {
+            ResponseDTO responseDTO = await _dashboardService.GetProfitByTimeRange(startdate, enddate, roleid, tarotReaderId);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 404)
+                {
+                    return NotFound(responseDTO);
+                }
+                else
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+
+            return Ok(responseDTO);
+        }
+
     }
 }
