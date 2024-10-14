@@ -95,7 +95,6 @@ namespace Api_Ace.Controllers
             }
             return Ok(responseDTO);
         }
-        //GetAmountBookingByTimeRange
 
         [HttpGet("total-booking-created")]
         public async Task<IActionResult> GetAmountBookingByTimeRange([Required]DateOnly startDate, 
