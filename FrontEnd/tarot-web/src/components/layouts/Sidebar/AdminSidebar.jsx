@@ -6,10 +6,8 @@ export default function AdminSideBar() {
     return (
         <Sidebar>
             <SidebarItem icon={<HomeOutlinedIcon/>} text={"Trang chủ"} href={"/home-admin"}/>
-            <SidebarItem icon={<PersonOutlineOutlinedIcon />} text={"Quản lý lịch hẹn"} href={"/booking-list"}/>
             <SidebarItem icon={<PersonOutlineOutlinedIcon />} text={"Quản lý lịch làm"} href={"/shedule-tarot-reader"}/>
             <SidebarItem icon={<PersonOutlineOutlinedIcon />} text={"Quản lý dịch vụ"} href={"/page-tarot-reader"}/>
-            <SidebarItem icon={<PersonOutlineOutlinedIcon />} text={"Quản lý trang"} href={"/page-tarot-reader"}/>
         </Sidebar>
     );
 }

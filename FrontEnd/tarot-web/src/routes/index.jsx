@@ -117,7 +117,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/home-admin", 
-    element: <DashboardAdminPage />,
+    element: <RoleBasedGuard accessibleRoles={["Admin"]} status="Active"><DashboardAdminPage /></RoleBasedGuard>,
     errorElement: <Error/> 
   },
   {
