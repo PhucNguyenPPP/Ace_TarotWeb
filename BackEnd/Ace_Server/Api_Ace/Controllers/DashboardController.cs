@@ -76,6 +76,27 @@ namespace Api_Ace.Controllers
             }
             return Ok(responseDTO);
         }
+        //GetAmountBookingByTimeRange
 
+        [HttpGet("total-booking-created")]
+        public async Task<IActionResult> GetAmountBookingByTimeRange([Required]DateOnly startDate, 
+                                                                    [Required]DateOnly endDate, 
+                                                                    [Required]Guid roleId, 
+                                                                    Guid tarotReaderId)
+        {
+            ResponseDTO responseDTO = await _dashboardService.GetAmountBookingByTimeRange(startDate, endDate, roleId, tarotReaderId);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 400)
+                {
+                    return NotFound(responseDTO);
+                }
+                else
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+            return Ok(responseDTO);
+        }
     }
 }
