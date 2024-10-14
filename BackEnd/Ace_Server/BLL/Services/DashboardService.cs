@@ -90,17 +90,14 @@ namespace BLL.Services
 
         public async Task<ResponseDTO> GetTotalUser(string role)
         {
-            int count = 0;
             if (role.Equals(RoleConstant.Customer))
             {
                 List<User> customer = _unitOfWork.User.GetAllByCondition(c => c.Role.RoleName.ToUpper().Equals(RoleConstant.Customer.ToUpper())).ToList();
-                count = customer.Count;
-                return new ResponseDTO("Lấy tổng khách hàng thành công!", 200, true, count);
+                return new ResponseDTO("Lấy tổng khách hàng thành công!", 200, true, customer.Count);
             }else if(role.Equals(RoleConstant.TarotReader))
             {
                 List<User> reader = _unitOfWork.User.GetAllByCondition(c=> c.Role.RoleName.ToUpper().Equals(RoleConstant.TarotReader.ToUpper())).ToList();
-                count = reader.Count;
-                return new ResponseDTO("Lấy tổng Tarot Reader thành công!", 200, true, count);
+                return new ResponseDTO("Lấy tổng Tarot Reader thành công!", 200, true, reader.Count);
             }
             return new ResponseDTO("Role không hợp lệ!", 400, false);
         }
