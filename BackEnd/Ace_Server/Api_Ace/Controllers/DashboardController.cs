@@ -59,5 +59,23 @@ namespace Api_Ace.Controllers
             return Ok(responseDTO);
         }
 
+        [HttpGet("total-user")]
+        public async Task<IActionResult> GetTotalUser(string role)
+        {
+            ResponseDTO responseDTO = await _dashboardService.GetTotalUser(role);
+            if(responseDTO.IsSuccess == false)
+            {
+                if(responseDTO.StatusCode == 400)
+                {
+                    return NotFound(responseDTO);
+                }
+                else
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+            return Ok(responseDTO);
+        }
+
     }
 }

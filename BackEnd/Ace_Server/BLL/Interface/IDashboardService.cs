@@ -11,5 +11,6 @@ namespace BLL.Interface
     {
         Task<ResponseDTO> GetProfitByTimeRange(DateOnly startdate, DateOnly enddate, Guid roleid, Guid tarotReaderId);
         Task<ResponseDTO> GetRevenueByTimeRange(DateOnly startdate, DateOnly enddate, Guid roleid, Guid tarotReaderId);
+        Task<ResponseDTO> GetTotalUser(string role);
     }
 }

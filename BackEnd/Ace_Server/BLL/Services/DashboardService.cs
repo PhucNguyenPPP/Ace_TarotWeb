@@ -29,7 +29,8 @@ namespace BLL.Services
         {
             var revenue = await GetRevenueByTimeRange(startdate, enddate, roleid, tarotReaderId);
             decimal revenueSum = 0;
-            if (revenue.IsSuccess) {
+            if (revenue.IsSuccess)
+            {
                 revenueSum = (decimal)revenue.Result;
             }
             else
@@ -40,18 +41,18 @@ namespace BLL.Services
             decimal profit;
             if (roleid.Equals(readerRole.RoleId))
             {
-                profit = revenueSum * 40/100;
+                profit = revenueSum * 40 / 100;
             }
             else
             {
-                profit= revenueSum*60/100;
+                profit = revenueSum * 60 / 100;
             }
             return new ResponseDTO("Lấy thông tin lợi nhuận thành công", 200, true, profit);
         }
 
         public async Task<ResponseDTO> GetRevenueByTimeRange(DateOnly startdate, DateOnly enddate, Guid roleid, Guid tarotReaderId)
         {
-            var readerRole =  await _userService.GetReaderRole();
+            var readerRole = await _userService.GetReaderRole();
             if (roleid.Equals(readerRole.RoleId))
             {
                 if (tarotReaderId == Guid.Empty)
@@ -60,21 +61,21 @@ namespace BLL.Services
                 }
                 else
                 {
-                    var tarotReader = await _userService.GetUserDetailById(tarotReaderId);    
-                    if(tarotReader == null)
+                    var tarotReader = await _userService.GetUserDetailById(tarotReaderId);
+                    if (tarotReader == null)
                     {
                         return new ResponseDTO("Không tồn tại Tarot Reader này", 404, false);
-                    }    
+                    }
                 }
             }
-            var list = _unitOfWork.Booking.GetAllByCondition( b=>
+            var list = _unitOfWork.Booking.GetAllByCondition(b =>
              b.StartTime.Date >= startdate.ToDateTime(TimeOnly.MinValue)
             && (b.StartTime.Date <= enddate.ToDateTime(TimeOnly.MinValue)));
             list = list.Where(b => b.Status == BookingStatus.Refunded || b.Status == BookingStatus.ComplaintSuccessfully || b.Status == BookingStatus.Completed);
             decimal sum = 0;
-            if(tarotReaderId != Guid.Empty)
+            if (tarotReaderId != Guid.Empty)
             {
-                list = list.Where(b=>b.TarotReaderId.Equals(tarotReaderId));
+                list = list.Where(b => b.TarotReaderId.Equals(tarotReaderId));
             }
             foreach (var item in list)
             {
@@ -84,7 +85,24 @@ namespace BLL.Services
                 }
                 sum += item.Price;
             }
-            return new ResponseDTO("Lấy tổng doanh thu theo thời gian thành công", 200, true,sum);
+            return new ResponseDTO("Lấy tổng doanh thu theo thời gian thành công", 200, true, sum);
+        }
+
+        public async Task<ResponseDTO> GetTotalUser(string role)
+        {
+            int count = 0;
+            if (role.Equals(RoleConstant.Customer))
+            {
+                List<User> customer = _unitOfWork.User.GetAllByCondition(c => c.Role.RoleName.ToUpper().Equals(RoleConstant.Customer.ToUpper())).ToList();
+                count = customer.Count;
+                return new ResponseDTO("Lấy tổng khách hàng thành công!", 200, true, count);
+            }else if(role.Equals(RoleConstant.TarotReader))
+            {
+                List<User> reader = _unitOfWork.User.GetAllByCondition(c=> c.Role.RoleName.ToUpper().Equals(RoleConstant.TarotReader.ToUpper())).ToList();
+                count = reader.Count;
+                return new ResponseDTO("Lấy tổng Tarot Reader thành công!", 200, true, count);
+            }
+            return new ResponseDTO("Invalid role!", 400, false);
         }
     }
 }
