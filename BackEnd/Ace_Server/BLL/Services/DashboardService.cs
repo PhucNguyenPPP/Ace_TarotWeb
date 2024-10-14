@@ -111,8 +111,8 @@ namespace BLL.Services
             {
                 var booking = _unitOfWork.Booking.
                     GetAllByCondition(c =>
-                    c.StartTime.Date >= startDate.ToDateTime(TimeOnly.MinValue) &&
-                    c.StartTime.Date <= endDate.ToDateTime(TimeOnly.MinValue))
+                    c.CreatedDate.Date >= startDate.ToDateTime(TimeOnly.MinValue) &&
+                    c.CreatedDate.Date <= endDate.ToDateTime(TimeOnly.MinValue))
                     .ToList();
                 return new ResponseDTO("Lấy tổng đơn hàng theo thời gian thành công", 200, true, booking.Count);
             }
@@ -124,8 +124,8 @@ namespace BLL.Services
                 }
                 var booking = _unitOfWork.Booking.
                     GetAllByCondition(c =>
-                    c.StartTime.Date >= startDate.ToDateTime(TimeOnly.MinValue) &&
-                    c.StartTime.Date <= endDate.ToDateTime(TimeOnly.MinValue) &&
+                    c.CreatedDate.Date >= startDate.ToDateTime(TimeOnly.MinValue) &&
+                    c.CreatedDate.Date <= endDate.ToDateTime(TimeOnly.MinValue) &&
                     c.TarotReaderId == tarotReaderId)
                     .ToList();
                 return new ResponseDTO("Lấy tổng đơn hàng theo thời gian thành công", 200, true, booking.Count);
