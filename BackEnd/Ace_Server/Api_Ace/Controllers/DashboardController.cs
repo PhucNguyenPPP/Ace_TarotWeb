@@ -98,5 +98,26 @@ namespace Api_Ace.Controllers
             }
             return Ok(responseDTO);
         }
+
+        [HttpGet("total-booking-completed")]
+        public async Task<IActionResult> GetAmountBookingCompleteByTimeRange([Required] DateOnly startDate,
+                                                                    [Required] DateOnly endDate,
+                                                                    [Required] Guid roleId,
+                                                                    Guid tarotReaderId)
+        {
+            ResponseDTO responseDTO = await _dashboardService.GetAmountBookingCompleteByTimeRange(startDate, endDate, roleId, tarotReaderId);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 400)
+                {
+                    return NotFound(responseDTO);
+                }
+                else
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+            return Ok(responseDTO);
+        }
     }
 }

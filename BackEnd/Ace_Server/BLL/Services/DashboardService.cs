@@ -104,9 +104,7 @@ namespace BLL.Services
 
         public async Task<ResponseDTO> GetAmountBookingByTimeRange(DateOnly startDate, DateOnly endDate, Guid roleId, Guid tarotReaderId)
         {
-            
             var roleName = _unitOfWork.Role.GetAllByCondition(c => c.RoleId == roleId).Select(c => c.RoleName).FirstOrDefault();
-            
             if (roleName.ToUpper().Equals(RoleConstant.Admin.ToUpper()))
             {
                 var booking = _unitOfWork.Booking.
@@ -129,6 +127,35 @@ namespace BLL.Services
                     c.TarotReaderId == tarotReaderId)
                     .ToList();
                 return new ResponseDTO("Lấy tổng đơn hàng theo thời gian thành công", 200, true, booking.Count);
+            }
+            return new ResponseDTO("Role không hợp lệ!", 400, false);
+        }
+
+        public async Task<ResponseDTO> GetAmountBookingCompleteByTimeRange(DateOnly startDate, DateOnly endDate, Guid roleId, Guid tarotReaderId)
+        {
+            var roleName = _unitOfWork.Role.GetAllByCondition(c => c.RoleId == roleId).Select(c => c.RoleName).FirstOrDefault();
+            if (roleName.ToUpper().Equals(RoleConstant.Admin.ToUpper()))
+            {
+                var booking = _unitOfWork.Booking.
+                    GetAllByCondition(c => c.Status.Equals(BookingStatus.Completed) &&
+                    c.EndDate.Value.Date >= startDate.ToDateTime(TimeOnly.MinValue) &&
+                    c.EndDate.Value.Date <= endDate.ToDateTime(TimeOnly.MinValue))
+                    .ToList();
+                return new ResponseDTO("Lấy tổng đơn hàng hoàn thành theo thời gian thành công", 200, true, booking.Count);
+            }
+            else if (roleName.ToUpper().Equals(RoleConstant.TarotReader.ToUpper()))
+            {
+                if (tarotReaderId == Guid.Empty)
+                {
+                    return new ResponseDTO("Vui lòng nhập Tarot Reader ID!", 400, false);
+                }
+                var booking = _unitOfWork.Booking.
+                    GetAllByCondition(c => c.Status.Equals(BookingStatus.Completed) &&
+                    c.EndDate.Value.Date >= startDate.ToDateTime(TimeOnly.MinValue) &&
+                    c.EndDate.Value.Date <= endDate.ToDateTime(TimeOnly.MinValue) &&
+                    c.TarotReaderId == tarotReaderId)
+                    .ToList();
+                return new ResponseDTO("Lấy tổng đơn hàng hoàn thành theo thời gian thành công", 200, true, booking.Count);
             }
             return new ResponseDTO("Role không hợp lệ!", 400, false);
         }
