@@ -28,7 +28,9 @@ namespace BLL.Services
             }
                 var serviceType = _unitOfWork.UserServiceType
                 .GetAllByCondition(x => x.UserId == userId && x.Status == true /*&&x.User.Role.RoleName == RoleConstant.TarotReader*/)
-                .Include(c=> c.ServiceType).ToList();
+                .Include(c=> c.ServiceType)
+                .ThenInclude(c => c.Services)
+                .ToList();
             if (serviceType.IsNullOrEmpty() || serviceType.Count() == 0)
             {
                 return new ResponseDTO("Chưa đăng ký loại dịch vụ!", 400, false);

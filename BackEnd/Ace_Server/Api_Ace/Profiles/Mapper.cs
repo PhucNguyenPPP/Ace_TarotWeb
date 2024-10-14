@@ -33,7 +33,9 @@ namespace Api_Ace.Profiles
             CreateMap<Card, CardAfterMeaningDTO>().ReverseMap();
             CreateMap<User, UserDetailDTO>().ReverseMap();
             CreateMap<Language, LanguageOfReaderDTO>().ReverseMap();
-            CreateMap<ServiceType, ServiceTypeDTO>().ReverseMap();
+            CreateMap<ServiceType, ServiceTypeDTO>()
+                .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.Services))
+                .ReverseMap();
             CreateMap<FormMeeting, FormMeetingOfReaderDTO>().ReverseMap();
             CreateMap<Slot, SlotDTO>().ReverseMap();
             CreateMap<Topic, TopicDTO>().ReverseMap();
@@ -46,7 +48,8 @@ namespace Api_Ace.Profiles
 
             CreateMap<Service, ServiceDTO>().ReverseMap();
             CreateMap<UserServiceType, ServiceTypeOfUserDTO>()
-            .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.ServiceType != null ? src.ServiceType.ServiceTypeName : "Unknown"))  // Handle nulls in AutoMapper
+            .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.ServiceType != null ? src.ServiceType.ServiceTypeName : "Unknown"))
+            .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.ServiceType.Services.ToList()))
             .ReverseMap();
             CreateMap<Booking, BookingDTO>().ReverseMap();
             CreateMap<UserFormMeeting, FormMeetingOfReaderDTO>()
