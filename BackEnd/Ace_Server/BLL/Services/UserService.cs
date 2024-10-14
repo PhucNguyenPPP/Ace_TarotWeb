@@ -39,7 +39,7 @@ namespace BLL.Services
 			_mapper = mapper;
 			_imageService = imageService;
 		}
-
+		
 		public async Task<ResponseDTO> CheckValidationSignUpCustomer(SignUpCustomerRequestDTO model)
 		{
 			if (model.DateOfBirth >= DateTime.Now)
@@ -237,7 +237,7 @@ namespace BLL.Services
 			}
 
 		}
-		public async Task<Role?> GetReaderRole()
+		public async Task<Role> GetReaderRole()
 		{
 			var result = await _unitOfWork.Role.GetByCondition(c => c.RoleName == RoleConstant.TarotReader);
 			return result;
@@ -450,5 +450,11 @@ namespace BLL.Services
 			}
 			return new ResponseDTO("Chỉnh sửa thông tin thất bài", 500, true);
 		}
-	}
+
+        public async Task<Role> GetAdminRole()
+        {
+            var result = await _unitOfWork.Role.GetByCondition(c => c.RoleName == RoleConstant.Admin);
+            return result;
+        }
+    }
 }
