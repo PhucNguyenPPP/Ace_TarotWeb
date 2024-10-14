@@ -99,10 +99,10 @@ namespace Api_Ace.Controllers
         [HttpGet("total-booking-created")]
         public async Task<IActionResult> GetAmountBookingByTimeRange([Required]DateOnly startDate, 
                                                                     [Required]DateOnly endDate, 
-                                                                    [Required]Guid roleId, 
+                                                                    [Required]string roleName, 
                                                                     Guid tarotReaderId)
         {
-            ResponseDTO responseDTO = await _dashboardService.GetAmountBookingByTimeRange(startDate, endDate, roleId, tarotReaderId);
+            ResponseDTO responseDTO = await _dashboardService.GetAmountBookingByTimeRange(startDate, endDate, roleName, tarotReaderId);
             if (responseDTO.IsSuccess == false)
             {
                 if (responseDTO.StatusCode == 400)
@@ -120,10 +120,10 @@ namespace Api_Ace.Controllers
         [HttpGet("total-booking-completed")]
         public async Task<IActionResult> GetAmountBookingCompleteByTimeRange([Required] DateOnly startDate,
                                                                     [Required] DateOnly endDate,
-                                                                    [Required] Guid roleId,
+                                                                    [Required] string roleName,
                                                                     Guid tarotReaderId)
         {
-            ResponseDTO responseDTO = await _dashboardService.GetAmountBookingCompleteByTimeRange(startDate, endDate, roleId, tarotReaderId);
+            ResponseDTO responseDTO = await _dashboardService.GetAmountBookingCompleteByTimeRange(startDate, endDate, roleName, tarotReaderId);
             if (responseDTO.IsSuccess == false)
             {
                 if (responseDTO.StatusCode == 400)
