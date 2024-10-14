@@ -17,7 +17,17 @@ import {
 } from 'chart.js';
 import { toast } from 'react-toastify';
 import useAuth from '../../../hooks/useAuth';
-import { GetProfitByAdmin, GetProfitOfCurrentYearByAdmin, GetRevenueByAdmin } from '../../../api/DashboardApi';
+import {
+    GetAmountCustomerByAdmin,
+    GetAmountTarotReaderByAdmin,
+    GetProfitByAdmin,
+    GetProfitOfCurrentYearByAdmin,
+    GetRevenueByAdmin,
+    GetTotalBookingByAdmin,
+    GetTotalCompletedBookingByAdmin
+} from '../../../api/DashboardApi';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 // Register necessary Chart.js components
 ChartJS.register(
@@ -50,6 +60,8 @@ function DashboardAdmin() {
     const [customers, setCustomers] = useState(0);
     const [profit, setProfit] = useState(0);
     const [revenue, setRevenue] = useState(0);
+    const [bookings, setBookings] = useState(0);
+    const [completedBookings, setCompletedBookings] = useState(0);
     const [profitData, setProfitData] = useState([]);
     const [startDate, setStartDate] = useState(formatDate(firstDayOfMonth));
     const [endDate, setEndDate] = useState(formatDate(lastDayOfMonth));
@@ -96,11 +108,58 @@ function DashboardAdmin() {
         }
     }
 
+    const fetchAmountBooking = async () => {
+        const response = await GetTotalBookingByAdmin(startDate, endDate);
+        if (response.ok) {
+            const responseData = await response.json();
+            setBookings(responseData.result);
+        } else {
+            console.log("Error when get amount of customer")
+        }
+    }
+
+    const fetchAmountCompletedBooking = async () => {
+        const response = await GetTotalCompletedBookingByAdmin(startDate, endDate);
+        if (response.ok) {
+            const responseData = await response.json();
+            setCompletedBookings(responseData.result);
+        } else {
+            console.log("Error when get amount of customer")
+        }
+    }
+
+    const fetchAmountTarotReader = async () => {
+        const response = await GetAmountTarotReaderByAdmin();
+        if (response.ok) {
+            const responseData = await response.json();
+            setTarotReaders(responseData.result);
+        } else {
+            console.log("Error when get amount of tarot reader")
+        }
+    }
+
+    const fetchAmountCustomer = async () => {
+        const response = await GetAmountCustomerByAdmin();
+        if (response.ok) {
+            const responseData = await response.json();
+            setCustomers(responseData.result);
+        } else {
+            console.log("Error when get amount of customer")
+        }
+    }
+
+    useEffect(() => {
+        fetchAmountTarotReader();
+        fetchAmountCustomer();
+    }, [])
+
     useEffect(() => {
         if (user) {
             fetchProfitOfCurrentYear();
             fetchRevenueByTimeRange();
             fetchProfitByTimeRange();
+            fetchAmountBooking();
+            fetchAmountCompletedBooking();
         }
     }, [startDate, endDate])
 
@@ -164,7 +223,7 @@ function DashboardAdmin() {
     };
 
     return (
-        <div className='p-8'>
+        <div className='p-8' style={{backgroundColor: '#5900E5'}}>
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
                     <Card>
@@ -241,6 +300,28 @@ function DashboardAdmin() {
                                 <TrendingUpIcon /> Doanh Thu
                             </Typography>
                             <Typography variant="h4">{formatPriceVND(revenue)}</Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6" gutterBottom>
+                                <AssignmentIcon /> Tổng Số Lịch Hẹn
+                            </Typography>
+                            <Typography variant="h4">{bookings}</Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6" gutterBottom>
+                                <AssignmentTurnedInIcon /> Tổng Số Lịch Hẹn Đã Hoàn Thành
+                            </Typography>
+                            <Typography variant="h4">{completedBookings}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>

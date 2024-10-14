@@ -1,12 +1,12 @@
 import Footer from "../../components/layouts/Footer/Footer";
-import TarotReaderSideBar from "../../components/layouts/Sidebar/TarotReaderSidebar";
+import AdminSideBar from "../../components/layouts/Sidebar/AdminSidebar";
 import DashboardAdmin from "../../components/partial/DashboardPage/DashboardAdmin";
 
 const DashboardAdminPage = () => {
     return (
         <>
             <div className="flex">
-                <TarotReaderSideBar />
+                <AdminSideBar />
                 <DashboardAdmin />
             </div>
             <Footer />
