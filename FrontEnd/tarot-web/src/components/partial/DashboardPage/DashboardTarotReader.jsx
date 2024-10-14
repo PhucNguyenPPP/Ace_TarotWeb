@@ -17,7 +17,7 @@ import {
 } from 'chart.js';
 import { toast } from 'react-toastify';
 import useAuth from '../../../hooks/useAuth';
-import { GetProfitByAdmin, GetProfitOfCurrentYearByAdmin, GetRevenueByAdmin } from '../../../api/DashboardApi';
+import { GetProfitByTarotReader, GetProfitOfCurrentYearByTarotReader, GetRevenueByTarotReader } from '../../../api/DashboardApi';
 
 // Register necessary Chart.js components
 ChartJS.register(
@@ -45,7 +45,7 @@ const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth
 
 const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
-function DashboardAdmin() {
+function DashboardTarotReader() {
     const [tarotReaders, setTarotReaders] = useState(0);
     const [customers, setCustomers] = useState(0);
     const [profit, setProfit] = useState(0);
@@ -60,7 +60,7 @@ function DashboardAdmin() {
     };
 
     const fetchRevenueByTimeRange = async () => {
-        const response = await GetRevenueByAdmin(startDate, endDate, user.roleId)
+        const response = await GetRevenueByTarotReader(startDate, endDate, user.roleId, user.userId)
         if (response.ok) {
             const responseData = await response.json();
             setRevenue(responseData.result);
@@ -70,7 +70,7 @@ function DashboardAdmin() {
     }
 
     const fetchProfitByTimeRange = async () => {
-        const response = await GetProfitByAdmin(startDate, endDate, user.roleId)
+        const response = await GetProfitByTarotReader(startDate, endDate, user.roleId, user.userId)
         if (response.ok) {
             const responseData = await response.json();
             setProfit(responseData.result);
@@ -80,7 +80,7 @@ function DashboardAdmin() {
     }
 
     const fetchProfitOfCurrentYear = async () => {
-        const response = await GetProfitOfCurrentYearByAdmin(currentYear, user.roleId);
+        const response = await GetProfitOfCurrentYearByTarotReader(currentYear, user.roleId, user.userId);
         if (response.ok) {
             const responseData = await response.json();
 
@@ -166,18 +166,7 @@ function DashboardAdmin() {
     return (
         <div className='p-8'>
             <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6" gutterBottom>
-                                <ReaderIcon /> Tổng số Tarot Reader
-                            </Typography>
-                            <Typography variant="h4">{tarotReaders}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
@@ -262,4 +251,4 @@ function DashboardAdmin() {
     );
 }
 
-export default DashboardAdmin;
+export default DashboardTarotReader;

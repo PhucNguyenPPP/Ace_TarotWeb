@@ -1,17 +1,17 @@
 import Footer from "../../components/layouts/Footer/Footer";
 import AdminSideBar from "../../components/layouts/Sidebar/AdminSidebar";
-import DashboardAdmin from "../../components/partial/DashboardPage/DashboardAdmin";
+import DashboardTarotReader from "../../components/partial/DashboardPage/DashboardTarotReader";
 
-const DashboardAdminPage = () => {
+const DashboardTarotReaderPage = () => {
     return (
         <>
             <div className="flex">
                 <AdminSideBar />
-                <DashboardAdmin />
+                <DashboardTarotReader />
             </div>
             <Footer />
         </>
     );
 };
 
-export default DashboardAdminPage;
+export default DashboardTarotReaderPage;
