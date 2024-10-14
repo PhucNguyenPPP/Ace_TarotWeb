@@ -17,7 +17,7 @@ import {
 } from 'chart.js';
 import { toast } from 'react-toastify';
 import useAuth from '../../../hooks/useAuth';
-import { GetProfitByAdmin, GetRevenueByAdmin } from '../../../api/DashboardApi';
+import { GetProfitByAdmin, GetProfitOfCurrentYearByAdmin, GetRevenueByAdmin } from '../../../api/DashboardApi';
 
 // Register necessary Chart.js components
 ChartJS.register(
@@ -39,6 +39,8 @@ const formatDate = (date) => {
 
 const currentDate = new Date();
 
+const currentYear = currentDate.getFullYear();
+
 const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
 const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
@@ -57,13 +59,15 @@ function DashboardAdmin() {
         setTarotReaders(10);
         setCustomers(150);
 
-        const mockProfitData = [1500000, 2000000, 1800000, 2200000, 2500000, 2700000, 3000000, 3200000, 3500000, 4000000, 4200000, 4500000];
-        setProfitData(mockProfitData);
     }, []);
+
+    const formatPriceVND = (price) => {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+    };
 
     const fetchRevenueByTimeRange = async () => {
         const response = await GetRevenueByAdmin(startDate, endDate, user.roleId)
-        if(response.ok){
+        if (response.ok) {
             const responseData = await response.json();
             setRevenue(responseData.result);
         } else {
@@ -73,26 +77,43 @@ function DashboardAdmin() {
 
     const fetchProfitByTimeRange = async () => {
         const response = await GetProfitByAdmin(startDate, endDate, user.roleId)
-        if(response.ok){
+        if (response.ok) {
             const responseData = await response.json();
             setProfit(responseData.result);
         } else {
-            console.log("Error when get profie")
+            console.log("Error when get profit")
+        }
+    }
+
+    const fetchProfitOfCurrentYear = async () => {
+        const response = await GetProfitOfCurrentYearByAdmin(currentYear);
+        if (response.ok) {
+            const responseData = await response.json();
+
+            const profits = new Array(12).fill(0);
+
+            responseData.result.forEach((item) => {
+                const monthIndex = item.month - 1;
+                profits[monthIndex] = item.profit;
+            });
+
+            setProfitData(profits);
+            console.log("Error when get profit of current year")
         }
     }
 
     useEffect(() => {
-        if(user){
+        if (user) {
+            fetchProfitOfCurrentYear();
             fetchRevenueByTimeRange();
             fetchProfitByTimeRange();
         }
     }, [startDate, endDate])
 
-    // Handle date changes
     const handleStartDateChange = (event) => {
         var startDateValue = event.target.value;
-        if(endDate != ''){
-            if(startDateValue >= endDate){
+        if (endDate != '') {
+            if (startDateValue >= endDate) {
                 toast.error("Ngày bắt đầu không thể lớn hơn hoặc bằng ngày kết thúc");
                 return;
             }
@@ -102,8 +123,8 @@ function DashboardAdmin() {
 
     const handleEndDateChange = (event) => {
         var endDateValue = event.target.value;
-        if(startDate != ''){
-            if(endDateValue <= startDate){
+        if (startDate != '') {
+            if (endDateValue <= startDate) {
                 toast.error("Ngày kết thúc không thể nhỏ hơn hoặc bằng ngày bắt đầu");
                 return;
             }
@@ -111,7 +132,6 @@ function DashboardAdmin() {
         setEndDate(event.target.value);
     };
 
-    // Chart data configuration
     const data = {
         labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
         datasets: [
@@ -125,7 +145,6 @@ function DashboardAdmin() {
         ],
     };
 
-    // Chart options configuration
     const options = {
         responsive: true,
         plugins: {
@@ -153,7 +172,6 @@ function DashboardAdmin() {
     return (
         <div className='p-8'>
             <Grid container spacing={3}>
-                {/* Tarot Readers Card */}
                 <Grid item xs={12} sm={6}>
                     <Card>
                         <CardContent>
@@ -165,7 +183,6 @@ function DashboardAdmin() {
                     </Card>
                 </Grid>
 
-                {/* Customers Card */}
                 <Grid item xs={12} sm={6}>
                     <Card>
                         <CardContent>
@@ -176,7 +193,7 @@ function DashboardAdmin() {
                         </CardContent>
                     </Card>
                 </Grid>
-                {/* Date range picker */}
+
                 <Grid item xs={12}>
                     <Card>
                         <CardContent>
@@ -212,31 +229,28 @@ function DashboardAdmin() {
                         </CardContent>
                     </Card>
                 </Grid>
-                {/* Profit Card */}
                 <Grid item xs={12} sm={6}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
                                 <AttachMoneyIcon /> Lợi Nhuận
                             </Typography>
-                            <Typography variant="h4">{profit}</Typography>
+                            <Typography variant="h4">{formatPriceVND(profit)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
 
-                {/* Revenue Card */}
                 <Grid item xs={12} sm={6}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
                                 <TrendingUpIcon /> Doanh Thu
                             </Typography>
-                            <Typography variant="h4">{revenue}</Typography>
+                            <Typography variant="h4">{formatPriceVND(revenue)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
 
-                {/* Profit Chart */}
                 <Grid item xs={12}>
                     <Card>
                         <CardContent>
