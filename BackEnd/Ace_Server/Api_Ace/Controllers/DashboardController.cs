@@ -78,5 +78,64 @@ namespace Api_Ace.Controllers
             return Ok(responseDTO);
         }
 
+        [HttpGet("total-user")]
+        public async Task<IActionResult> GetTotalUser(string role)
+        {
+            ResponseDTO responseDTO = await _dashboardService.GetTotalUser(role);
+            if(responseDTO.IsSuccess == false)
+            {
+                if(responseDTO.StatusCode == 400)
+                {
+                    return NotFound(responseDTO);
+                }
+                else
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+            return Ok(responseDTO);
+        }
+
+        [HttpGet("total-booking-created")]
+        public async Task<IActionResult> GetAmountBookingByTimeRange([Required]DateOnly startDate, 
+                                                                    [Required]DateOnly endDate, 
+                                                                    [Required]string roleName, 
+                                                                    Guid tarotReaderId)
+        {
+            ResponseDTO responseDTO = await _dashboardService.GetAmountBookingByTimeRange(startDate, endDate, roleName, tarotReaderId);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 400)
+                {
+                    return NotFound(responseDTO);
+                }
+                else
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+            return Ok(responseDTO);
+        }
+
+        [HttpGet("total-booking-completed")]
+        public async Task<IActionResult> GetAmountBookingCompleteByTimeRange([Required] DateOnly startDate,
+                                                                    [Required] DateOnly endDate,
+                                                                    [Required] string roleName,
+                                                                    Guid tarotReaderId)
+        {
+            ResponseDTO responseDTO = await _dashboardService.GetAmountBookingCompleteByTimeRange(startDate, endDate, roleName, tarotReaderId);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 400)
+                {
+                    return NotFound(responseDTO);
+                }
+                else
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+            return Ok(responseDTO);
+        }
     }
 }
