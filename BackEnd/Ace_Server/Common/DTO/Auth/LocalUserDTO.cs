@@ -26,6 +26,7 @@ namespace Common.DTO.Auth
 
         public string Gender { get; set; } = null!;
         public bool Status { get; set; }
+        public string RoleId { get; set; } = null!;
         public string RoleName { get; set; } = null!;
     }
 }

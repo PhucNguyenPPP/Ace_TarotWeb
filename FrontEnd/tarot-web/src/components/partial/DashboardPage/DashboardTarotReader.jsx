@@ -18,13 +18,11 @@ import {
 import { toast } from 'react-toastify';
 import useAuth from '../../../hooks/useAuth';
 import {
-    GetAmountCustomerByAdmin,
-    GetAmountTarotReaderByAdmin,
-    GetProfitByAdmin,
-    GetProfitOfCurrentYearByAdmin,
-    GetRevenueByAdmin,
-    GetTotalBookingByAdmin,
-    GetTotalCompletedBookingByAdmin
+    GetProfitByTarotReader,
+    GetProfitOfCurrentYearByTarotReader,
+    GetRevenueByTarotReader,
+    GetTotalBookingByTarotReader,
+    GetTotalCompletedBookingByTarotReader
 } from '../../../api/DashboardApi';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -55,9 +53,7 @@ const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth
 
 const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
-function DashboardAdmin() {
-    const [tarotReaders, setTarotReaders] = useState(0);
-    const [customers, setCustomers] = useState(0);
+function DashboardTarotReader() {
     const [profit, setProfit] = useState(0);
     const [revenue, setRevenue] = useState(0);
     const [bookings, setBookings] = useState(0);
@@ -72,7 +68,7 @@ function DashboardAdmin() {
     };
 
     const fetchRevenueByTimeRange = async () => {
-        const response = await GetRevenueByAdmin(startDate, endDate, user.roleId)
+        const response = await GetRevenueByTarotReader(startDate, endDate, user.roleId, user.userId)
         if (response.ok) {
             const responseData = await response.json();
             setRevenue(responseData.result);
@@ -82,7 +78,7 @@ function DashboardAdmin() {
     }
 
     const fetchProfitByTimeRange = async () => {
-        const response = await GetProfitByAdmin(startDate, endDate, user.roleId)
+        const response = await GetProfitByTarotReader(startDate, endDate, user.roleId, user.userId)
         if (response.ok) {
             const responseData = await response.json();
             setProfit(responseData.result);
@@ -92,7 +88,7 @@ function DashboardAdmin() {
     }
 
     const fetchProfitOfCurrentYear = async () => {
-        const response = await GetProfitOfCurrentYearByAdmin(currentYear, user.roleId);
+        const response = await GetProfitOfCurrentYearByTarotReader(currentYear, user.roleId, user.userId);
         if (response.ok) {
             const responseData = await response.json();
 
@@ -109,7 +105,7 @@ function DashboardAdmin() {
     }
 
     const fetchAmountBooking = async () => {
-        const response = await GetTotalBookingByAdmin(startDate, endDate);
+        const response = await GetTotalBookingByTarotReader(startDate, endDate, user.userId);
         if (response.ok) {
             const responseData = await response.json();
             setBookings(responseData.result);
@@ -119,7 +115,7 @@ function DashboardAdmin() {
     }
 
     const fetchAmountCompletedBooking = async () => {
-        const response = await GetTotalCompletedBookingByAdmin(startDate, endDate);
+        const response = await GetTotalCompletedBookingByTarotReader(startDate, endDate, user.userId);
         if (response.ok) {
             const responseData = await response.json();
             setCompletedBookings(responseData.result);
@@ -128,38 +124,13 @@ function DashboardAdmin() {
         }
     }
 
-    const fetchAmountTarotReader = async () => {
-        const response = await GetAmountTarotReaderByAdmin();
-        if (response.ok) {
-            const responseData = await response.json();
-            setTarotReaders(responseData.result);
-        } else {
-            console.log("Error when get amount of tarot reader")
-        }
-    }
-
-    const fetchAmountCustomer = async () => {
-        const response = await GetAmountCustomerByAdmin();
-        if (response.ok) {
-            const responseData = await response.json();
-            setCustomers(responseData.result);
-        } else {
-            console.log("Error when get amount of customer")
-        }
-    }
-
-    useEffect(() => {
-        fetchAmountTarotReader();
-        fetchAmountCustomer();
-    }, [])
-
     useEffect(() => {
         if (user) {
             fetchProfitOfCurrentYear();
             fetchRevenueByTimeRange();
             fetchProfitByTimeRange();
             fetchAmountBooking();
-            fetchAmountCompletedBooking();
+            fetchAmountCompletedBooking()
         }
     }, [startDate, endDate])
 
@@ -223,30 +194,8 @@ function DashboardAdmin() {
     };
 
     return (
-        <div className='p-8' style={{backgroundColor: '#5900E5'}}>
+        <div className='p-8' style={{ backgroundColor: '#5900E5' }}>
             <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6" gutterBottom>
-                                <ReaderIcon /> Tổng số Tarot Reader
-                            </Typography>
-                            <Typography variant="h4">{tarotReaders}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6" gutterBottom>
-                                <PeopleIcon /> Tổng số Khách Hàng
-                            </Typography>
-                            <Typography variant="h4">{customers}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
                 <Grid item xs={12}>
                     <Card>
                         <CardContent>
@@ -343,4 +292,4 @@ function DashboardAdmin() {
     );
 }
 
-export default DashboardAdmin;
+export default DashboardTarotReader;
