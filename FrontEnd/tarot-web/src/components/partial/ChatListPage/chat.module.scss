@@ -6,25 +6,25 @@
 
 .chatSidebar {
     width: 25%;
-    background-color: #fff;
+    background-color: #FEF4CF;
     border-right: 1px solid #ddd;
-    padding: 20px;
     overflow-y: auto; /* Enable scrolling */
     
     h1 {
-        margin-bottom: 20px;
+        background-color: #FEE9A7;
+        padding: 13px 30px;
         font-size: 30px;
         font-weight: bold;
     }
 
     .chatList {
         list-style: none;
-        padding: 0;
+        padding: 10px;
 
         .chatUser {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 10px 20px;
             border-bottom: 1px solid #ddd;
             cursor: pointer;
             transition: background-color 0.3s;
@@ -65,7 +65,8 @@
     width: 75%;
     display: flex;
     flex-direction: column;
-    background-color: #fff;
+    background-image: url('/image/BG-01.png');
+    background-size: cover;
     position: relative;
     overflow: hidden; /* Hide overflow to prevent scrolling of entire chatContent */
 
@@ -74,7 +75,7 @@
         display: flex;
         align-items: center;
         border-bottom: 1px solid #ddd;
-        background-color: #f9f9f9;
+        background-color: #FEF4CF;
         
         h4 {
             margin: 0;
@@ -117,12 +118,12 @@
     }
 
     .messageReceived {
-        background-color: #e4e6eb;
+        background-color: #FFF;
         align-self: flex-start;
     }
 
     .messageSent {
-        background-color: #0084ff;
+        background-color: #9761EA;
         color: white;
         align-self: flex-end;
     }
@@ -132,7 +133,7 @@
         border-top: 1px solid #ddd;
         display: flex;
         align-items: center;
-        background-color: #fff;
+        background-color: #FEF4CF;
         position: relative;
         
         input {

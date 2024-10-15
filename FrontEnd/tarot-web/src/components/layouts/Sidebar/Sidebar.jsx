@@ -3,12 +3,25 @@ import { useContext, createContext, useState } from "react";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import useAuth from "../../../hooks/useAuth";
+import { Logout } from "../../../api/AuthenApi";
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from "react-router-dom";
 
 const SidebarContext = createContext();
 
 export default function Sidebar({ children }) {
   const [expanded, setExpanded] = useState(true);
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleClickLogout = async () => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    const response = await Logout(refreshToken)
+    if (response.ok) {
+        await logout();
+        navigate("/login")
+    }
+}
 
   return (
     <aside className={`min-h-screen max-h-max ${expanded ? "w-64" : "w-16"}`}>
@@ -32,7 +45,7 @@ export default function Sidebar({ children }) {
           <ul className="flex-1 px-2">{children}</ul>
         </SidebarContext.Provider>
 
-        {/* <div className="border-t flex p-3">
+        <div className="border-t flex p-3">
           <img
             src={user.avatarLink}
             alt=""
@@ -45,9 +58,9 @@ export default function Sidebar({ children }) {
               <h4 className="font-semibold">{user.fullName}</h4>
               <span className="text-xs text-gray-600">{user.email}</span>
             </div>
-            <MoreVertical size={20} />
+            <LogoutIcon style={{ cursor: 'pointer'}} onClick={handleClickLogout} size={20} />
           </div>
-        </div> */}
+        </div>
       </nav>
     </aside>
   );

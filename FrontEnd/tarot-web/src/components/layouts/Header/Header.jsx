@@ -13,23 +13,27 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import useAuth from '../../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { Logout } from '../../../api/AuthenApi';
 
 const pages = [
     { name: 'Giới thiệu', link: '/introduction' },
     { name: 'Đặt lịch', link: '/tarot-reader-list' },
     { name: 'Liên hệ', link: '/contact' },
-    { name: 'Cộng đồng', link: '/' },
 ];
+
 const settings = [
     { name: 'Hồ sơ ', link: '/profile' },
     { name: 'Lịch hẹn', link: '/booking-list' },
     { name: 'Tin nhắn', link: '/chat-list' },
     { name: 'Đăng xuất', link: '/' }
 ];
+
 function Header() {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const navigate = useNavigate();
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -44,6 +48,15 @@ function Header() {
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
+    };
+
+    const handleClickLogout = async () => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        const response = await Logout(refreshToken);
+        if (response.ok) {
+            await logout();
+            navigate("/"); // Redirect to homepage after logout
+        }
     };
 
     return (
@@ -91,7 +104,7 @@ function Header() {
                             <Box sx={{ flexGrow: 0 }}>
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                        <Avatar alt="Remy Sharp" src={user.avatarLink} />
+                                        <Avatar alt="User Avatar" src={user.avatarLink} />
                                     </IconButton>
                                 </Tooltip>
                                 <Menu
@@ -110,11 +123,17 @@ function Header() {
                                     open={Boolean(anchorElUser)}
                                     onClose={handleCloseUserMenu}
                                 >
-                                    {settings.map((setting) => (
-                                        <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-                                            <a href={setting.link}>{setting.name}</a>
-                                        </MenuItem>
-                                    ))}
+                                    {settings.map((setting) =>
+                                        setting.name === 'Đăng xuất' ? (
+                                            <MenuItem key={setting.name} onClick={handleClickLogout}>
+                                                {setting.name}
+                                            </MenuItem>
+                                        ) : (
+                                            <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+                                                <a href={setting.link}>{setting.name}</a>
+                                            </MenuItem>
+                                        )
+                                    )}
                                 </Menu>
                                 <CalendarMonthIcon className='mr-6 ml-6' />
                             </Box>
@@ -123,11 +142,10 @@ function Header() {
                                 <a href='/login' className='mr-8 underline'>Đăng nhập</a>
                                 <a href='/role-signup' className='underline'>Đăng kí</a>
                             </Box>)}
-
-
                 </Toolbar>
             </Container>
         </AppBar>
     );
 }
+
 export default Header;

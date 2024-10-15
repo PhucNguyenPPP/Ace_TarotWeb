@@ -10,7 +10,8 @@
     width: 80%;
     display: flex;
     flex-direction: column;
-    background-color: #fff;
+    background-image: url('/image/BG-01.png');
+    background-size: cover;
     position: relative;
     overflow: hidden; /* Hide overflow to prevent scrolling of entire chatContent */
 
@@ -19,7 +20,7 @@
         display: flex;
         align-items: center;
         border-bottom: 1px solid #ddd;
-        background-color: #f9f9f9;
+        background-color: #FEF4CF;
         
         h4 {
             margin: 0;
@@ -62,12 +63,12 @@
     }
 
     .messageReceived {
-        background-color: #e4e6eb;
+        background-color: #FFF;
         align-self: flex-start;
     }
 
     .messageSent {
-        background-color: #0084ff;
+        background-color: #9761EA;
         color: white;
         align-self: flex-end;
     }
@@ -77,7 +78,7 @@
         border-top: 1px solid #ddd;
         display: flex;
         align-items: center;
-        background-color: #fff;
+        background-color: #FEF4CF;
         position: relative;
         
         input {

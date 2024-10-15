@@ -368,7 +368,7 @@ function BookingDetail() {
                         <div className={styles.btn_group}>
                             <div>
                                 <button className={styles.btn_primary} onClick={handleCompleteByCustomer}>HOÀN THÀNH</button>
-                                <button className={styles.btn_complaint} onClick={openRequestComplaint}>KHIẾU NẠI</button>
+                                {/* <button className={styles.btn_complaint} onClick={openRequestComplaint}>KHIẾU NẠI</button> */}
                             </div>
                             <div>
                                 <button className={styles.btn_back} onClick={handleBack}>QUAY LẠI</button>
@@ -376,7 +376,7 @@ function BookingDetail() {
                         </div>
                     ) : null}
 
-                    <Dialog open={openPopup} onClose={handleClosePopup}>
+                    {/* <Dialog open={openPopup} onClose={handleClosePopup}>
                         <DialogTitle className='text-center'
                             style={{ fontWeight: 'bold' }}>Gửi khiếu nại</DialogTitle>
                         <DialogContent>
@@ -413,7 +413,7 @@ function BookingDetail() {
                                 Gửi khiếu nại
                             </Button>
                         </DialogActions>
-                    </Dialog>
+                    </Dialog> */}
                 </div>
             </div>
         </div>
