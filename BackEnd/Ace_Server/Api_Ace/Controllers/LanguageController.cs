@@ -11,9 +11,11 @@ namespace Api_Ace.Controllers
     public class LanguageController : ControllerBase
     {
         private readonly ILanguageService _languageService;
-        public LanguageController(ILanguageService languageService)
+        private readonly IUserService _userService;
+        public LanguageController(ILanguageService languageService, IUserService userService)
         {
             _languageService = languageService;
+            _userService = userService;
         }
 
         [HttpGet("Languages")]
@@ -33,6 +35,23 @@ namespace Api_Ace.Controllers
             }
 
             return Ok(responseDTO);
+        }
+
+        [HttpGet("languages-tarot-reader")]
+        public async Task<IActionResult> GetAllFormMeetingTarotReader(Guid userId)
+        {
+            var checkExist = await _userService.CheckUserExistById(userId);
+            if (!checkExist)
+            {
+                return NotFound(new ResponseDTO("Tarot reader không tồn tại", 404, false));
+            }
+            var result = _languageService.GetAllLanguageOfTarotReader(userId);
+            if (result.Count == 0)
+            {
+                return NotFound(new ResponseDTO("Tarot reader chưa đăng ký bất kỳ ngôn ngữ nào", 404, false));
+            }
+
+            return Ok(new ResponseDTO("Lấy các ngôn ngữ của tarot reader thành công", 200, true, result));
         }
     }
 }

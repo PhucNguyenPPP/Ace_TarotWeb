@@ -132,7 +132,7 @@ function DashboardTarotReader() {
             fetchAmountBooking();
             fetchAmountCompletedBooking()
         }
-    }, [startDate, endDate])
+    }, [startDate, endDate, user])
 
     const handleStartDateChange = (event) => {
         var startDateValue = event.target.value;
@@ -160,7 +160,7 @@ function DashboardTarotReader() {
         labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
         datasets: [
             {
-                label: 'Lợi Nhuận (VND)',
+                label: 'Doanh Thu (VND)',
                 data: profitData,
                 fill: false,
                 borderColor: '#5900E5',
@@ -177,7 +177,7 @@ function DashboardTarotReader() {
             },
             title: {
                 display: true,
-                text: 'Lợi Nhuận Theo Tháng',
+                text: 'Doanh Thu Theo Tháng',
             },
         },
         scales: {
@@ -194,7 +194,11 @@ function DashboardTarotReader() {
     };
 
     return (
-        <div className='p-8' style={{ backgroundColor: '#5900E5' }}>
+        <div className='p-8'
+            style={{
+                backgroundImage: "url('/image/BG-01.png')",
+                backgroundSize: 'cover'
+            }}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <Card>
@@ -231,24 +235,14 @@ function DashboardTarotReader() {
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6" gutterBottom>
-                                <AttachMoneyIcon /> Lợi Nhuận
-                            </Typography>
-                            <Typography variant="h4">{formatPriceVND(profit)}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
                                 <TrendingUpIcon /> Doanh Thu
                             </Typography>
-                            <Typography variant="h4">{formatPriceVND(revenue)}</Typography>
+                            <Typography variant="h4">{formatPriceVND(profit)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -279,7 +273,7 @@ function DashboardTarotReader() {
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
-                                Biểu Đồ Lợi Nhuận Theo 12 Tháng
+                                Biểu Đồ Doanh Thu Theo 12 Tháng
                             </Typography>
                             <Box display="flex" justifyContent="center">
                                 <Line data={data} options={options} />

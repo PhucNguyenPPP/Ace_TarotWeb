@@ -161,7 +161,7 @@ function DashboardAdmin() {
             fetchAmountBooking();
             fetchAmountCompletedBooking();
         }
-    }, [startDate, endDate])
+    }, [startDate, endDate, user])
 
     const handleStartDateChange = (event) => {
         var startDateValue = event.target.value;
@@ -223,7 +223,12 @@ function DashboardAdmin() {
     };
 
     return (
-        <div className='p-8' style={{backgroundColor: '#5900E5'}}>
+        <div className='p-8'
+            style={{
+                backgroundImage: "url('/image/BG-01.png')",
+                backgroundSize: 'cover'
+            }}
+            >
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
                     <Card>

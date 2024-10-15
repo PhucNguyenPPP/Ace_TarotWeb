@@ -7,6 +7,8 @@ public partial class UserLanguage
 {
     public Guid UserLanguageId { get; set; }
 
+    public bool Status { get; set; }
+
     public Guid UserId { get; set; }
 
     public Guid LanguageId { get; set; }

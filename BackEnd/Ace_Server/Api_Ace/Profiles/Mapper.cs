@@ -65,6 +65,9 @@ namespace Api_Ace.Profiles
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartTime))
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndTime))
                 .ReverseMap();
+            CreateMap<UserLanguage, LanguageOfReaderDTO>()
+                .ForMember(dest => dest.LanguageName, opt => opt.MapFrom(src => src.Language.LanguageName))
+                .ReverseMap();
             #endregion
         }
     }

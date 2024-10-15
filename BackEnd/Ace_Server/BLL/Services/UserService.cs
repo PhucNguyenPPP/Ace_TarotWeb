@@ -178,7 +178,7 @@ namespace BLL.Services
 					var languages = _unitOfWork.Language.GetAllByCondition(c => filterLanguages.Contains(c.LanguageId));
 					if (languages.Any())
 					{
-						List<Guid> guids = _unitOfWork.UserLanguage.GetAllByCondition(k => filterLanguages.Contains(k.LanguageId)).Select(u => u.UserId).ToList();
+						List<Guid> guids = _unitOfWork.UserLanguage.GetAllByCondition(k => filterLanguages.Contains(k.LanguageId) && k.Status == true).Select(u => u.UserId).ToList();
 						list = list.Where(c => guids.Contains(c.UserId));
 					}
 
@@ -188,7 +188,7 @@ namespace BLL.Services
 					var forms = _unitOfWork.FormMeeting.GetAllByCondition(c => filterForming.Contains(c.FormMeetingId));
 					if (forms.Any())
 					{
-						List<Guid> guids = _unitOfWork.UserFormMeeting.GetAllByCondition(k => filterForming.Contains(k.FormMeetingId)).Select(u => u.UserId).ToList();
+						List<Guid> guids = _unitOfWork.UserFormMeeting.GetAllByCondition(k => filterForming.Contains(k.FormMeetingId) && k.Status == true).Select(u => u.UserId).ToList();
 						list = list.Where(c => guids.Contains(c.UserId));
 					}
 				}
@@ -207,7 +207,7 @@ namespace BLL.Services
 				foreach (var item in listDTO)
 				{
 					//language
-					var userLanguages = _unitOfWork.UserLanguage.GetAllByCondition(c => c.UserId == item.UserId);
+					var userLanguages = _unitOfWork.UserLanguage.GetAllByCondition(c => c.UserId == item.UserId && c.Status == true);
 					if (userLanguages != null && userLanguages.Any())
 					{
 						var languages = _unitOfWork.Language.GetAllByCondition(language => userLanguages.Any(ul => ul.LanguageId.Equals(language.LanguageId)));
@@ -215,7 +215,7 @@ namespace BLL.Services
 					}
 
 					//FormMeeting
-					var userFormMeetings = _unitOfWork.UserFormMeeting.GetAllByCondition(c => c.UserId == item.UserId);
+					var userFormMeetings = _unitOfWork.UserFormMeeting.GetAllByCondition(c => c.UserId == item.UserId && c.Status == true);
 					if (userFormMeetings != null && userFormMeetings.Any())
 					{
 						var formMeetings = _unitOfWork.FormMeeting.GetAllByCondition(formMeeting => userFormMeetings.Any(fm => fm.FormMeetingId.Equals(formMeeting.FormMeetingId)));
@@ -256,7 +256,7 @@ namespace BLL.Services
 			//language
 			if (userDetailDTO.RoleId == role.RoleId)
 			{
-				var userLanguages = _unitOfWork.UserLanguage.GetAllByCondition(c => c.UserId == userId);
+				var userLanguages = _unitOfWork.UserLanguage.GetAllByCondition(c => c.UserId == userId && c.Status == true);
 				if (userLanguages != null && userLanguages.Count() > 0)
 				{
 					var languages = _unitOfWork.Language.GetAllByCondition(language => userLanguages.Any(ul => ul.LanguageId.Equals(language.LanguageId)));
@@ -264,7 +264,7 @@ namespace BLL.Services
 				}
 
 				//serviceType
-				var userServiceTypes = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == userId);
+				var userServiceTypes = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == userId && c.Status == true);
 				if (userServiceTypes != null && userServiceTypes.Any())
 				{
 					var serviceTypes = _unitOfWork.ServiceType.GetAllByCondition(serviceType => userServiceTypes.Any(st => st.ServiceTypeId.Equals(serviceType.ServiceTypeId)));
@@ -272,7 +272,7 @@ namespace BLL.Services
 				}
 
 				//FormMeeting
-				var userFormMeetings = _unitOfWork.UserFormMeeting.GetAllByCondition(c => c.UserId == userId);
+				var userFormMeetings = _unitOfWork.UserFormMeeting.GetAllByCondition(c => c.UserId == userId && c.Status == true);
 				if (userFormMeetings != null && userFormMeetings.Any())
 				{
 					var formMeetings = _unitOfWork.FormMeeting.GetAllByCondition(formMeeting => userFormMeetings.Any(fm => fm.FormMeetingId.Equals(formMeeting.FormMeetingId)));

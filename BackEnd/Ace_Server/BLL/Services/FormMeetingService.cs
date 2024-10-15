@@ -39,7 +39,7 @@ namespace BLL.Services
         public List<FormMeetingOfReaderDTO> GetAllFormMeetingOfTarotReader(Guid userId)
         {
             var formMeetingTarotReader = _unitOfWork.UserFormMeeting
-                .GetAllByCondition(c => c.UserId == userId)
+                .GetAllByCondition(c => c.UserId == userId && c.Status == true)
                 .Include(c => c.FormMeeting)
                 .ToList();
 
