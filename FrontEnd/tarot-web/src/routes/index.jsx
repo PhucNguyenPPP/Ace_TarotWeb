@@ -23,6 +23,9 @@ import GuestAuth from "../guards/GuestGuard";
 import DashboardAdminPage from "../pages/DashboardPage/DashboardAdminPage";
 import ServiceTypeTarotReaderPage from "../pages/ServiceTypeTarotReaderPage/ServiceTypeTarotReaderPage";
 import DashboardTarotReaderPage from "../pages/DashboardPage/DashboardTarotReaderPage";
+import FormMeetingManagementPage from "../pages/FormMeetingManagementPage/FormMeetingManagementPage";
+import LanguageManagementPage from "../pages/LanguageManagementPage/LanguageManagementPage";
+import PageManagementTarotReaderPage from "../pages/PageManagementTarotReaderPage/PageManagementTarotReaderPage";
 
 export const router = createBrowserRouter([
   {
@@ -124,6 +127,21 @@ export const router = createBrowserRouter([
   {
     path: "/service-type-tarot-reader", 
     element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><ServiceTypeTarotReaderPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/form-meeting-management-tarot-reader", 
+    element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><FormMeetingManagementPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/language-management-tarot-reader", 
+    element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><LanguageManagementPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/page-management-tarot-reader", 
+    element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><PageManagementTarotReaderPage /></RoleBasedGuard>,
     errorElement: <Error/> 
   }
 ]);

@@ -97,7 +97,7 @@ function ScheduleTarotReader({ tarotReaderData }) {
 
     const handleRegisterSlot = async () => {
         if (selectedSlotIds.length <= 0) {
-            toast.error("Vui long chọn ít nhất 1 slot để đăng kí");
+            toast.error("Vui lòng chọn ít nhất 1 slot để đăng kí");
             return;
         }
 
@@ -127,9 +127,13 @@ function ScheduleTarotReader({ tarotReaderData }) {
                     startDayHour={0}
                     endDayHour={24}
                     timeTableCellComponent={(props) => {
-                        const timeSlotStart = dayjs(props.startDate).format('YYYY-MM-DD HH:mm');
-                        const isSlotAvailable = slotOfDate.some(slot => dayjs(slot.startDate).format('YYYY-MM-DD HH:mm') === timeSlotStart);
-                        const slotId = slotIdMapping[timeSlotStart];
+                        const now = dayjs();
+                        const timeSlotStart = dayjs(props.startDate);
+                        const isToday = dayjs(selectedDate).date == (now.date);
+                        const isSlotInPast = isToday && timeSlotStart.isBefore(now);
+
+                        const isSlotAvailable = slotOfDate.some(slot => dayjs(slot.startDate).format('YYYY-MM-DD HH:mm') === timeSlotStart.format('YYYY-MM-DD HH:mm'));
+                        const slotId = slotIdMapping[timeSlotStart.format('YYYY-MM-DD HH:mm')];
                         const isSlotSelected = selectedSlotIds.includes(slotId);
 
                         return (
@@ -141,13 +145,14 @@ function ScheduleTarotReader({ tarotReaderData }) {
                                     cursor: isSlotAvailable ? 'not-allowed' : 'pointer',
                                 }}
                                 onClick={() => {
-                                    if (!isSlotAvailable) {
+                                    if (!isSlotAvailable && !isSlotInPast) {
                                         if (isSlotSelected) {
                                             setSelectedSlotIds((prev) => prev.filter(id => id !== slotId));
                                         } else {
                                             setSelectedSlotIds((prev) => [...prev, slotId]);
                                         }
-                                        console.log(selectedSlotIds)
+                                    } else {
+                                        toast.error("Slot phải chưa được đăng ký trước đó và phải nằm sau thời gian hiện tại")
                                     }
                                 }}
                             />
@@ -157,6 +162,7 @@ function ScheduleTarotReader({ tarotReaderData }) {
             </Scheduler>
         );
     };
+
 
     if (isLoading || !user) {
         return (

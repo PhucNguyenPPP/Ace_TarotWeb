@@ -1,0 +1,113 @@
+.pageContainer {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.profileHeader {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.coverImage {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+}
+
+.editCoverButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.avatar {
+    width: 250px;
+    height: 250px;
+    margin-top: -100px;
+    z-index: 100;
+    border-radius: 50%;
+    border: 3px solid white;
+    margin-left: 100px;
+}
+
+.card {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.cardTitle {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.infoSection {
+    margin-top: 1.5rem;
+    display: flex;
+    background-color: #5900E5;
+    border-bottom: 5px solid black;
+}
+
+.infoBox {
+    width: 50%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: white;
+    margin: 50px 40px;
+}
+
+.infoTitle {
+    width: 100%; 
+    font-size: 1.2rem;
+    font-weight: bolder;
+    margin-bottom: 1rem;
+}
+
+
+.infoItem {
+    flex-basis: 48%;
+    margin-bottom: 0.5rem;
+    display: flex; 
+    justify-content: space-between;
+}
+
+.infoLabel {
+    font-weight: bold;
+    width: 50%;
+    word-wrap: break-word;
+    word-break: break-word; 
+}
+
+.infoValue {
+    width: 50%;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.quote {
+    font-style: italic;
+    text-align: center;
+    margin: 30px 0;
+    width: 100%;
+}
+
+.textSecondary {
+    border: 1px solid black;
+    padding: 10px;
+    color: gray;
+    border-radius: 10px;
+}
