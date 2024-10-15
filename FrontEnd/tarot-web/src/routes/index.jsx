@@ -26,6 +26,7 @@ import DashboardTarotReaderPage from "../pages/DashboardPage/DashboardTarotReade
 import FormMeetingManagementPage from "../pages/FormMeetingManagementPage/FormMeetingManagementPage";
 import LanguageManagementPage from "../pages/LanguageManagementPage/LanguageManagementPage";
 import PageManagementTarotReaderPage from "../pages/PageManagementTarotReaderPage/PageManagementTarotReaderPage";
+import SlotManagementAdminPage from "../pages/SlotManagementAdminPage/SlotManagementAdminPage";
 
 export const router = createBrowserRouter([
   {
@@ -142,6 +143,11 @@ export const router = createBrowserRouter([
   {
     path: "/page-management-tarot-reader", 
     element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><PageManagementTarotReaderPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/slot-management-admin", 
+    element: <RoleBasedGuard accessibleRoles={["Admin"]} status="Active"><SlotManagementAdminPage /></RoleBasedGuard>,
     errorElement: <Error/> 
   }
 ]);

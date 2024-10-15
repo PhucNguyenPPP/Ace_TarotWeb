@@ -64,3 +64,19 @@ export const RegisterSlotByTarotReader = async (userId, data) => {
         console.log(err);
     }
 };
+
+export const CreateSlotByAdmin = async (startDate, endDate) => {
+    try {
+        const url = `${baseUrl}/api/Slot/new-slots?start=${startDate}&end=${endDate}`;
+        const request = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        const response = await fetch(url, request);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+};
