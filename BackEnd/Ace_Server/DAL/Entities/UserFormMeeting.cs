@@ -7,6 +7,8 @@ public partial class UserFormMeeting
 {
     public Guid UserFormMeetingId { get; set; }
 
+    public bool Status { get; set; }
+
     public Guid UserId { get; set; }
 
     public Guid FormMeetingId { get; set; }
