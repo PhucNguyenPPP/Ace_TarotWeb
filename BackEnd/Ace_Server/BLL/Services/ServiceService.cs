@@ -5,9 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using BLL.Interface;
+using Common.Constant;
 using Common.DTO.General;
 using Common.DTO.Service;
+using Common.DTO.ServiceType;
 using DAL.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BLL.Services
@@ -32,5 +35,16 @@ namespace BLL.Services
             var list = _mapper.Map<List<ServiceDTO>>(service);
             return new ResponseDTO("Hiển thị dịch vụ thành công!", 200, true, list);
         }
+        public ResponseDTO GetAllServiceTypeSystem()
+        {
+            var serviceTypeList = _unitOfWork.ServiceType
+            .GetAllByCondition(x => x.Status == true)
+            .Include(c => c.Services)
+            .ToList();
+
+            var list2 = _mapper.Map<List<ServiceTypeDTO>>(serviceTypeList);
+            return new ResponseDTO("Hiển thị loại dịch vụ thành công!", 200, true, list2);
+        }
+
     }
 }

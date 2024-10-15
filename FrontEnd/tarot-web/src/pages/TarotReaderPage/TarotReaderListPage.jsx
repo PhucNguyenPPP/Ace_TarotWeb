@@ -7,7 +7,6 @@ const TarotReaderListPage = () => {
     return (
         <>
             <Header />
-            <Banner />
             <TarotReaderList />
             <Footer />
         </>

@@ -1,18 +1,18 @@
-import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
-// hooks
 import useAuth from "../hooks/useAuth";
 
-GuestGuard.propTypes = {
-  children: PropTypes.node,
-};
+export default function GuestAuth({ children }) {
+    const { isAuthenticated, user } = useAuth();
+    if (isAuthenticated) {
+        if (user && user?.roleName == "Customer") {
+            return <Navigate to="/" />;
+        } else if (user && (user?.roleName == "Tarot Reader")) {
+            return <Navigate to="/home-tarot-reader" />;
+        } else if (user && (user?.roleName == "Admin")) {
+            return <Navigate to="/home-admin" />;
+        }
+        return <Navigate to="/" />;
+    }
 
-export default function GuestGuard({ children }) {
-  const { isAuthenticated } = useAuth();
-
-  if (isAuthenticated) {
-    return <Navigate to="/" />;
-  }
-
-  return <>{children}</>;
+    return <>{children}</>;
 }

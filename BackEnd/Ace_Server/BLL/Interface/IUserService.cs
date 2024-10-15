@@ -30,5 +30,7 @@ namespace BLL.Interface
         Task<bool> ChangePassword(ForgotPasswordDTO model);
         Task<bool> CheckUserExistById(Guid userId);
 		Task<ResponseDTO> UpdateUser(UpdateUserDTO updateUserDTO);
-	}
+        Task<Role> GetReaderRole();
+        Task<Role> GetAdminRole();
+    }
 }

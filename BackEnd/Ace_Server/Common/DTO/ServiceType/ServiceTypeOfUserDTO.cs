@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.DTO.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,6 @@ namespace Common.DTO.ServiceType
         public Guid UserServiceTypeId { get; set; }
         public Guid ServiceTypeId { get; set; }
         public string ServiceTypeName { get; set; }
+        public List<ServiceDTO> Services { get; set; }
     }
 }

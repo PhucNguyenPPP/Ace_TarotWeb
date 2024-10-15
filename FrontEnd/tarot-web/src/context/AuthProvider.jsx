@@ -130,10 +130,9 @@ function AuthProvider({ children }) {
         },
       });
       toast.success(responseData.message);
-      window.location.href = "/";
       return () => clearTimeout(timeout);
     } else {
-      toast.error(responseData.message);
+      toast.error("Tên đăng nhập hoặc mật khẩu không đúng");
     }
   };
 

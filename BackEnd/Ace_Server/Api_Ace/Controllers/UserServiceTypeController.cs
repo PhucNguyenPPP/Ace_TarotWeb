@@ -32,5 +32,24 @@ namespace Api_Ace.Controllers
 
             return Ok(responseDTO);
         }
+
+        [HttpPost("user_service_type")]
+        public async Task<IActionResult> RegisteredSeviceType(Guid userID, Guid serviceTypeId)
+        {
+            ResponseDTO responseDTO  = await _userServiceTypeService.RegisteredSeviceType(userID, serviceTypeId);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 404)
+                {
+                    return NotFound(responseDTO);
+                }
+                if (responseDTO.StatusCode == 500)
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+
+            return Ok(responseDTO);
+        }
     }
 }

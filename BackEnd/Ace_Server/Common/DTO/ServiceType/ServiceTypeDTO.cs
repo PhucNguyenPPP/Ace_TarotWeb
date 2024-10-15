@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.DTO.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,6 @@ namespace Common.DTO.ServiceType
 		public string ServiceTypeName { get; set; } = null!;
 
 		public bool? Status { get; set; }
+		public List<ServiceDTO> Services { get; set; }
 	}
 }

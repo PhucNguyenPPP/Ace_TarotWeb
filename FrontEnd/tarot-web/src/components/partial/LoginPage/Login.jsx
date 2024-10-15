@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useAuth from '../../../hooks/useAuth';
+import { CircularProgress } from '@mui/material';
 
 function Copyright(props) {
   return (
@@ -34,7 +35,9 @@ const defaultTheme = createTheme();
 
 function Login() {
   const { login, isAuthenticated } = useAuth();
+  const [isLoading, setIsLoading] = React.useState(false);
   const handleSubmit = async (event) => {
+    setIsLoading(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
@@ -43,6 +46,7 @@ function Login() {
     });
 
     await login(data.get("email"), data.get("password"));
+    setIsLoading(false);
   };
 
   return (
@@ -73,7 +77,7 @@ function Login() {
               alignItems: 'center',
             }}
           >
-             <img className='w-40' src='image/logo.png'></img>
+            <img className='w-40' src='image/logo.png'></img>
             <Typography component="h1" variant="h5">
               ĐĂNG NHẬP
             </Typography>
@@ -83,7 +87,7 @@ function Login() {
                 required
                 fullWidth
                 id="email"
-                label="Username"
+                label="Tên đăng nhập"
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -93,7 +97,7 @@ function Login() {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Mật khẩu"
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -107,8 +111,16 @@ function Login() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={isLoading} 
               >
-                Đăng nhập
+                {isLoading ? (
+                  <>
+                    <CircularProgress size={24} sx={{ position: 'absolute' }} />
+                    <span style={{ visibility: 'hidden' }}>ĐĂNG NHẬP</span>
+                  </>
+                ) : (
+                  'ĐĂNG NHẬP'
+                )}
               </Button>
               <Grid container>
                 <Grid item xs>
@@ -120,7 +132,7 @@ function Login() {
                   <Link href="#" variant="body2">
                     {"Không có tài khoản ? Đăng ký"}
                   </Link>
-                  <br/>
+                  <br />
                   <Link href="#" variant="body2">
                     {"Không có tài khoản ? Đăng ký làm tarot reader"}
                   </Link>

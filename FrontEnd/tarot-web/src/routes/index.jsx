@@ -19,6 +19,14 @@ import ChatListPage from "../pages/ChatPage/ChatListPage";
 import ChatPage from "../pages/ChatPage/ChatPage";
 import RoleBasedGuard from "../guards/RoleBasedGuard";
 import SheduleTarotReaderPage from "../pages/SheduleTarotReaderPage/SheduleTarotReaderPage";
+import GuestAuth from "../guards/GuestGuard";
+import DashboardAdminPage from "../pages/DashboardPage/DashboardAdminPage";
+import ServiceTypeTarotReaderPage from "../pages/ServiceTypeTarotReaderPage/ServiceTypeTarotReaderPage";
+import DashboardTarotReaderPage from "../pages/DashboardPage/DashboardTarotReaderPage";
+import FormMeetingManagementPage from "../pages/FormMeetingManagementPage/FormMeetingManagementPage";
+import LanguageManagementPage from "../pages/LanguageManagementPage/LanguageManagementPage";
+import PageManagementTarotReaderPage from "../pages/PageManagementTarotReaderPage/PageManagementTarotReaderPage";
+import SlotManagementAdminPage from "../pages/SlotManagementAdminPage/SlotManagementAdminPage";
 
 export const router = createBrowserRouter([
   {
@@ -28,7 +36,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    element: <GuestAuth><LoginPage /></GuestAuth>,
     errorElement: <Error />,
   },
   {
@@ -102,10 +110,44 @@ export const router = createBrowserRouter([
   { path: "/chat", 
     element: <RoleBasedGuard accessibleRoles={["Customer", "Tarot Reader"]} status="Active"><ChatPage/></RoleBasedGuard>,
     errorElement: <Error/> 
-  }
-  ,
+  },
   { path: "/shedule-tarot-reader", 
     element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><SheduleTarotReaderPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/home-tarot-reader", 
+    element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><DashboardTarotReaderPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/home-admin", 
+    element: <RoleBasedGuard accessibleRoles={["Admin"]} status="Active"><DashboardAdminPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/service-type-tarot-reader", 
+    element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><ServiceTypeTarotReaderPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/form-meeting-management-tarot-reader", 
+    element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><FormMeetingManagementPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/language-management-tarot-reader", 
+    element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><LanguageManagementPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/page-management-tarot-reader", 
+    element: <RoleBasedGuard accessibleRoles={["Tarot Reader"]} status="Active"><PageManagementTarotReaderPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/slot-management-admin", 
+    element: <RoleBasedGuard accessibleRoles={["Admin"]} status="Active"><SlotManagementAdminPage /></RoleBasedGuard>,
     errorElement: <Error/> 
   }
 ]);

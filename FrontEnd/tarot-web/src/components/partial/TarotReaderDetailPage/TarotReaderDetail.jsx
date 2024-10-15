@@ -5,6 +5,7 @@ import StarIcon from '@mui/icons-material/Star';
 import styles from './tarot-reader-detail.module.scss';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 
 function TarotReaderDetail() {
     const location = useLocation();
@@ -75,7 +76,7 @@ function TarotReaderDetail() {
                             <p className={styles.tarot_reader_description}>{tarotReaderData.description}</p>
                             <ul className={styles.tarot_reader_info}>
                                 <li>{tarotReaderData.experience} năm kinh nghiệm</li>
-                                <li>4.6: 72 reviewed</li>
+                                <li>{tarotReaderData.averageRating} <StarBorderOutlinedIcon style={{marginTop: '-3px'}} />: {tarotReaderData.totalAmountCompletedBooking} reviewed</li>
                             </ul>
                             <div className={styles.info_box}>
                                 <p>{tarotReaderData.gender}</p>

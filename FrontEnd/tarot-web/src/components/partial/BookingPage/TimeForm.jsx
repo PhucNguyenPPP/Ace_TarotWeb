@@ -317,8 +317,16 @@ function TimeForm({ tarotReaderData, serviceData }) {
                                     borderRadius: '30px',
                                 }}
                                 onClick={handleClickPayment}
+                                disabled={isLoading}
                             >
-                                THANH TOÁN <KeyboardArrowRightIcon />
+                                {isLoading ? (
+                                    <>
+                                        <CircularProgress size={24} sx={{ position: 'absolute' }} />
+                                        <span style={{ visibility: 'hidden' }}>THANH TOÁN</span>
+                                    </>
+                                ) : (
+                                    'THANH TOÁN'
+                                )} <KeyboardArrowRightIcon />
                             </button>
                         </div>
                         <div className='flex flex-wrap justify-center'>

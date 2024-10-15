@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using BLL.Interface;
+using Common.DTO.FormMeeting;
 using Common.DTO.General;
 using Common.DTO.Language;
 using Common.DTO.Topic;
 using DAL.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BLL.Services
@@ -32,6 +34,16 @@ namespace BLL.Services
             }
             var list = _mapper.Map<List<LanguageOfReaderDTO>>(languages);
             return new ResponseDTO("Hiện ngôn ngữ thành công", 200, true, list);
+        }
+
+        public List<LanguageOfReaderDTO> GetAllLanguageOfTarotReader(Guid userId)
+        {
+            var languageTarotReader = _unitOfWork.UserLanguage
+                .GetAllByCondition(c => c.UserId == userId && c.Status == true)
+                .Include(c => c.Language)
+                .ToList();
+
+            return _mapper.Map<List<LanguageOfReaderDTO>>(languageTarotReader);
         }
     }
 }

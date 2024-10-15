@@ -13,5 +13,6 @@ namespace BLL.Interface
         Task<LoginResponseDTO?> CheckLogin(LoginRequestDTO loginRequestDTO);
         Task<TokenDTO> RefreshAccessToken(RequestTokenDTO model);
         Task<ResponseDTO> GetUserByAccessToken(string token);
+        Task<bool> LogOut(string refreshToken);
     }
 }
