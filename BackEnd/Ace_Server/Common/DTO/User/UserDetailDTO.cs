@@ -51,5 +51,7 @@ namespace Common.DTO.User
 		public List<FormMeetingOfReaderDTO>? FormMeetingOfReaderDTOs { get; set; }
 		public List<ServiceTypeDTO>? serviceTypeDTOs { get; set; }
 		public List<SlotDTO>? slotDTOs { get; set; }
+		public int TotalAmountCompletedBooking { get; set; }
+		public double AverageRating { get; set; }
 	}
 }

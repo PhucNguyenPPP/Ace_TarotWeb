@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Common.DTO.General;
 using BLL.Interface;
 using Common.DTO.Auth;
+using DAL.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Api_Ace.Controllers
 {
@@ -137,6 +139,20 @@ namespace Api_Ace.Controllers
                 return Ok(new ResponseDTO("Thay đổi mật khẩu thành công", 200, true));
             }
             return BadRequest(new ResponseDTO("Thay đổi mật khẩu không thành công", 400, false));
-        } 
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([Required] string rfToken)
+        {
+            
+            var response = await _authService.LogOut(rfToken);
+
+            if (response)
+            {
+                return Ok(new ResponseDTO("Đăng xuất thành công", 200, true));
+            }
+
+            return BadRequest(new ResponseDTO("Đăng xuất thất bại", 400, false));
+        }
     }
 }

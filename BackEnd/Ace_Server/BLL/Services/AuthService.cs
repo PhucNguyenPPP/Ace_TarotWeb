@@ -320,5 +320,22 @@ namespace BLL.Services
             }
         }
 
+        public async Task<bool> LogOut(string refreshToken)
+        {
+            // update refresh token in db (revoke token)
+            var refreshTokenDb = await _unitOfWork.RefreshToken.GetByCondition(c => c.RefreshToken1 == refreshToken);
+
+            if (refreshTokenDb != null)
+            {
+                refreshTokenDb.IsValid = false;
+
+                _unitOfWork.RefreshToken.Update(refreshTokenDb);
+                return await _unitOfWork.SaveChangeAsync();       
+            } else
+            {
+                return false;
+            }
+        }
+
     }
 }
