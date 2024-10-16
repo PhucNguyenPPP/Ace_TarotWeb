@@ -65,9 +65,10 @@ namespace BLL.Services
             return new ResponseDTO("Đăng ký ngôn ngữ thất bại", 500, false);
         }
 
-        public async Task<ResponseDTO> RemoveUserLanguage(Guid userLanguageId)
+
+        public async Task<ResponseDTO> RemoveUserLanguage(RegisterUserLanguageDTO registerUserLanguageDTO)
         {
-            var userLanguage = await _unitOfWork.UserLanguage.GetByCondition(ul => ul.UserLanguageId.Equals(userLanguageId)&&ul.Status);
+            var userLanguage = await _unitOfWork.UserLanguage.GetByCondition(ul => ul.LanguageId.Equals(registerUserLanguageDTO.LanguageId)&& ul.UserId.Equals(registerUserLanguageDTO.UserId) && ul.Status);
             if (userLanguage == null)
             {
                 return new ResponseDTO("Không tồn tại UserLanguage", 400, false);
@@ -75,7 +76,7 @@ namespace BLL.Services
             userLanguage.Status = false;
             _unitOfWork.UserLanguage.Update(userLanguage);
             var saveChanges = await _unitOfWork.SaveChangeAsync();
-            if(saveChanges)
+            if (saveChanges)
             {
                 return new ResponseDTO("Xoá ngôn ngữ của Tarot Reader thành công", 200, true);
             }
