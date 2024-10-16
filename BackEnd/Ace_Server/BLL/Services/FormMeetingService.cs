@@ -70,13 +70,13 @@ namespace BLL.Services
             }
 
             //check if Form Meeting registerd by tarot reader
-            var userServiceTypes = _unitOfWork.UserFormMeeting
+            var userFormMeetings = _unitOfWork.UserFormMeeting
                 .GetAllByCondition(
                 c => c.UserId == userId &&
                 c.FormMeetingId == formMeetingId &&
                 c.Status == true);
 
-            if (!userServiceTypes.IsNullOrEmpty())
+            if (!userFormMeetings.IsNullOrEmpty())
             {
                 return new ResponseDTO("Hình thức xem này đã được đăng ký!", 400, false);
             }
@@ -118,7 +118,7 @@ namespace BLL.Services
 
         }
 
-        public async Task<ResponseDTO> DeleteFormMeeting(Guid userId, Guid formMeetingId)
+        public async Task<ResponseDTO> DeleteRegisterFormMeeting(Guid userId, Guid formMeetingId)
         {
             //check user valid and is tarot reader or not
             var tarotReader = _unitOfWork.User
@@ -131,15 +131,17 @@ namespace BLL.Services
             }
 
             //check service type valid or not
-            var formMeeting = _unitOfWork.FormMeeting.GetAllByCondition(c => c.FormMeetingId == formMeetingId);
+            var formMeeting = _unitOfWork.FormMeeting
+                .GetAllByCondition(c => c.FormMeetingId == formMeetingId);
             if (formMeeting.IsNullOrEmpty())
             {
                 return new ResponseDTO("Hình thức xem không hợp lệ", 400, false);
             }
 
             //check if service type registered or not
-            var userFormMeetings = _unitOfWork.UserFormMeeting.
-                GetAllByCondition(c => c.FormMeetingId == formMeetingId &&
+            var userFormMeetings = _unitOfWork.UserFormMeeting
+                .GetAllByCondition(
+                c => c.FormMeetingId == formMeetingId &&
                 c.UserId == userId);
             if (userFormMeetings.IsNullOrEmpty())
             {

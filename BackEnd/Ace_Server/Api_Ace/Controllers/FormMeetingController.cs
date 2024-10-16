@@ -75,7 +75,7 @@ namespace Api_Ace.Controllers
         [HttpDelete("user_service_type")]
         public async Task<IActionResult> DeleteFormMeeting(Guid userID, Guid formMeetingId)
         {
-            ResponseDTO responseDTO = await _formMeetingService.DeleteFormMeeting(userID, formMeetingId);
+            ResponseDTO responseDTO = await _formMeetingService.DeleteRegisterFormMeeting(userID, formMeetingId);
             if (responseDTO.IsSuccess == false)
             {
                 if (responseDTO.StatusCode == 404)
