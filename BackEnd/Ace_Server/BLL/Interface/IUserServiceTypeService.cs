@@ -11,5 +11,7 @@ namespace BLL.Interface
     {
         ResponseDTO GetAllServiceType(Guid userId);
         Task<ResponseDTO> RegisteredSeviceType(Guid userId, Guid serviceTypeId);
+
+        Task<ResponseDTO> DeleteSeviceType(Guid userId, Guid serviceTypeId);
     }
 }
