@@ -25,10 +25,10 @@ namespace BLL.Services
             var tarotReader = _unitOfWork.User.GetAllByCondition(c => c.Role.RoleName == RoleConstant.TarotReader);
             if (!tarotReader.Any(c => c.UserId == userId))
             {
-                return new ResponseDTO("User Id không hợp lệ", 400, false);
+                return new ResponseDTO("Người dùng không hợp lệ", 400, false);
             }
             var serviceType = _unitOfWork.UserServiceType
-            .GetAllByCondition(x => x.UserId == userId && x.Status == true /*&&x.User.Role.RoleName == RoleConstant.TarotReader*/)
+            .GetAllByCondition(x => x.UserId == userId && x.Status == true)
             .Include(c => c.ServiceType)
             .ThenInclude(c => c.Services)
             .ToList();
