@@ -40,7 +40,7 @@ namespace BLL.Services
             return new ResponseDTO("Hiển thị loại dịch vụ thành công!", 200, true, list2);
         }
 
-        public async Task<ResponseDTO> RegisteredSeviceType(Guid userId, Guid serviceTypeId)
+        public async Task<ResponseDTO> RegisterSeviceType(Guid userId, Guid serviceTypeId)
         {
             //check valid and is tarot reader or not
             var tarotReader = _unitOfWork.User

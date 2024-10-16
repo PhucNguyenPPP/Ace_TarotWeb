@@ -10,7 +10,7 @@ namespace BLL.Interface
     public interface IUserServiceTypeService
     {
         ResponseDTO GetAllServiceType(Guid userId);
-        Task<ResponseDTO> RegisteredSeviceType(Guid userId, Guid serviceTypeId);
+        Task<ResponseDTO> RegisterSeviceType(Guid userId, Guid serviceTypeId);
         Task<ResponseDTO> DeleteRegisteredSeviceType(Guid userId, Guid serviceTypeId);
     }
 }
