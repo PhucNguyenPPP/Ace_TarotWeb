@@ -54,9 +54,9 @@ namespace Api_Ace.Controllers
         }
 
         [HttpPost("user_service_type")]
-        public async Task<IActionResult> RegisteredFormMeeting(Guid userID, Guid formMeetingId)
+        public async Task<IActionResult> RegisterFormMeeting(Guid userID, Guid formMeetingId)
         {
-            ResponseDTO responseDTO = await _formMeetingService.RegisteredFormMeeting(userID, formMeetingId);
+            ResponseDTO responseDTO = await _formMeetingService.RegisterFormMeeting(userID, formMeetingId);
             if (responseDTO.IsSuccess == false)
             {
                 if (responseDTO.StatusCode == 404)

@@ -13,7 +13,7 @@ namespace BLL.Interface
     {
         Task<ResponseDTO> GetAllFormMeeting();
         List<FormMeetingOfReaderDTO> GetAllFormMeetingOfTarotReader(Guid userId);
-        Task<ResponseDTO> RegisteredFormMeeting(Guid userId, Guid formMeetingId);
+        Task<ResponseDTO> RegisterFormMeeting(Guid userId, Guid formMeetingId);
         Task<ResponseDTO> DeleteRegisterFormMeeting(Guid userId, Guid formMeetingId);
     }
 }

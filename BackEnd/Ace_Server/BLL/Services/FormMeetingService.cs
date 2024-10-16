@@ -47,7 +47,7 @@ namespace BLL.Services
             return _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetingTarotReader);
         }
 
-        public async Task<ResponseDTO> RegisteredFormMeeting(Guid userId, Guid formMeetingId)
+        public async Task<ResponseDTO> RegisterFormMeeting(Guid userId, Guid formMeetingId)
         {
             //check valid and is tarot reader or not
             var tarotReader = _unitOfWork.User
