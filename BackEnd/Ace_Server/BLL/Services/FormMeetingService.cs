@@ -156,7 +156,7 @@ namespace BLL.Services
                 .FirstOrDefault();
             if (userFormMeeting == null)
             {
-                return new ResponseDTO("Loại hình thức xem này đã được xóa!", 400, false);
+                return new ResponseDTO("Hình thức xem này đã được xóa!", 400, false);
             }
 
 
