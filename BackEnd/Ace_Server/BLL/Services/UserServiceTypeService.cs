@@ -112,7 +112,7 @@ namespace BLL.Services
 
         }
 
-        public async Task<ResponseDTO> DeleteSeviceType(Guid userId, Guid serviceTypeId)
+        public async Task<ResponseDTO> DeleteRegisteredSeviceType(Guid userId, Guid serviceTypeId)
         {
             //check user valid and is tarot reader or not
             var tarotReader = _unitOfWork.User

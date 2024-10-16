@@ -55,7 +55,7 @@ namespace Api_Ace.Controllers
         [HttpDelete("user_service_type")]
         public async Task<IActionResult> DeleteSeviceType(Guid userID, Guid serviceTypeId)
         {
-            ResponseDTO responseDTO = await _userServiceTypeService.DeleteSeviceType(userID, serviceTypeId);
+            ResponseDTO responseDTO = await _userServiceTypeService.DeleteRegisteredSeviceType(userID, serviceTypeId);
             if (responseDTO.IsSuccess == false)
             {
                 if (responseDTO.StatusCode == 404)
