@@ -49,7 +49,7 @@ namespace BLL.Services
                 && c.Role.RoleName == RoleConstant.TarotReader);
             if (tarotReader.IsNullOrEmpty())
             {
-                return new ResponseDTO("User ID không hợp lệ!", 400, false);
+                return new ResponseDTO("Người dùng không hợp lệ!", 400, false);
             }
 
             //check service type is valid or not
@@ -60,7 +60,7 @@ namespace BLL.Services
 
             if (serviceType.IsNullOrEmpty())
             {
-                return new ResponseDTO("Service Type ID không hợp lệ", 400, false);
+                return new ResponseDTO("Loại dịch vụ không hợp lệ", 400, false);
             }
 
             //check if service type registerd by tarot reader
