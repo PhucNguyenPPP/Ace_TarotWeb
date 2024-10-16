@@ -11,6 +11,6 @@ namespace BLL.Interface
     public interface IUserLanguageService
     {
         Task<ResponseDTO> RegisterUserLanguage(RegisterUserLanguageDTO registerUserLanguageDTO);
-        Task<ResponseDTO> RemoveUserLanguage(Guid userLanguageId);
+        Task<ResponseDTO> RemoveUserLanguage(RegisterUserLanguageDTO registerUserLanguageDTO);
     }
 }

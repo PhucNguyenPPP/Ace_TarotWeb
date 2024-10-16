@@ -20,7 +20,7 @@ namespace Api_Ace.Controllers
             _userLanguageService = userLanguageService;
         }
         [HttpPut]
-        public async Task<IActionResult> RegisterUserLanguage([Required] RegisterUserLanguageDTO registerUserLanguageDTO)
+        public async Task<IActionResult> RegisterUserLanguage([FromBody] [Required]RegisterUserLanguageDTO registerUserLanguageDTO)
         {
             ResponseDTO responseDTO = await _userLanguageService.RegisterUserLanguage(registerUserLanguageDTO);
             if (responseDTO.IsSuccess == false)
@@ -38,9 +38,9 @@ namespace Api_Ace.Controllers
 
         }
         [HttpDelete]
-        public async Task<IActionResult> RemoveUserLanguage([Required]Guid userLanguageId)
+        public async Task<IActionResult> RemoveUserLanguage([FromBody][Required] RegisterUserLanguageDTO registerUserLanguageDTO)
         {
-            ResponseDTO responseDTO = await _userLanguageService.RemoveUserLanguage(userLanguageId);
+            ResponseDTO responseDTO = await _userLanguageService.RemoveUserLanguage(registerUserLanguageDTO);
             if (responseDTO.IsSuccess == false)
             {
                 if (responseDTO.StatusCode == 400)
