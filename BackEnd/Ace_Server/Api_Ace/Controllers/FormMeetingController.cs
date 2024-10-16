@@ -52,5 +52,43 @@ namespace Api_Ace.Controllers
 
             return Ok(new ResponseDTO("Lấy các hình thức của tarot reader thành công", 200, true, result));
         }
+
+        [HttpPost("user_service_type")]
+        public async Task<IActionResult> RegisterFormMeeting(Guid userID, Guid formMeetingId)
+        {
+            ResponseDTO responseDTO = await _formMeetingService.RegisterFormMeeting(userID, formMeetingId);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 404)
+                {
+                    return NotFound(responseDTO);
+                }
+                if (responseDTO.StatusCode == 500)
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+
+            return Ok(responseDTO);
+        }
+
+        [HttpDelete("user_service_type")]
+        public async Task<IActionResult> DeleteFormMeeting(Guid userID, Guid formMeetingId)
+        {
+            ResponseDTO responseDTO = await _formMeetingService.DeleteRegisterFormMeeting(userID, formMeetingId);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 404)
+                {
+                    return NotFound(responseDTO);
+                }
+                if (responseDTO.StatusCode == 500)
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+
+            return Ok(responseDTO);
+        }
     }
 }
