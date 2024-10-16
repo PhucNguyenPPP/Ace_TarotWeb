@@ -42,6 +42,7 @@ namespace BLL.Services
 
         public async Task<ResponseDTO> RegisteredSeviceType(Guid userId, Guid serviceTypeId)
         {
+            //check valid and is tarot reader or not
             var tarotReader = _unitOfWork.User
                 .GetAllByCondition(c => c.UserId == userId
                 && c.Status == true
@@ -51,17 +52,38 @@ namespace BLL.Services
                 return new ResponseDTO("User ID không hợp lệ!", 400, false);
             }
 
-            var serviceType = _unitOfWork.ServiceType.GetAllByCondition(c => c.ServiceTypeId == serviceTypeId && c.Status == true);
+            //check service type is valid or not
+            var serviceType = _unitOfWork.ServiceType
+                .GetAllByCondition(
+                c => c.ServiceTypeId == serviceTypeId && 
+                c.Status == true);
+
             if (serviceType.IsNullOrEmpty())
             {
                 return new ResponseDTO("Service Type ID không hợp lệ", 400, false);
             }
-            var userServiceTypes = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == userId && c.ServiceTypeId == serviceTypeId && c.Status == true);
+
+            //check if service type registerd by tarot reader
+            var userServiceTypes = _unitOfWork.UserServiceType
+                .GetAllByCondition(
+                c => c.UserId == userId && 
+                c.ServiceTypeId == serviceTypeId && 
+                c.Status == true);
+
             if (!userServiceTypes.IsNullOrEmpty())
             {
                 return new ResponseDTO("Loại dịch vụ này đã được đăng ký!", 400, false);
             }
-            var list = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == userId && c.ServiceTypeId == serviceTypeId && c.Status == false).FirstOrDefault();
+
+
+            var list = _unitOfWork.UserServiceType
+                .GetAllByCondition(
+                c => c.UserId == userId && 
+                c.ServiceTypeId == serviceTypeId && 
+                c.Status == false)
+                .FirstOrDefault();
+
+            //if user not registered before create new userServiceType
             if (list == null)
             {
                 UserServiceType userServiceType = new UserServiceType();
@@ -71,12 +93,12 @@ namespace BLL.Services
                 userServiceType.Status = true;
                 await _unitOfWork.UserServiceType.AddAsync(userServiceType);
             }
+            //update status if user registed before 
             else
             {
                 list.Status = true;
                 _unitOfWork.UserServiceType.Update(list);
             }
-
 
             var result = await _unitOfWork.SaveChangeAsync();
             if (result)
