@@ -46,7 +46,7 @@ namespace BLL.Services
 			}
 			if (startDateTime<DateTime.Now.AddDays(2)) 
 			{
-				return new ResponseDTO("Ngày kết thúc phải xa hơn hiện tại ít nhất 2 ngày", 400, false); //ngày kết thúc xa hơn ngày hiện tại ít nhất 2 ngày 
+				return new ResponseDTO("Ngày bắt đầu phải xa hơn hiện tại ít nhất 2 ngày", 400, false); //ngày kết thúc xa hơn ngày hiện tại ít nhất 2 ngày 
 			}
 			int totalDays = (endDateTime - startDateTime).Days + 1;
 			List<Slot> dailySlots = new List<Slot>();

@@ -12,6 +12,7 @@ using Common.DTO.ServiceType;
 using Common.DTO.Slot;
 using Common.DTO.Topic;
 using Common.DTO.User;
+using Common.DTO.UserLanguage;
 using Common.DTO.UserSlot;
 using DAL.Entities;
 
@@ -68,6 +69,7 @@ namespace Api_Ace.Profiles
             CreateMap<UserLanguage, LanguageOfReaderDTO>()
                 .ForMember(dest => dest.LanguageName, opt => opt.MapFrom(src => src.Language.LanguageName))
                 .ReverseMap();
+            CreateMap<RegisterUserLanguageDTO, UserLanguage>().ReverseMap();
             #endregion
         }
     }
