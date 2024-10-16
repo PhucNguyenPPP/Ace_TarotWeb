@@ -55,18 +55,28 @@ namespace BLL.Services
             {
                 return new ResponseDTO("Service Type ID không hợp lệ", 400, false);
             }
-            var userServiceTypes = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == userId && c.ServiceTypeId == serviceTypeId);
+            var userServiceTypes = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == userId && c.ServiceTypeId == serviceTypeId && c.Status == true);
             if (!userServiceTypes.IsNullOrEmpty())
             {
                 return new ResponseDTO("Loại dịch vụ này đã được đăng ký!", 400, false);
             }
-            UserServiceType userServiceType = new UserServiceType();
-            userServiceType.UserServiceTypeId = Guid.NewGuid();
-            userServiceType.UserId = userId;
-            userServiceType.ServiceTypeId = serviceTypeId;
-            userServiceType.Status = true;
+            var list = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == userId && c.ServiceTypeId == serviceTypeId && c.Status == false).FirstOrDefault();
+            if (list == null)
+            {
+                UserServiceType userServiceType = new UserServiceType();
+                userServiceType.UserServiceTypeId = Guid.NewGuid();
+                userServiceType.UserId = userId;
+                userServiceType.ServiceTypeId = serviceTypeId;
+                userServiceType.Status = true;
+                await _unitOfWork.UserServiceType.AddAsync(userServiceType);
+            }
+            else
+            {
+                list.Status = true;
+                _unitOfWork.UserServiceType.Update(list);
+            }
+            
 
-            await _unitOfWork.UserServiceType.AddAsync(userServiceType);
             var result = await _unitOfWork.SaveChangeAsync();
             if (result)
             {
