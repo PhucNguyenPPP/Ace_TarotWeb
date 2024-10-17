@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, CircularProgress } from '@mui/material';
-import { GetAllFormMeeting, GetAllFormMeetingOfTarotReader } from '../../../api/FormMeetingApi';
+import { GetAllFormMeeting, GetAllFormMeetingOfTarotReader, RegisterFormMeetingByTarotReader, UnregisterFormMeetingByTarotReader } from '../../../api/FormMeetingApi';
 import useAuth from '../../../hooks/useAuth';
+import { toast } from 'react-toastify';
 
 function FormMeetingManagement() {
     const [isLoading, setIsLoading] = useState(false);
@@ -40,14 +41,41 @@ function FormMeetingManagement() {
         setIsLoading(false);
     }, [user]);
 
-    const handleRegister = (formMeetingId) => {
-        alert(`Đăng ký cho hình thức có ID: ${formMeetingId}`);
-        // Thêm logic đăng ký ở đây (ví dụ: gọi API)
+    const handleRegister = async (formMeetingId) => {
+        if (user) {
+            setIsLoading(true);
+            const response = await RegisterFormMeetingByTarotReader(user.userId, formMeetingId);
+            if (response.ok) {
+                toast.success("Đăng ký hình thức xem thành công")
+                const loadData = async () => {
+                    await fetchAllFormMeeting();
+                    await fetchFormMeetingOfTarotReader();
+                };
+                loadData();
+            } else {
+                toast.error("Đăng ký hình thức xem thất bại")
+            }
+            setIsLoading(false);
+        }
     };
 
-    const handleUnregister = (formMeetingId) => {
-        alert(`Hủy đăng ký cho hình thức có ID: ${formMeetingId}`);
-        // Thêm logic hủy đăng ký ở đây (ví dụ: gọi API)
+
+    const handleUnregister = async (formMeetingId) => {
+        if (user) {
+            setIsLoading(true);
+            const response = await UnregisterFormMeetingByTarotReader(user.userId, formMeetingId);
+            if (response.ok) {
+                toast.success("Hủy đăng ký hình thức xem thành công")
+                const loadData = async () => {
+                    await fetchAllFormMeeting();
+                    await fetchFormMeetingOfTarotReader();
+                };
+                loadData();
+            } else {
+                toast.error("Hủy đăng ký hình thức xem thất bại")
+            }
+            setIsLoading(false);
+        }
     };
 
     if (isLoading) {
@@ -75,7 +103,7 @@ function FormMeetingManagement() {
                     <TableBody>
                         {formMeeting && formMeeting.length > 0 && formMeeting.map((form) => (
                             <TableRow key={form.formMeetingId}>
-                                <TableCell  style={{ fontSize: '20px' }} >
+                                <TableCell style={{ fontSize: '20px' }} >
                                     {form.formMeetingName}
                                 </TableCell>
                                 <TableCell align="right">

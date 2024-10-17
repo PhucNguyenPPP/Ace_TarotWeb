@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import styles from './ServiceTypeTarotReader.module.scss'; // Importing the SCSS module
 import useAuth from '../../../hooks/useAuth';
-import { GetServiceTypeOfSystem, GetServiceTypeOfTarotReader, RegisterServiceByTarotReader } from '../../../api/ServiceApi';
+import { GetServiceTypeOfSystem, GetServiceTypeOfTarotReader, RegisterServiceByTarotReader, RemoveServiceByTarotReader } from '../../../api/ServiceApi';
 import { toast } from 'react-toastify';
 
 const ServiceTypeTarotReader = () => {
@@ -18,6 +18,7 @@ const ServiceTypeTarotReader = () => {
             const responseData = await response.json();
             setServiceTypesTarotReader(responseData.result);
         } else {
+            setServiceTypesTarotReader([])
             console.error('Failed to fetch all service types of tarot reader');
         }
     };
@@ -28,6 +29,7 @@ const ServiceTypeTarotReader = () => {
             const responseData = await response.json();
             setServiceTypes(responseData.result);
         } else {
+            setServiceTypes([]);
             console.error('Failed to fetch all service types of system');
         }
     };
@@ -49,22 +51,35 @@ const ServiceTypeTarotReader = () => {
 
     const handleRegister = async (serviceTypeId) => {
         if (user) {
-            console.log(serviceTypeId)
             setIsLoading(true);
             const response = await RegisterServiceByTarotReader(user.userId, serviceTypeId);
             if (response.ok) {
                 toast.success("Đăng ký dịch vụ thành công ")
                 const loadData = async () => {
-                    setIsLoading(true);
                     await fetchAllServiceTypesOfSystem();
-                    if (user) {
-                        await fetchAllServiceTypesOfTarotReader();
-                    }
-                    setIsLoading(false);
+                    await fetchAllServiceTypesOfTarotReader();
                 };
                 loadData();
             } else {
                 toast.error("Đăng ký dịch vụ thất bại")
+            }
+            setIsLoading(false);
+        }
+    }
+
+    const handleRemove = async (serviceTypeId) => {
+        if (user) {
+            setIsLoading(true);
+            const response = await RemoveServiceByTarotReader(user.userId, serviceTypeId);
+            if (response.ok) {
+                toast.success("Hủy đăng ký dịch vụ thành công ")
+                const loadData = async () => {
+                    await fetchAllServiceTypesOfSystem();
+                    await fetchAllServiceTypesOfTarotReader();
+                };
+                loadData();
+            } else {
+                toast.error("Hủy đăng ký dịch vụ thất bại")
             }
             setIsLoading(false);
         }
@@ -146,7 +161,7 @@ const ServiceTypeTarotReader = () => {
                                                             <Button onClick={() => handleRegister(serviceType.serviceTypeId)} variant="contained" style={{ backgroundColor: '#5900e5' }} className={styles.registerButton}>
                                                                 Đăng ký
                                                             </Button>
-                                                        ) : (<Button variant="contained" style={{ backgroundColor: 'red' }} className={styles.registerButton}>
+                                                        ) : (<Button onClick={() => handleRemove(serviceType.serviceTypeId)} variant="contained" style={{ backgroundColor: 'red' }} className={styles.registerButton}>
                                                             Hủy Đăng Ký
                                                         </Button>)}
                                                     </TableCell>

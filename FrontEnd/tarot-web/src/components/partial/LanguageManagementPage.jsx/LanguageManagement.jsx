@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, CircularProgress } from '@mui/material';
 import useAuth from '../../../hooks/useAuth';
-import { GetAllLanguage, GetAllLanguageOfTarotReader } from '../../../api/LanguageApi';
+import { GetAllLanguage, GetAllLanguageOfTarotReader, RegisterLanguageByTarotReader, UnregisterLanguageByTarotReader } from '../../../api/LanguageApi';
+import { toast } from 'react-toastify';
 
 function LanguageManagement() {
     const [isLoading, setIsLoading] = useState(false);
@@ -41,14 +42,48 @@ function LanguageManagement() {
         setIsLoading(false);
     }, [user]);
 
-    const handleRegister = (languageId) => {
-        alert(`Đăng ký cho ngôn ngữ có ID: ${languageId}`);
-        // Thêm logic đăng ký ở đây (ví dụ: gọi API)
+    const handleRegister = async (languageId) => {
+        if (user) {
+            setIsLoading(true);
+            const data = {
+                userId: user.userId,
+                languageId: languageId
+            }
+            const response = await RegisterLanguageByTarotReader(data);
+            if (response.ok) {
+                toast.success("Đăng ký ngôn ngữ thành công")
+                const loadData = async () => {
+                    await fetchAllLanguage();
+                    await fetchLanguageOfTarotReader();
+                };
+                loadData();
+            } else {
+                toast.error("Đăng ký ngôn ngữ thất bại")
+            }
+            setIsLoading(false);
+        }
     };
 
-    const handleUnregister = (languageId) => {
-        alert(`Hủy đăng ký cho ngôn ngữ có ID: ${languageId}`);
-        // Thêm logic hủy đăng ký ở đây (ví dụ: gọi API)
+    const handleUnregister = async (languageId) => {
+        if (user) {
+            setIsLoading(true);
+            const data = {
+                userId: user.userId,
+                languageId: languageId
+            }
+            const response = await UnregisterLanguageByTarotReader(data);
+            if (response.ok) {
+                toast.success("Hủy đăng ký ngôn ngữ thành công")
+                const loadData = async () => {
+                    await fetchAllLanguage();
+                    await fetchLanguageOfTarotReader();
+                };
+                loadData();
+            } else {
+                toast.error("Hủy đăng ký ngôn ngữ thất bại")
+            }
+            setIsLoading(false);
+        }
     };
 
     if (isLoading) {
@@ -76,7 +111,7 @@ function LanguageManagement() {
                     <TableBody>
                         {language && language.length > 0 && language.map((i) => (
                             <TableRow key={i.languageId}>
-                                <TableCell  style={{ fontSize: '20px' }} >
+                                <TableCell style={{ fontSize: '20px' }} >
                                     {i.languageName}
                                 </TableCell>
                                 <TableCell align="right">
