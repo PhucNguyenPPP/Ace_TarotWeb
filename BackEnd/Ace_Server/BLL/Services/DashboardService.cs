@@ -44,11 +44,11 @@ namespace BLL.Services
             decimal profit;
             if (roleid.Equals(readerRole.RoleId))
             {
-                profit = revenueSum * 40 / 100;
+                profit = revenueSum * 70 / 100;
             }
             else
             {
-                profit = revenueSum * 60 / 100;
+                profit = revenueSum * 30 / 100;
             }
             return new ResponseDTO("Lấy thông tin lợi nhuận thành công", 200, true, profit);
         }
