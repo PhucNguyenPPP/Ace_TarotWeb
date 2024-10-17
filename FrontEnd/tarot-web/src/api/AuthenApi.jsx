@@ -206,3 +206,19 @@ export const Logout = async (refreshToken) => {
         console.log(err);
     }
 };
+
+export const VerifyEmail = async (email) => {
+    try {
+        const url = `${baseUrl}/api/Auth/verify-email?email=${email}`;
+        const request = {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        const response = await fetch(url, request);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+};
