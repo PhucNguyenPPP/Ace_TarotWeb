@@ -25,6 +25,7 @@ namespace Common.DTO.Auth
         public DateTime DateOfBirth { get; set; }
 
         public string Gender { get; set; } = null!;
+        public bool IsVerified { get; set; }
         public bool Status { get; set; }
         public string RoleId { get; set; } = null!;
         public string RoleName { get; set; } = null!;

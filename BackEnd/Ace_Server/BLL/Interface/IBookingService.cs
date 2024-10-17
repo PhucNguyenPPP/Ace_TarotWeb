@@ -27,5 +27,6 @@ namespace BLL.Interface
         Task<ResponseDTO> CreateComplaint (BookingComplaintDTO complaintDTO);
 		Task<ResponseDTO> CheckValidationResponse(ComplaintResponseDTO complaintResponseDTO);
 		Task<bool> ReponseComplaint(ComplaintResponseDTO complaintResponseDTO);
-	}
+        Task<bool> CheckBookingNumberPayOsExist(int bookingNumberPayOs);
+    }
 }

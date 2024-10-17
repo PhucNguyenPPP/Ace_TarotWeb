@@ -9,6 +9,10 @@ public partial class Booking
 
     public string BookingNumber { get; set; } = null!;
 
+    public int BookingCodePayOs { get; set; }
+
+    public string? PayOsUrlPayment { get; set; }
+
     public DateTime CreatedDate { get; set; }
 
     public decimal Price { get; set; }

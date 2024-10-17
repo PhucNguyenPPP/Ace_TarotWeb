@@ -32,5 +32,6 @@ namespace BLL.Interface
 		Task<ResponseDTO> UpdateUser(UpdateUserDTO updateUserDTO);
         Task<Role> GetReaderRole();
         Task<Role> GetAdminRole();
+        Task<bool> VerifyEmail(string email);
     }
 }
