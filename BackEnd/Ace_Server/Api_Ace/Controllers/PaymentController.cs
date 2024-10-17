@@ -38,8 +38,26 @@ namespace Api_Ace.Controllers
             return Ok(new ResponseDTO("Tạo link thanh toán thành công", 201, true, result));
         }
 
+        [HttpPost("payos-payment")]
+        public async Task<IActionResult> CreatePayOsPaymentUrl(int bookingNumberPayOs)
+        {
+            var checkExist = await _bookingService.CheckBookingNumberPayOsExist(bookingNumberPayOs);
+            if (!checkExist)
+            {
+                return BadRequest(new ResponseDTO("Lịch hẹn không tồn tại", 400, false));
+            }
+
+            var result = await _paymentService.CreatePaymentPayOsRequest(bookingNumberPayOs);
+            if (result.IsNullOrEmpty())
+            {
+                return BadRequest(new ResponseDTO("Tạo link thanh toán thất bại", 400, false));
+            }
+
+            return Ok(new ResponseDTO("Tạo link thanh toán thành công", 201, true, result));
+        }
+
         [HttpPut("response-payment")]
-        public async Task<IActionResult> HandleResponseVnPay([FromBody] VnPayResponseDTO responseInfo)
+        public async Task<IActionResult> HandleResponseVnPay([FromBody] PayOsPaymentResponseDTO model)
         {
             if (!ModelState.IsValid)
             {
@@ -49,7 +67,7 @@ namespace Api_Ace.Controllers
                 }
             }
 
-            var response = await _paymentService.HandlePaymentResponse(responseInfo);
+            var response = await _paymentService.HandlePaymentResponse(model);
 
             if (response)
             {

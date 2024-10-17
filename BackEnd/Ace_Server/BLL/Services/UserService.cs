@@ -91,6 +91,7 @@ namespace BLL.Services
             customer.Salt = salt;
             customer.PasswordHash = passwordHash;
             customer.AvatarLink = avatarLink;
+            customer.IsVerified = false;
             customer.Status = true;
 
             await _unitOfWork.User.AddAsync(customer);
@@ -329,6 +330,7 @@ namespace BLL.Services
             reader.RoleId = role.RoleId;
             reader.Salt = salt;
             reader.PasswordHash = passwordHash;
+            reader.IsVerified = true;
             reader.AvatarLink = avatarLink;
 
             reader.Status = true;
@@ -479,5 +481,18 @@ namespace BLL.Services
             var result = await _unitOfWork.Role.GetByCondition(c => c.RoleName == RoleConstant.Admin);
             return result;
         }
+
+        public async Task<bool> VerifyEmail(string email)
+        {
+            var user = await GetUserByEmail(email);
+            if (user == null)
+            {
+                return false;
+            }
+            
+            user.IsVerified = true;
+            return await _unitOfWork.SaveChangeAsync();
+        }
+
     }
 }

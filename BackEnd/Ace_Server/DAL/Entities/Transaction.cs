@@ -7,10 +7,6 @@ public partial class Transaction
 {
     public Guid TransactionId { get; set; }
 
-    public string? TransactionInfo { get; set; }
-
-    public string? TransactionNumber { get; set; }
-
     public string PaymentMethod { get; set; } = null!;
 
     public DateTime CreatedDate { get; set; }

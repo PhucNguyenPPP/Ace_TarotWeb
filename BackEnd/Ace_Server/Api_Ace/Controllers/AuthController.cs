@@ -154,5 +154,19 @@ namespace Api_Ace.Controllers
 
             return BadRequest(new ResponseDTO("Đăng xuất thất bại", 400, false));
         }
+
+        [HttpPut("verify-email")]
+        public async Task<IActionResult> VerifyEmail([Required] string email)
+        {
+
+            var response = await _userService.VerifyEmail(email);
+
+            if (response)
+            {
+                return Ok(new ResponseDTO("Xác thực email thành công", 200, true));
+            }
+
+            return BadRequest(new ResponseDTO("Xác thực email thất bại", 400, false));
+        }
     }
 }

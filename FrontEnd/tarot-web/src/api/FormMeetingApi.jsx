@@ -31,3 +31,36 @@ export const GetAllFormMeetingOfTarotReader = async (userId) => {
         console.log(err);
     }
 };
+
+
+export const RegisterFormMeetingByTarotReader = async (userId, formMeetingId) => {
+    try {
+        const url = `${baseUrl}/api/FormMeeting/user_service_type?userID=${userId}&formMeetingId=${formMeetingId}`;
+        const request = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+        const response = await fetch(url, request);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const UnregisterFormMeetingByTarotReader = async (userId, formMeetingId) => {
+    try {
+        const url = `${baseUrl}/api/FormMeeting/user_service_type?userID=${userId}&formMeetingId=${formMeetingId}`;
+        const request = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+        const response = await fetch(url, request);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+};

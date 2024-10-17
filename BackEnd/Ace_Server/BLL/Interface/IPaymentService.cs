@@ -11,6 +11,7 @@ namespace BLL.Interface
     public interface IPaymentService
     {
         Task<string> CreatePaymentVNPayRequest(Guid bookingId, HttpContext context);
-        Task<bool> HandlePaymentResponse(VnPayResponseDTO responseDTO);
+        Task<bool> HandlePaymentResponse(PayOsPaymentResponseDTO payOsPaymentResponseDTO);
+        Task<string> CreatePaymentPayOsRequest(int bookingCodePayOs);
     }
 }
