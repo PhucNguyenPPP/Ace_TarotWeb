@@ -174,7 +174,7 @@ namespace BLL.Services
                 {
                     list = list.Where(c => c.NickName.Contains(readerName));
                 }
-                if (filterLanguages != null)
+                if (filterLanguages.Count>0)
                 {
                     var languages = _unitOfWork.Language.GetAllByCondition(c => filterLanguages.Contains(c.LanguageId));
                     if (languages.Any())
@@ -184,7 +184,7 @@ namespace BLL.Services
                     }
 
                 }
-                if (filterForming != null)
+                if (filterForming.Count > 0)
                 {
                     var forms = _unitOfWork.FormMeeting.GetAllByCondition(c => filterForming.Contains(c.FormMeetingId));
                     if (forms.Any())
@@ -214,6 +214,10 @@ namespace BLL.Services
                         var languages = _unitOfWork.Language.GetAllByCondition(language => userLanguages.Any(ul => ul.LanguageId.Equals(language.LanguageId)));
                         item.LanguageOfReader = _mapper.Map<List<LanguageOfReaderDTO>>(languages);
                     }
+                    else 
+                    {
+                        listDTO.Remove(item);
+                    }
 
                     //FormMeeting
                     var userFormMeetings = _unitOfWork.UserFormMeeting.GetAllByCondition(c => c.UserId == item.UserId && c.Status == true);
@@ -222,6 +226,17 @@ namespace BLL.Services
                         var formMeetings = _unitOfWork.FormMeeting.GetAllByCondition(formMeeting => userFormMeetings.Any(fm => fm.FormMeetingId.Equals(formMeeting.FormMeetingId)));
                         item.FormMeetingOfReaderDTOs = _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetings);
                     }
+                    else
+                    {
+                        listDTO.Remove(item);
+                    }
+                    //serviceType
+                    var userServiceType = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == item.UserId && c.Status == true);
+                    if (userServiceType == null || !userServiceType.Any())
+                    {
+                        listDTO.Remove(item);
+                    }
+
                 }
                 var finalList = PagedList<UserDetailDTO>.ToPagedList(listDTO.AsQueryable(), pageNumber, rowsPerpage);
                 ListTarotReaderDTO listTarotReaderDTO = new ListTarotReaderDTO();
