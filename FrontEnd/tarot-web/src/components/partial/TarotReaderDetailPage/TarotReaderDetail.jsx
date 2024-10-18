@@ -13,6 +13,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
+import { toast } from 'react-toastify';
 
 function TarotReaderDetail() {
     const location = useLocation();
@@ -24,11 +25,16 @@ function TarotReaderDetail() {
     const { user } = useAuth();
 
     const handleNavigate = (userId) => {
-        if (user.isVerified) {
-            navigate('/booking-step', { state: { userId } });
-        } else {
-            setOpenDialog(true); // Open dialog when user is not verified
+        if(!user){
+            toast.error("Vui lòng đăng nhập để đặt lịch");
+            return;
         }
+
+        if (!user.isVerified) {
+            setOpenDialog(true);
+        }
+
+        navigate('/booking-step', { state: { userId } });
     };
 
     const handleCloseDialog = () => {

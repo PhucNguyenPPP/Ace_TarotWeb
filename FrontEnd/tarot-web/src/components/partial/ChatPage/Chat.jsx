@@ -7,7 +7,9 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import { useLocation } from 'react-router-dom';
 import { GetTarotReaderDetail } from '../../../api/TarotReaderApi';
 
+const baseUrlWebSocket = import.meta.env.VITE_WEB_SOCKET_HOST;
 function Chat() {
+    console.log(baseUrlWebSocket)
     const [newMessage, setNewMessage] = useState("");
     const [currentChatUserId, setCurrentChatUserId] = useState('');
     const [currentChatUser, setCurrentChatUser] = useState(null);
@@ -67,7 +69,7 @@ function Chat() {
 
     useEffect(() => {
         if (user) {
-            socketRef.current = new WebSocket(`ws://localhost:5027/ws`);
+            socketRef.current = new WebSocket(`${baseUrlWebSocket}/ws`);
 
             socketRef.current.onmessage = (event) => {
                 const newMessage = JSON.parse(event.data);
@@ -110,14 +112,6 @@ function Chat() {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
-
-    if (loading) {
-        return (
-            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
-                <CircularProgress />
-            </div>
-        );
-    }
 
     return (
         <div className={styles.chatContainer}>
