@@ -23,6 +23,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Common.DTO.Email;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using System.Text.RegularExpressions;
 
 namespace BLL.Services
 {
@@ -174,7 +176,7 @@ namespace BLL.Services
                 {
                     list = list.Where(c => c.NickName.Contains(readerName));
                 }
-                if (filterLanguages != null)
+                if (filterLanguages.Count>0)
                 {
                     var languages = _unitOfWork.Language.GetAllByCondition(c => filterLanguages.Contains(c.LanguageId));
                     if (languages.Any())
@@ -184,7 +186,7 @@ namespace BLL.Services
                     }
 
                 }
-                if (filterForming != null)
+                if (filterForming.Count > 0)
                 {
                     var forms = _unitOfWork.FormMeeting.GetAllByCondition(c => filterForming.Contains(c.FormMeetingId));
                     if (forms.Any())
@@ -214,6 +216,10 @@ namespace BLL.Services
                         var languages = _unitOfWork.Language.GetAllByCondition(language => userLanguages.Any(ul => ul.LanguageId.Equals(language.LanguageId)));
                         item.LanguageOfReader = _mapper.Map<List<LanguageOfReaderDTO>>(languages);
                     }
+                    else 
+                    {
+                        listDTO.Remove(item);
+                    }
 
                     //FormMeeting
                     var userFormMeetings = _unitOfWork.UserFormMeeting.GetAllByCondition(c => c.UserId == item.UserId && c.Status == true);
@@ -222,6 +228,17 @@ namespace BLL.Services
                         var formMeetings = _unitOfWork.FormMeeting.GetAllByCondition(formMeeting => userFormMeetings.Any(fm => fm.FormMeetingId.Equals(formMeeting.FormMeetingId)));
                         item.FormMeetingOfReaderDTOs = _mapper.Map<List<FormMeetingOfReaderDTO>>(formMeetings);
                     }
+                    else
+                    {
+                        listDTO.Remove(item);
+                    }
+                    //serviceType
+                    var userServiceType = _unitOfWork.UserServiceType.GetAllByCondition(c => c.UserId == item.UserId && c.Status == true);
+                    if (userServiceType == null || !userServiceType.Any())
+                    {
+                        listDTO.Remove(item);
+                    }
+
                 }
                 var finalList = PagedList<UserDetailDTO>.ToPagedList(listDTO.AsQueryable(), pageNumber, rowsPerpage);
                 ListTarotReaderDTO listTarotReaderDTO = new ListTarotReaderDTO();
@@ -494,5 +511,29 @@ namespace BLL.Services
             return await _unitOfWork.SaveChangeAsync();
         }
 
+        public async Task<ResponseDTO> UpdateTarotReader(UpdateTarotReaderDTO updateTarotReaderDTO)
+        {
+            var user = await _unitOfWork.User.GetByCondition(u => u.UserId.Equals(updateTarotReaderDTO.UserId));
+            if (user == null)
+            {
+                return new ResponseDTO("Không tồn tại Tarot Reader",400,false);
+            }
+            if (updateTarotReaderDTO.Experience < 0)
+            {
+                return new ResponseDTO("Số năm kinh nghiệm cần là một số dương", 400, false);
+            }
+            user.Experience = updateTarotReaderDTO.Experience;
+            user.Description = updateTarotReaderDTO.Description;
+            user.NickName = updateTarotReaderDTO.NickName;
+            user.Quote = updateTarotReaderDTO.Quote;
+            user.MeetLink = updateTarotReaderDTO.MeetLink;
+            _unitOfWork.User.Update(user);
+            var updated = await _unitOfWork.SaveChangeAsync();
+            if (updated)
+            {
+                return new ResponseDTO("Cập nhật thông tin Tarot Reader thành công", 200, true);
+            }
+            return new ResponseDTO("Cập nhật thông tin Tarot Reader thất bại", 500, true);
+        }
     }
 }
