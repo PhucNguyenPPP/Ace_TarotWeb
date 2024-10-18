@@ -23,6 +23,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Common.DTO.Email;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using System.Text.RegularExpressions;
 
 namespace BLL.Services
 {
@@ -509,5 +511,29 @@ namespace BLL.Services
             return await _unitOfWork.SaveChangeAsync();
         }
 
+        public async Task<ResponseDTO> UpdateTarotReader(UpdateTarotReaderDTO updateTarotReaderDTO)
+        {
+            var user = await _unitOfWork.User.GetByCondition(u => u.UserId.Equals(updateTarotReaderDTO.UserId));
+            if (user == null)
+            {
+                return new ResponseDTO("Không tồn tại Tarot Reader",400,false);
+            }
+            if (updateTarotReaderDTO.Experience < 0)
+            {
+                return new ResponseDTO("Số năm kinh nghiệm cần là một số dương", 400, false);
+            }
+            user.Experience = updateTarotReaderDTO.Experience;
+            user.Description = updateTarotReaderDTO.Description;
+            user.NickName = updateTarotReaderDTO.NickName;
+            user.Quote = updateTarotReaderDTO.Quote;
+            user.MeetLink = updateTarotReaderDTO.MeetLink;
+            _unitOfWork.User.Update(user);
+            var updated = await _unitOfWork.SaveChangeAsync();
+            if (updated)
+            {
+                return new ResponseDTO("Cập nhật thông tin Tarot Reader thành công", 200, true);
+            }
+            return new ResponseDTO("Cập nhật thông tin Tarot Reader thất bại", 500, true);
+        }
     }
 }

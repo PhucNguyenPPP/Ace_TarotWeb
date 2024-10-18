@@ -33,5 +33,6 @@ namespace BLL.Interface
         Task<Role> GetReaderRole();
         Task<Role> GetAdminRole();
         Task<bool> VerifyEmail(string email);
+        Task<ResponseDTO> UpdateTarotReader(UpdateTarotReaderDTO updateTarotReaderDTO);
     }
 }

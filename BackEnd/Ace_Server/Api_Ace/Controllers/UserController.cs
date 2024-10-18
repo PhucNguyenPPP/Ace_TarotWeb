@@ -71,6 +71,24 @@ namespace Api_Ace.Controllers
 
 			return Ok(responseDTO);
 		}
-	}
+        [HttpPut("updated-tarot-reader")]
+        public async Task<IActionResult> UpdateTarotReader([FromBody] UpdateTarotReaderDTO updateTarotReaderDTO)
+        {
+            ResponseDTO responseDTO = await _userService.UpdateTarotReader(updateTarotReaderDTO);
+            if (responseDTO.IsSuccess == false)
+            {
+                if (responseDTO.StatusCode == 400)
+                {
+                    return NotFound(responseDTO);
+                }
+                if (responseDTO.StatusCode == 500)
+                {
+                    return BadRequest(responseDTO);
+                }
+            }
+
+            return Ok(responseDTO);
+        }
+    }
 }
 
