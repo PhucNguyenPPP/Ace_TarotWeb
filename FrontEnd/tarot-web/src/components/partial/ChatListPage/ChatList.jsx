@@ -5,6 +5,8 @@ import useAuth from '../../../hooks/useAuth';
 import { GetAllChatUsers, GetMessage, SendMessage } from '../../../api/ChatApi';
 import InboxIcon from '@mui/icons-material/Inbox';
 
+const baseUrlWebSocket = import.meta.env.VITE_WEB_SOCKET_HOST;
+
 function ChatList() {
     const [newMessage, setNewMessage] = useState("");
     const [currentChatUser, setCurrentChatUser] = useState(null);
@@ -61,7 +63,7 @@ function ChatList() {
 
     useEffect(() => {
         if (user) {
-            socketRef.current = new WebSocket(`ws://localhost:5027/ws`);
+            socketRef.current = new WebSocket(`${baseUrlWebSocket}/ws`);
 
             socketRef.current.onmessage = (event) => {
                 const newMessage = JSON.parse(event.data);
@@ -110,14 +112,6 @@ function ChatList() {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
-
-    if (loading) {
-        return (
-            <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
-                <CircularProgress />
-            </div>
-        );
-    }
 
     if (notification !== '') {
         return (
