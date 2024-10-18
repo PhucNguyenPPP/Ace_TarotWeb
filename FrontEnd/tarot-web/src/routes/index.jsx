@@ -27,6 +27,8 @@ import FormMeetingManagementPage from "../pages/FormMeetingManagementPage/FormMe
 import LanguageManagementPage from "../pages/LanguageManagementPage/LanguageManagementPage";
 import PageManagementTarotReaderPage from "../pages/PageManagementTarotReaderPage/PageManagementTarotReaderPage";
 import SlotManagementAdminPage from "../pages/SlotManagementAdminPage/SlotManagementAdminPage";
+import WaitingCheckoutPayOsPage from "../pages/PaymentPage/WaitingCheckOutPayOsPage";
+import VerifyPage from "../pages/AuthenPage/VerifyPage";
 
 export const router = createBrowserRouter([
   {
@@ -103,6 +105,10 @@ export const router = createBrowserRouter([
     element: <WaitingCheckoutPage />, 
     errorElement: <Error/> 
   },
+  { path: "/waiting-checkout-payos", 
+    element: <WaitingCheckoutPayOsPage />,
+    errorElement: <Error/> 
+  },
   { path: "/chat-list", 
     element: <RoleBasedGuard accessibleRoles={["Customer", "Tarot Reader"]} status="Active"><ChatListPage /></RoleBasedGuard>,
     errorElement: <Error/> 
@@ -148,6 +154,11 @@ export const router = createBrowserRouter([
   {
     path: "/slot-management-admin", 
     element: <RoleBasedGuard accessibleRoles={["Admin"]} status="Active"><SlotManagementAdminPage /></RoleBasedGuard>,
+    errorElement: <Error/> 
+  },
+  {
+    path: "/verify", 
+    element: <RoleBasedGuard accessibleRoles={["Customer"]} status="Active"><VerifyPage /></RoleBasedGuard>,
     errorElement: <Error/> 
   }
 ]);

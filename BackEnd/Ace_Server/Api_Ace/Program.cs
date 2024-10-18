@@ -2,6 +2,7 @@ using Api_Ace.MiddleWares;
 using BLL.Interface;
 using BLL.Services;
 using BLL.WebSocketHandler;
+using DAL.Entities;
 using DAL.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -33,6 +34,8 @@ builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IUserLanguageService, UserLanguageService>();
+builder.Services.AddScoped<IPayOsService, PayOsService>();
 builder.Services.AddSingleton<WebSocketHandler>();
 
 builder.Services.AddControllers();

@@ -40,6 +40,14 @@ namespace BLL.Services
                 booking.BookingNumber = num;
             } while (bookNum.Any(c => c.BookingNumber == num));
 
+            int bookCodeNum = 0;
+           
+            do
+            {
+                bookCodeNum = rand.Next(1, 100000);
+                booking.BookingCodePayOs = bookCodeNum;
+            } while (bookNum.Any(c => c.BookingCodePayOs == bookCodeNum));
+
             booking.Status = BookingStatus.NotPaid;
             var service = _unitOfWork.Service.GetAllByCondition(c => c.ServiceId == bookingDTO.ServiceId).Select(c => c.ServiceName).FirstOrDefault();
             var price = _unitOfWork.Service.GetAllByCondition(c => c.ServiceId == bookingDTO.ServiceId).Select(c => c.Price).FirstOrDefault();
@@ -106,7 +114,7 @@ namespace BLL.Services
             var result = await _unitOfWork.SaveChangeAsync();
             if (result)
             {
-                return new ResponseDTO("Tạo lịch thành công", 200, true, booking.BookingId);
+                return new ResponseDTO("Tạo lịch thành công", 200, true, booking.BookingCodePayOs);
             }
             else
             {
@@ -273,6 +281,8 @@ namespace BLL.Services
             detailDTO.Status = booking.Status;
             detailDTO.BookingId = booking.BookingId;
             detailDTO.BookingNumber = booking.BookingNumber;
+            detailDTO.BookingCodePayOs = booking.BookingCodePayOs;
+            detailDTO.PayOsUrlPayment = booking.PayOsUrlPayment;
             detailDTO.CreatedDate = booking.CreatedDate;
             detailDTO.BookingDate = DateOnly.FromDateTime(booking.StartTime);
             detailDTO.StartTime = booking.StartTime;
@@ -468,6 +478,16 @@ namespace BLL.Services
             }
             _unitOfWork.Booking.Update(booking);
             return await _unitOfWork.SaveChangeAsync();
+        }
+
+        public async Task<bool> CheckBookingNumberPayOsExist(int bookingNumberPayOs)
+        {
+            var booking = await _unitOfWork.Booking.GetByCondition(c => c.BookingCodePayOs == bookingNumberPayOs);
+            if (booking == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

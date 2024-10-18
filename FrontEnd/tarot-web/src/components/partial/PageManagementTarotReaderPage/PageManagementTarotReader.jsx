@@ -6,13 +6,14 @@ import useAuth from '../../../hooks/useAuth';
 import { useEffect } from 'react';
 import { GetTarotReaderDetail } from '../../../api/TarotReaderApi';
 import { Controller, useForm } from 'react-hook-form';
-import { UpdateUser } from '../../../api/UserApi';
+import { UpdateIntroTarotReader, UpdateUser } from '../../../api/UserApi';
 import { toast } from 'react-toastify';
 
 function PageManagementTarotReader() {
     const [isLoading, setIsLoading] = useState(false);
     const [tarotReaderData, setTarotReaderData] = useState(null);
     const [openEditInfoModal, setOpenEditInfoModal] = useState(false);
+    const [openEditIntroModal, setOpenEditIntroModal] = useState(false);
     const { user } = useAuth();
     const { control, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -33,6 +34,9 @@ function PageManagementTarotReader() {
 
     const handleOpenEditInfoModal = () => setOpenEditInfoModal(true);
     const handleCloseEditInfoModal = () => setOpenEditInfoModal(false);
+
+    const handleOpenEditIntroModal = () => setOpenEditIntroModal(true);
+    const handleCloseEditIntroModal = () => setOpenEditIntroModal(false);
 
     const fetchTarotReaderDetail = async () => {
         setIsLoading(true);
@@ -72,6 +76,28 @@ function PageManagementTarotReader() {
         }
         setIsLoading(false);
         handleCloseEditInfoModal();
+    };
+
+    const onSubmitIntro = async (data) => {
+        const dataParse = {
+            userId: user.userId,
+            experience: data.experience,
+            description: data.description,
+            nickName: data.nickName,
+            quote: data.quote,
+            meetLink: data.meetLink,
+        }
+        console.log(dataParse);
+        setIsLoading(true);
+        const response = await UpdateIntroTarotReader(dataParse);
+        if (response.ok) {
+            toast.success("Cập nhật giới thiệu thành công");
+            fetchTarotReaderDetail();
+        } else {
+            toast.error("Cập nhật giới thiệu thất bại");
+        }
+        setIsLoading(false);
+        handleCloseEditIntroModal();
     };
 
     useEffect(() => {
@@ -123,7 +149,7 @@ function PageManagementTarotReader() {
                 <div className={styles.infoBox}>
                     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <p variant="h6" className={styles.infoTitle}>Giới Thiệu</p>
-                        <IconButton style={{ marginTop: '-15px' }} aria-label="edit">
+                        <IconButton style={{ marginTop: '-15px' }} aria-label="edit" onClick={handleOpenEditIntroModal}>
                             <EditIcon />
                         </IconButton>
                     </Box>
@@ -309,6 +335,114 @@ function PageManagementTarotReader() {
                         </FormControl>
                         <Button type="submit" variant="contained" style={{ backgroundColor: '#5900E5', color: 'white' }} fullWidth>
                             Cập nhật
+                        </Button>
+                    </form>
+                </Box>
+            </Modal>
+
+             {/* Modal for Editing Introduction (New Modal) */}
+             <Modal open={openEditIntroModal} onClose={handleCloseEditIntroModal}>
+                <Box
+                    sx={{
+                        position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                        width: 400, bgcolor: 'background.paper', p: 4, boxShadow: 24, borderRadius: '10px'
+                    }}
+                >
+                    <h2>Chỉnh sửa giới thiệu</h2>
+                    <form onSubmit={handleSubmit(onSubmitIntro)}>
+                        {/* Experience */}
+                        <Controller
+                            name="experience"
+                            control={control}
+                            rules={{ required: 'Vui lòng nhập số năm kinh nghiệm' }}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    label="Kinh nghiệm (năm)"
+                                    type="number"
+                                    fullWidth
+                                    margin="normal"
+                                    error={!!errors.experience}
+                                    helperText={errors.experience?.message}
+                                    inputProps={{ min: 1, max: 100 }}
+                                />
+                            )}
+                        />
+
+                        {/* Nickname */}
+                        <Controller
+                            name="nickName"
+                            control={control}
+                            rules={{ required: 'Vui lòng nhập nickname' }}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    label="Nick name"
+                                    fullWidth
+                                    margin="normal"
+                                    error={!!errors.nickName}
+                                    helperText={errors.nickName?.message}
+                                />
+                            )}
+                        />
+
+                        {/* Quote */}
+                        <Controller
+                            name="quote"
+                            control={control}
+                            rules={{ required: 'Vui lòng nhập châm ngôn' }}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    label="Châm ngôn"
+                                    multiline
+                                    maxRows={2}
+                                    fullWidth
+                                    margin="normal"
+                                    error={!!errors.quote}
+                                    helperText={errors.quote?.message}
+                                />
+                            )}
+                        />
+
+                        {/* Meet Link */}
+                        <Controller
+                            name="meetLink"
+                            control={control}
+                            rules={{ required: 'Vui lòng nhập Meet link' }}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    label="Meet Link"
+                                    fullWidth
+                                    margin="normal"
+                                    error={!!errors.meetLink}
+                                    helperText={errors.meetLink?.message}
+                                />
+                            )}
+                        />
+
+                        {/* Description */}
+                        <Controller
+                            name="description"
+                            control={control}
+                            rules={{ required: 'Vui lòng nhập mô tả' }}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    label="Mô tả"
+                                    fullWidth
+                                    margin="normal"
+                                    multiline
+                                    maxRows={5}
+                                    error={!!errors.description}
+                                    helperText={errors.description?.message}
+                                />
+                            )}
+                        />
+
+                        <Button type="submit" fullWidth variant="contained" color="primary" disabled={isLoading}>
+                            {isLoading ? <CircularProgress size={24} /> : 'Lưu thay đổi'}
                         </Button>
                     </form>
                 </Box>

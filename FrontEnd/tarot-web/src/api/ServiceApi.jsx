@@ -63,3 +63,19 @@ export const RegisterServiceByTarotReader = async (userId, serviceTypeId) => {
         console.log(err);
     }
 };
+
+export const RemoveServiceByTarotReader = async (userId, serviceTypeId) => {
+    try {
+        const url = `${baseUrl}/api/UserServiceType/user_service_type?userID=${userId}&serviceTypeId=${serviceTypeId}`;
+        const request = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+        const response = await fetch(url, request);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+};

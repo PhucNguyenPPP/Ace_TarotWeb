@@ -24,7 +24,7 @@ import { GetDateHasSlotOfMonth, GetSlotOfDate } from '../../../api/SlotApi';
 import { toast } from 'react-toastify';
 import useAuth from '../../../hooks/useAuth';
 import { CreateBooking } from '../../../api/BookingApi';
-import { CreatePaymentUrl } from '../../../api/PaymentApi';
+import { CreatePaymentPayOsUrl, CreatePaymentUrl } from '../../../api/PaymentApi';
 import { useNavigate } from 'react-router-dom';
 
 dayjs.locale('vi'); // Set the global locale to Vietnamese
@@ -202,7 +202,7 @@ function TimeForm({ tarotReaderData, serviceData }) {
                     }, 1000);
 
                     const fetchCreatePaymentUrl = async () => {
-                        const response = await CreatePaymentUrl(responseData.result);
+                        const response = await CreatePaymentPayOsUrl(responseData.result);
                         const responseDataCreateUrl = await response.json();
                         if (response.ok) {
                             setIsLoading(false);

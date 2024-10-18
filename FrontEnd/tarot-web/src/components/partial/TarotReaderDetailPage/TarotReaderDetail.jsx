@@ -6,16 +6,44 @@ import styles from './tarot-reader-detail.module.scss';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
+import useAuth from '../../../hooks/useAuth';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
+import { toast } from 'react-toastify';
 
 function TarotReaderDetail() {
     const location = useLocation();
     const { userId } = location.state || {};
     const [tarotReaderData, setTarotReaderData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false); // State for dialog
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const handleNavigate = (userId) => {
+        if(!user){
+            toast.error("Vui lòng đăng nhập để đặt lịch");
+            return;
+        }
+
+        if (!user.isVerified) {
+            setOpenDialog(true);
+        }
+
         navigate('/booking-step', { state: { userId } });
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    const handleVerifyNavigate = () => {
+        setOpenDialog(false);
+        navigate('/verify'); // Navigate to the verify page
     };
 
     useEffect(() => {
@@ -111,6 +139,31 @@ function TarotReaderDetail() {
                     </div>
                 </div>
             </div>
+
+            {/* Dialog for unverified users */}
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Xác thực tài khoản"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Vui lòng xác thực tài khoản để đặt lịch.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} style={{ backgroundColor: 'red', color: 'white'}}>
+                        Hủy
+                    </Button>
+                    <Button onClick={handleVerifyNavigate}  style={{ backgroundColor: '#5900E5', color: 'white'}} autoFocus>
+                        Xác thực ngay
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }

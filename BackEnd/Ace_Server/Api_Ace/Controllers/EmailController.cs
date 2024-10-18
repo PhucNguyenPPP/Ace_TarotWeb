@@ -30,7 +30,23 @@ namespace Api_Ace.Controllers
 
             var otpDto = _emailService.GenerateOTP();
 
-            await _emailService.SendOTPEmail(user.Email, user.UserName, otpDto, "ACE: OTP Code For Reseting Password");
+            await _emailService.SendOTPEmail(user.Email, user.UserName, otpDto, "ACE: OTP Code For Resetting Password");
+            await _userService.SetOtp(user.Email, otpDto);
+            return Ok(new ResponseDTO("Gửi otp thành công" + user.Email, 201, true, otpDto));
+        }
+
+        [HttpPost("otp-verify-email")]
+        public async Task<IActionResult> SendOtpVerifyEmail(string email)
+        {
+            var user = await _userService.GetUserByEmail(email);
+            if (user == null)
+            {
+                return NotFound(new ResponseDTO("Email không tồn tại", 404, false));
+            }
+
+            var otpDto = _emailService.GenerateOTP();
+
+            await _emailService.SendOTPEmail(user.Email, user.UserName, otpDto, "ACE: OTP Code For Verifying Email");
             await _userService.SetOtp(user.Email, otpDto);
             return Ok(new ResponseDTO("Gửi otp thành công" + user.Email, 201, true, otpDto));
         }

@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import StarIcon from '@mui/icons-material/Star';
 import useAuth from '../../../hooks/useAuth';
 import { useDropzone } from 'react-dropzone';
+import { CreatePaymentPayOsUrl } from '../../../api/PaymentApi';
 
 function BookingDetail() {
     const location = useLocation();
@@ -96,6 +97,10 @@ function BookingDetail() {
         setIsLoading(false);
     };
 
+    const handlePaymentByCustomer = async () => {
+        window.location.href = bookingDetailData.payOsUrlPayment;
+    };
+
     const { getRootProps, getInputProps } = useDropzone({
         accept: 'image/*',
         onDrop: acceptedFiles => {
@@ -177,7 +182,7 @@ function BookingDetail() {
                     {user.roleName === 'Tarot Reader' && (
                         <p className={styles.tarot_reader_name}>Khách hàng: {bookingDetailData.customerName}</p>
                     )}
-                     {user.roleName === 'Customer' && (
+                    {user.roleName === 'Customer' && (
                         <p className={styles.tarot_reader_name}>Tarot Reader: {bookingDetailData.tarotReaderName}</p>
                     )}
                     <div className={styles.container_status}>
@@ -345,6 +350,21 @@ function BookingDetail() {
                             && bookingDetailData.behaviorFeedback) ? (
                             <div className={styles.btn_group}>
                                 <button className={styles.btn_back} onClick={handleBack}>QUAY LẠI</button>
+                            </div>
+                        ) : null
+                    }
+
+                    {
+                        (bookingDetailData.status === 'Chưa thanh toán'
+                            && user.roleName === 'Customer'
+                        ) ? (
+                            <div className={styles.btn_group}>
+                                <div>
+                                    <button className={styles.btn_primary} onClick={handlePaymentByCustomer}>THANH TOÁN</button>
+                                </div>
+                                <div>
+                                    <button className={styles.btn_back} onClick={handleBack}>QUAY LẠI</button>
+                                </div>
                             </div>
                         ) : null
                     }

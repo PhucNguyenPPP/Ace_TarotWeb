@@ -41,6 +41,8 @@ public partial class User
 
     public DateTime? OtpExpiredTime { get; set; }
 
+    public bool IsVerified { get; set; }
+
     public bool Status { get; set; }
 
     public Guid RoleId { get; set; }

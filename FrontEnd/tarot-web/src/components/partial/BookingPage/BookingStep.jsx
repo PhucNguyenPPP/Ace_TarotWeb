@@ -5,7 +5,7 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GetTarotReaderDetail } from '../../../api/TarotReaderApi';
 import { CircularProgress } from '@mui/material';
@@ -13,6 +13,7 @@ import ServiceForm from './ServiceForm';
 import TimeForm from './TimeForm';
 import PaymentForm from './PaymentForm';
 import { toast } from 'react-toastify';
+import useAuth from '../../../hooks/useAuth';
 
 const steps = ['Chọn loại dịch vụ', 'Chọn khung thời gian', 'Thanh toán'];
 
@@ -20,6 +21,7 @@ export default function BookingStep() {
   const [activeStep, setActiveStep] = useState(0);
   const [tarotReaderData, setTarotReaderData] = useState(null);
   const [timeData, setTimeData] = useState(null);
+  const navigate = useNavigate();
   const [serviceData, setServiceData] = useState({
     serviceId: '',
     serviceTypeId: '',
@@ -31,6 +33,13 @@ export default function BookingStep() {
 
   const location = useLocation();
   const { userId } = location.state || {};
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user.isVerified) {
+      navigate('/');
+    }
+  }, [user])
 
   useEffect(() => {
     if (userId) {
@@ -58,12 +67,12 @@ export default function BookingStep() {
       return;
     }
 
-    if(serviceData.serviceName === 'Theo câu hỏi lẻ' && serviceData.questionAmount <=0){
+    if (serviceData.serviceName === 'Theo câu hỏi lẻ' && serviceData.questionAmount <= 0) {
       toast.error('Vui lòng nhập số câu hỏi muốn xem.');
       return;
     }
 
-    if(serviceData.serviceName === 'Theo câu hỏi lẻ' && serviceData.questionAmount > 10){
+    if (serviceData.serviceName === 'Theo câu hỏi lẻ' && serviceData.questionAmount > 10) {
       toast.error('Số câu hỏi tối đa được chọn là 10');
       return;
     }
@@ -99,7 +108,7 @@ export default function BookingStep() {
           <CircularProgress />
         );
       case 1:
-        return <TimeForm tarotReaderData={tarotReaderData} serviceData={serviceData}  />;
+        return <TimeForm tarotReaderData={tarotReaderData} serviceData={serviceData} />;
       case 2:
         return <PaymentForm />;
       default:
@@ -110,7 +119,7 @@ export default function BookingStep() {
   return (
     <div style={{ height: '100%' }}>
       <div className='bg-black h-14'></div>
-      <div style={{ minHeight: '100vh', maxHeight:'max-content', width: '100%', backgroundColor: 'white', padding: '20px 0' }}>
+      <div style={{ minHeight: '100vh', maxHeight: 'max-content', width: '100%', backgroundColor: 'white', padding: '20px 0' }}>
         <div className='flex justify-center' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '80%', margin: '0 auto' }}>
           <Box sx={{ width: '100%' }}>
             <Typography sx={{ fontWeight: 'bold', fontSize: 36, textAlign: 'center', mb: 5 }}>

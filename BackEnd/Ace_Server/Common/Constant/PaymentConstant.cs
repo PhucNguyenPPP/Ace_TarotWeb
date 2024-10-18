@@ -9,6 +9,7 @@ namespace Common.Constant
     public class PaymentConstant
     {
         public const string VnPay = "VnPay";
+        public const string PayOs = "PayOS";
 
         // Payment status
         public const string PendingStatus = "Chờ thanh toán";

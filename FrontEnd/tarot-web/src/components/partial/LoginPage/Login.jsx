@@ -40,11 +40,6 @@ function Login() {
     setIsLoading(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-
     await login(data.get("email"), data.get("password"));
     setIsLoading(false);
   };
@@ -129,11 +124,11 @@ function Login() {
                   </Link>
                 </Grid>
                 <Grid item className="text-right">
-                  <Link href="#" variant="body2">
+                  <Link href="/signup-customer" variant="body2">
                     {"Không có tài khoản ? Đăng ký"}
                   </Link>
                   <br />
-                  <Link href="#" variant="body2">
+                  <Link href="/signup-tarot-reader" variant="body2">
                     {"Không có tài khoản ? Đăng ký làm tarot reader"}
                   </Link>
                 </Grid>
