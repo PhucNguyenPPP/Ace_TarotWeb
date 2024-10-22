@@ -1,43 +1,27 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
-import { ViewState } from '@devexpress/dx-react-scheduler';
-import {
-    Scheduler,
-    Appointments,
-    MonthView,
-} from '@devexpress/dx-react-scheduler-material-ui';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Popover from '@mui/material/Popover';
-import Typography from '@mui/material/Typography';
-import { CheckBox } from '@mui/icons-material';
 import { Checkbox, CircularProgress } from '@mui/material';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { useEffect } from 'react';
 import { GetDateHasSlotOfMonth, GetSlotOfDate } from '../../../api/SlotApi';
 import { toast } from 'react-toastify';
 import useAuth from '../../../hooks/useAuth';
 import { CreateBooking } from '../../../api/BookingApi';
-import { CreatePaymentPayOsUrl, CreatePaymentUrl } from '../../../api/PaymentApi';
-import { useNavigate } from 'react-router-dom';
+import { CreatePaymentPayOsUrl } from '../../../api/PaymentApi';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import moment from 'moment';
 
-dayjs.locale('vi'); // Set the global locale to Vietnamese
-
-const CustomMonthViewCell = styled(MonthView.TimeTableCell)(({ theme, startDate, dateHasSlot }) => {
-    const dateFormatted = dayjs(startDate).format('YYYY-MM-DD');
-    const isDateHasSlot = dateHasSlot.includes(dateFormatted);
-
-    return {
-        backgroundColor: isDateHasSlot ? '#590CE0' : 'white',
-        color: isDateHasSlot ? 'white' : 'black',
-    };
-});
+dayjs.locale('vi'); // Set global locale to Vietnamese
+const localizer = momentLocalizer(moment); // Set up localizer for react-big-calendar
 
 function TimeForm({ tarotReaderData, serviceData }) {
     const initialDate = dayjs();
@@ -53,44 +37,6 @@ function TimeForm({ tarotReaderData, serviceData }) {
 
     const handleClose = () => {
         setOpenPopover(false);
-    };
-
-    const TimeTableCell = ({ startDate, ...restProps }) => {
-        const handleClick = () => {
-            setSelectedSlot([]);
-            if (dateHasSlot.includes(dayjs(startDate).format('YYYY-MM-DD'))) {
-                if (startDate) {
-                    const fetchSlotOfDate = async () => {
-                        setIsLoading(true);
-                        const response = await GetSlotOfDate(dayjs(startDate).format('YYYY-MM-DD'), tarotReaderData.userId);
-                        setSelectedDate(dayjs(startDate).format('DD-MM-YYYY'))
-                        if (response.ok) {
-                            const responseData = await response.json();
-                            setSlotOfDate(responseData.result);
-                        } else {
-                            throw new Error('Failed to fetch slot of date');
-                        }
-                        setIsLoading(false);
-                    };
-
-                    fetchSlotOfDate();
-                    setGenerateSlots([]);
-                    generateTimeSlots();
-                    setOpenPopover(true);
-                } else {
-                    console.log('No date available');
-                }
-            }
-        };
-
-        return (
-            <CustomMonthViewCell
-                {...restProps}
-                startDate={startDate}
-                onClick={handleClick}
-                dateHasSlot={dateHasSlot}
-            />
-        );
     };
 
     useEffect(() => {
@@ -131,8 +77,8 @@ function TimeForm({ tarotReaderData, serviceData }) {
 
     const getUserSlotId = (startTime) => {
         var slot = slotOfDate.find(c => c.startTime === startTime && c.status === true);
-        return slot.userSlotId
-    }
+        return slot ? slot.userSlotId : '';
+    };
 
     const handleChooseSlot = (event) => {
         if (event.target.checked) {
@@ -143,7 +89,7 @@ function TimeForm({ tarotReaderData, serviceData }) {
     };
 
     const handleClickPayment = () => {
-        var slotAmount = Math.ceil(serviceData.serviceDuration / 30)
+        var slotAmount = Math.ceil(serviceData.serviceDuration / 30);
         if (selectedSlot.length !== slotAmount) {
             toast.error("Vui lòng chọn " + slotAmount + " slot");
             return;
@@ -183,7 +129,7 @@ function TimeForm({ tarotReaderData, serviceData }) {
                         formMeetingId: serviceData.formMeetingId,
                         questionAmount: serviceData.questionAmount,
                         userSlotId: selectedSlot
-                    }
+                    };
                 } else {
                     data = {
                         customerId: user.userId,
@@ -191,15 +137,14 @@ function TimeForm({ tarotReaderData, serviceData }) {
                         serviceId: serviceData.serviceId,
                         formMeetingId: serviceData.formMeetingId,
                         userSlotId: selectedSlot
-                    }
+                    };
                 }
                 const response = await CreateBooking(data);
                 setOpenPopover(false);
                 if (response.ok) {
                     const responseData = await response.json();
-                    toast.success("Tạo lịch hẹn thành công")
-                    setTimeout(() => {
-                    }, 1000);
+                    toast.success("Tạo lịch hẹn thành công");
+                    setTimeout(() => { }, 1000);
 
                     const fetchCreatePaymentUrl = async () => {
                         const response = await CreatePaymentPayOsUrl(responseData.result);
@@ -213,7 +158,6 @@ function TimeForm({ tarotReaderData, serviceData }) {
                     };
 
                     fetchCreatePaymentUrl();
-
                 } else {
                     throw new Error('Failed to fetch create booking');
                 }
@@ -223,18 +167,53 @@ function TimeForm({ tarotReaderData, serviceData }) {
         } else {
             toast.error("Vui lòng đăng nhập để có thể đặt lịch");
         }
+    };
 
+    const handleClick = (startDate) => {
+        setSelectedSlot([]);
+        if (dateHasSlot.includes(dayjs(startDate).format('YYYY-MM-DD'))) {
+            if (startDate) {
+                const fetchSlotOfDate = async () => {
+                    setIsLoading(true);
+                    const response = await GetSlotOfDate(dayjs(startDate).format('YYYY-MM-DD'), tarotReaderData.userId);
+                    setSelectedDate(dayjs(startDate).format('DD-MM-YYYY'));
+                    if (response.ok) {
+                        const responseData = await response.json();
+                        setSlotOfDate(responseData.result);
+                    } else {
+                        throw new Error('Failed to fetch slot of date');
+                    }
+                    setIsLoading(false);
+                };
 
-    }
+                fetchSlotOfDate();
+                setGenerateSlots([]);
+                generateTimeSlots();
+                setOpenPopover(true); // Hiển thị popup khi có slot
+            } else {
+                console.log('No date available');
+            }
+        }
+    };
+
+    const CustomToolbar = () => {
+        return (
+            <div style={{ display: 'none' }}></div> // Trả về một div trống để ẩn toolbar
+        );
+    };
+
+    const getWeekdayNames = () => {
+        return ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+    };
 
 
     return (
         <div>
-            {isLoading ?
+            {isLoading ? (
                 <div className="fixed inset-0 flex justify-center items-center bg-gray-200 z-50">
                     <CircularProgress />
                 </div>
-                :
+            ) : (
                 <>
                     <div>
                         <LocalizationProvider dateAdapter={AdapterDayjs} locale="vi">
@@ -242,7 +221,9 @@ function TimeForm({ tarotReaderData, serviceData }) {
                                 <DatePicker
                                     label="Chọn tháng"
                                     value={currentDate}
-                                    onChange={(newValue) => setCurrentDate(dayjs(newValue))}
+                                    onChange={(newValue) => {
+                                        setCurrentDate(dayjs(newValue))
+                                    }}
                                     views={['year', 'month']}
                                     format="MMMM YYYY"
                                     minDate={initialDate}
@@ -252,18 +233,42 @@ function TimeForm({ tarotReaderData, serviceData }) {
                         </LocalizationProvider>
                     </div>
 
-                    <Paper
-                        style={{
-                            padding: 60,
-                            backgroundColor: '#9747FF',
-                            marginTop: 30,
-                        }}
-                    >
-                        <Scheduler locale="vi" firstDayOfWeek={1}>
-                            <ViewState currentDate={currentDate.format('YYYY-MM-DD')} />
-                            <MonthView timeTableCellComponent={TimeTableCell} />
-                            <Appointments />
-                        </Scheduler>
+                    <Paper style={{ padding: 60, marginTop: 30 }}>
+                        <Calendar
+                            localizer={localizer}
+                            startAccessor="start"
+                            endAccessor="end"
+                            defaultDate={currentDate.format('YYYY-MM-DD')}
+                            style={{ height: 500 }}
+                            dayPropGetter={(date) => {
+                                const formattedDate = dayjs(date).format('YYYY-MM-DD');
+                                if (dateHasSlot.includes(formattedDate)) {
+                                    return {
+                                        style: {
+                                            backgroundColor: '#5900E5', // Màu đỏ cho ô ngày có slot
+                                            color: '#FFFFFF',           // Màu chữ trắng
+                                            cursor: 'pointer',          // Hiển thị con trỏ khi hover
+                                        },
+                                    };
+                                }
+                                return {}; // Các ngày không có slot giữ nguyên kiểu mặc định
+                            }}
+                            onSelectSlot={(slotInfo) => {
+                                const startDate = slotInfo.start; // Lấy ngày bắt đầu từ sự kiện `slotInfo`
+                                handleClick(startDate); // Gọi hàm handleClick với startDate
+                            }}
+                            selectable // Kích hoạt khả năng chọn ngày trong lịch
+                            components={{ toolbar: CustomToolbar }}
+                            formats={{
+                                dayFormat: (date) => {
+                                    const day = dayjs(date).format('dddd'); // Lấy tên ngày trong tuần
+                                    return getWeekdayNames()[dayjs(date).day()]; // Trả về tên thứ bằng tiếng Việt
+                                },
+                                weekdayFormat: (date) => {
+                                    return getWeekdayNames()[dayjs(date).day()]; // Trả về tên thứ bằng tiếng Việt
+                                }
+                            }}
+                        />
                     </Paper>
 
                     {/* Dark overlay */}
@@ -356,8 +361,7 @@ function TimeForm({ tarotReaderData, serviceData }) {
                         </div>
                     </Popover>
                 </>
-            }
-
+            )}
         </div>
     );
 }

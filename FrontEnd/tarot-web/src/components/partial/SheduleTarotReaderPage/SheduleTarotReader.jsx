@@ -1,12 +1,5 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
-import { ViewState } from '@devexpress/dx-react-scheduler';
-import {
-    Scheduler,
-    MonthView,
-    DayView,
-    Appointments,
-} from '@devexpress/dx-react-scheduler-material-ui';
 import dayjs from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -17,8 +10,13 @@ import { GetAllSlotOfSystem, GetSlotOfDate, RegisterSlotByTarotReader } from '..
 import { CircularProgress, Dialog, DialogTitle, DialogContent, Button } from '@mui/material';
 import useAuth from '../../../hooks/useAuth';
 import { toast } from 'react-toastify';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import moment from 'moment';
 
 const initialDate = new Date();
+const localizer = momentLocalizer(moment); // Sử dụng momentLocalizer
+const now = dayjs().format('YYYY-MM-DD');
 
 function ScheduleTarotReader({ tarotReaderData }) {
     const [currentDate, setCurrentDate] = useState(dayjs(initialDate));
@@ -44,7 +42,7 @@ function ScheduleTarotReader({ tarotReaderData }) {
 
     const fetchSlotOfDate = async (startDate) => {
         const response = await GetSlotOfDate(dayjs(startDate).format('YYYY-MM-DD'), user.userId);
-        setSelectedDate(dayjs(startDate).format('DD/MM/YYYY'));
+        setSelectedDate(dayjs(startDate).format('YYYY-MM-DD'));
         if (response.ok) {
             const responseData = await response.json();
             setSlotOfDate(responseData.result);
@@ -57,7 +55,7 @@ function ScheduleTarotReader({ tarotReaderData }) {
         if (user) {
             fetchAllSlotOfSystem();
         }
-    }, [user]);
+    }, [user, currentDate]);
 
     const highlightedDates = availableSlotSystem.map(slot => dayjs(slot.startDate).format('YYYY-MM-DD'));
 
@@ -66,22 +64,6 @@ function ScheduleTarotReader({ tarotReaderData }) {
         setIsDialogOpen(true);
     };
 
-    const CustomTimeTableCell = ({ startDate, ...restProps }) => {
-        const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
-        const isHighlighted = highlightedDates.includes(formattedDate);
-        return (
-            <MonthView.TimeTableCell
-                {...restProps}
-                startDate={startDate}
-                style={{
-                    backgroundColor: isHighlighted ? '#5900E5' : undefined,
-                    color: isHighlighted ? 'white' : undefined,
-                    cursor: 'pointer',
-                }}
-                onClick={() => handleCellClick(startDate)}
-            />
-        );
-    };
 
     const handleCloseDialog = () => {
         setIsDialogOpen(false);
@@ -113,55 +95,93 @@ function ScheduleTarotReader({ tarotReaderData }) {
         setIsLoading(false);
     }
 
-    // Custom DayView component
-    const CustomDayView = () => {
+    const CustomToolbar = () => {
         return (
-            <Scheduler
-                data={availableSlotSystem}
-                locale="vi"
-            >
-                <ViewState
-                    currentDate={selectedDate ? dayjs(selectedDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD')}
-                />
-                <DayView
-                    startDayHour={0}
-                    endDayHour={24}
-                    timeTableCellComponent={(props) => {
-                        const now = dayjs();
-                        const timeSlotStart = dayjs(props.startDate);
-                        const isToday = dayjs(selectedDate).date == (now.date);
-                        const isSlotInPast = isToday && timeSlotStart.isBefore(now);
-
-                        const isSlotAvailable = slotOfDate.some(slot => dayjs(slot.startDate).format('YYYY-MM-DD HH:mm') === timeSlotStart.format('YYYY-MM-DD HH:mm'));
-                        const slotId = slotIdMapping[timeSlotStart.format('YYYY-MM-DD HH:mm')];
-                        const isSlotSelected = selectedSlotIds.includes(slotId);
-
-                        return (
-                            <DayView.TimeTableCell
-                                {...props}
-                                style={{
-                                    backgroundColor: isSlotSelected ? '#FFD232' : (isSlotAvailable ? '#5900E5' : undefined),
-                                    color: isSlotSelected ? 'black' : (isSlotAvailable ? 'white' : undefined),
-                                    cursor: isSlotAvailable ? 'not-allowed' : 'pointer',
-                                }}
-                                onClick={() => {
-                                    if (!isSlotAvailable && !isSlotInPast) {
-                                        if (isSlotSelected) {
-                                            setSelectedSlotIds((prev) => prev.filter(id => id !== slotId));
-                                        } else {
-                                            setSelectedSlotIds((prev) => [...prev, slotId]);
-                                        }
-                                    } else {
-                                        toast.error("Slot phải chưa được đăng ký trước đó và phải nằm sau thời gian hiện tại")
-                                    }
-                                }}
-                            />
-                        );
-                    }}
-                />
-            </Scheduler>
+            <div style={{ display: 'none' }}></div> // Trả về một div trống để ẩn toolbar
         );
     };
+
+    const getWeekdayNames = () => {
+        return ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+    };
+
+    // Custom DayView component
+
+    const CustomDayView = () => {
+        return (
+            <Calendar
+                localizer={localizer}
+                defaultView='day'
+                startAccessor="start"
+                endAccessor="end"
+                step={30}
+                timeslots={1}
+                date={selectedDate}
+                style={{ height: '100vh' }}
+                selectable
+                onSelectSlot={(slotInfo) => {
+                    console.log("Slot clicked:", slotInfo);
+
+                    const formattedSlot = dayjs(slotInfo.start).format('YYYY-MM-DD HH:mm');
+                    const slotId = slotIdMapping[formattedSlot]; // Lấy ID của slot
+
+                    const isChoosedAlready= slotOfDate.some(slot =>
+                        dayjs(slot.startDate).format('YYYY-MM-DD HH:mm') === formattedSlot
+                    );
+
+                    const isSlotAvailable = dayjs(slotInfo.start).isAfter(dayjs(new Date()))
+
+
+                    if (isSlotAvailable && !isChoosedAlready) {
+                        const isSlotSelected = selectedSlotIds.includes(slotId);
+                        if (isSlotSelected) {
+                            // Nếu slot đã được chọn, bỏ chọn nó
+                            setSelectedSlotIds(prev => prev.filter(id => id !== slotId));
+                        } else {
+                            // Nếu slot chưa được chọn, thêm vào danh sách đã chọn
+                            setSelectedSlotIds(prev => [...prev, slotId]);
+                        }
+                    } else {
+                        toast.error("Slot đã qua thời gian");
+                    }
+                }}
+                slotPropGetter={(slotProp) => {
+                    const formattedSlot = dayjs(slotProp).format('YYYY-MM-DD HH:mm');
+                    const isAvailable = slotOfDate.some(slot =>
+                        dayjs(slot.startDate).format('YYYY-MM-DD HH:mm') === formattedSlot
+                    );
+                    const slotId = slotIdMapping[formattedSlot];
+                    const isSlotSelected = selectedSlotIds.includes(slotId);
+
+                    return {
+                        style: {
+                            backgroundColor: isSlotSelected ? '#FFD232' : (isAvailable ? '#5900E5' : null), // Tô màu cho slot đã chọn hoặc có sẵn
+                            color: isAvailable ? 'white' : 'black',
+                            cursor: !isAvailable ? 'pointer' : 'not-allowed', // Thay đổi con trỏ
+                        },
+                    };
+                }}
+                components={{ toolbar: CustomToolbar }}
+                formats={{
+                    dayFormat: (date) => {
+                        const day = dayjs(date).format('dddd'); // Lấy tên ngày trong tuần
+                        return getWeekdayNames()[dayjs(date).day()]; // Trả về tên thứ bằng tiếng Việt
+                    },
+                    weekdayFormat: (date) => {
+                        return getWeekdayNames()[dayjs(date).day()]; // Trả về tên thứ bằng tiếng Việt
+                    },
+                    timeGutterFormat: (date) => {
+                        return dayjs(date).format('HH:mm'); // Sử dụng định dạng 24 giờ
+                    },
+                    eventTimeRangeFormat: ({ start, end }) => {
+                        return `${dayjs(start).format('HH:mm')} - ${dayjs(end).format('HH:mm')}`; // Định dạng thời gian cho sự kiện
+                    },
+                }}
+            />
+
+        );
+    };
+
 
 
     if (isLoading || !user) {
@@ -173,7 +193,7 @@ function ScheduleTarotReader({ tarotReaderData }) {
     }
 
     return (
-        <div>
+        <div className='w-full'>
             <div>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DatePicker', 'DatePicker']}>
@@ -187,19 +207,41 @@ function ScheduleTarotReader({ tarotReaderData }) {
             </div>
 
             <Paper style={{ padding: 16 }}>
-                <Scheduler
-                    data={availableSlotSystem}
-                    locale="vi"
-                >
-                    <ViewState
-                        currentDate={currentDate.format('YYYY-MM-DD')}
-                    />
-                    <MonthView
-                        startDayHour={0}
-                        endDayHour={24}
-                        timeTableCellComponent={CustomTimeTableCell}
-                    />
-                </Scheduler>
+                <Calendar
+                    localizer={localizer}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: 500 }}
+                    defaultDate={currentDate.format('YYYY-MM-DD')}
+                    dayPropGetter={(date) => {
+                        const formattedDate = dayjs(date).format('YYYY-MM-DD');
+                        if (highlightedDates.includes(formattedDate)) {
+                            return {
+                                style: {
+                                    backgroundColor: '#5900E5',
+                                    color: '#FFFFFF',
+                                    cursor: 'pointer',
+                                },
+                            };
+                        }
+                        return {};
+                    }}
+                    onSelectSlot={(slotInfo) => {
+                        const startDate = slotInfo.start; // Lấy ngày bắt đầu từ sự kiện `slotInfo`
+                        handleCellClick(startDate); // Gọi hàm handleClick với startDate
+                    }}
+                    selectable
+                    components={{ toolbar: CustomToolbar }}
+                    formats={{
+                        dayFormat: (date) => {
+                            const day = dayjs(date).format('dddd'); // Lấy tên ngày trong tuần
+                            return getWeekdayNames()[dayjs(date).day()]; // Trả về tên thứ bằng tiếng Việt
+                        },
+                        weekdayFormat: (date) => {
+                            return getWeekdayNames()[dayjs(date).day()]; // Trả về tên thứ bằng tiếng Việt
+                        }
+                    }}
+                />
             </Paper>
 
             <Dialog open={isDialogOpen} onClose={handleCloseDialog} fullWidth>

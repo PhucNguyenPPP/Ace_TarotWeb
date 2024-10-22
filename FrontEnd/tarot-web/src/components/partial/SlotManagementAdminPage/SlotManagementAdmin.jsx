@@ -1,10 +1,5 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
-import { ViewState } from '@devexpress/dx-react-scheduler';
-import {
-    Scheduler,
-    MonthView,
-} from '@devexpress/dx-react-scheduler-material-ui';
 import dayjs from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -14,8 +9,12 @@ import { useState, useEffect } from 'react';
 import { CreateSlotByAdmin, GetAllSlotOfSystem } from '../../../api/SlotApi';
 import { Box, Button, Card, CardContent, CircularProgress, TextField, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import moment from 'moment';
 
 const initialDate = new Date();
+const localizer = momentLocalizer(moment); // Sử dụng momentLocalizer
 
 function SlotManagementAdmin() {
     const [currentDate, setCurrentDate] = useState(dayjs(initialDate));
@@ -40,30 +39,12 @@ function SlotManagementAdmin() {
 
     useEffect(() => {
         fetchAllSlotOfSystem();
-    }, []);
+    }, [currentDate]);
 
     const highlightedDates = availableSlotSystem.map(slot => dayjs(slot.startDate).format('YYYY-MM-DD'));
 
-
-
-    const CustomTimeTableCell = ({ startDate, ...restProps }) => {
-        const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
-        const isHighlighted = highlightedDates.includes(formattedDate);
-        return (
-            <MonthView.TimeTableCell
-                {...restProps}
-                startDate={startDate}
-                style={{
-                    backgroundColor: isHighlighted ? '#5900E5' : undefined,
-                    color: isHighlighted ? 'white' : undefined,
-                    cursor: 'pointer',
-                }}
-                onClick={() => handleCellClick(startDate)}
-            />
-        );
-    };
-
     const handleStartDateChange = (event) => {
+        console.log(availableSlotSystem)
         setStartDate(event.target.value);
     };
 
@@ -72,7 +53,7 @@ function SlotManagementAdmin() {
     };
 
     const handleCreateSlot = async () => {
-        if(startDate == '' || endDate == ''){
+        if (startDate == '' || endDate == '') {
             toast.error("Vui lòng nhập ngày bắt đầu và ngày kết thúc");
             return;
         }
@@ -98,6 +79,16 @@ function SlotManagementAdmin() {
         setIsLoading(false);
     }
 
+    const CustomToolbar = () => {
+        return (
+            <div style={{ display: 'none' }}></div> // Trả về một div trống để ẩn toolbar
+        );
+    };
+
+    const getWeekdayNames = () => {
+        return ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+    };
+
 
     if (isLoading) {
         return (
@@ -108,7 +99,7 @@ function SlotManagementAdmin() {
     }
 
     return (
-        <div className='p-5'>
+        <div className='p-5 w-full'>
             <div className='pb-10'>
                 <Card>
                     <CardContent>
@@ -163,19 +154,36 @@ function SlotManagementAdmin() {
             </div>
 
             <Paper style={{ padding: 16 }}>
-                <Scheduler
-                    data={availableSlotSystem}
-                    locale="vi"
-                >
-                    <ViewState
-                        currentDate={currentDate.format('YYYY-MM-DD')}
-                    />
-                    <MonthView
-                        startDayHour={0}
-                        endDayHour={24}
-                        timeTableCellComponent={CustomTimeTableCell}
-                    />
-                </Scheduler>
+                <Calendar
+                    localizer={localizer}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: 500 }}
+                    defaultDate={currentDate.format('YYYY-MM-DD')}
+                    dayPropGetter={(date) => {
+                        const formattedDate = dayjs(date).format('YYYY-MM-DD');
+                        if (highlightedDates.includes(formattedDate)) {
+                            return {
+                                style: {
+                                    backgroundColor: '#5900E5',
+                                    color: '#FFFFFF',
+                                    cursor: 'pointer',
+                                },
+                            };
+                        }
+                        return {};
+                    }}
+                    components={{ toolbar: CustomToolbar }}
+                    formats={{
+                        dayFormat: (date) => {
+                            const day = dayjs(date).format('dddd'); // Lấy tên ngày trong tuần
+                            return getWeekdayNames()[dayjs(date).day()]; // Trả về tên thứ bằng tiếng Việt
+                        },
+                        weekdayFormat: (date) => {
+                            return getWeekdayNames()[dayjs(date).day()]; // Trả về tên thứ bằng tiếng Việt
+                        }
+                    }}
+                />
             </Paper>
         </div>
     );
